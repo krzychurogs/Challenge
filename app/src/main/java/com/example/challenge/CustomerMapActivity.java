@@ -12,9 +12,12 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.directions.route.AbstractRouting;
@@ -60,7 +63,26 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private Polyline gpsTrack;
     private LatLng lastKnownLatLng,endKnownLatLng,firstKnownLatLng;
     Button MLogout,MStart,MEnd;
-    EditText MDistance;
+    Button mStopTime,mResetTime;
+    EditText MDistance,MSpeed;
+    TextView MCzas;
+    Handler customHandler=new Handler();
+    Runnable updateTimerThread=new Runnable() {
+        @Override
+        public void run() {
+            timeinMiliseconds=SystemClock.uptimeMillis()-startTime;
+            updateTime=timeinMiliseconds+timeSwapBuff;
+            int secs=(int)(updateTime/1000);
+            int mins=secs/60;
+            secs%=60;
+            int milliseconds=(int)(updateTime%1000);
+            MCzas.setText(""+mins+":"
+                    +String.format("%2d",secs)+":"
+                    +String.format("%3d",milliseconds));
+            customHandler.postDelayed(this,0);
+        }
+    };
+    long startTime=0L,timeinMiliseconds=0L,timeSwapBuff=0L,updateTime=0L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +96,11 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         MStart=(Button)findViewById(R.id.start);
         MEnd=(Button)findViewById(R.id.end);
         MDistance=(EditText)findViewById(R.id.distance);
+        MSpeed=(EditText)findViewById(R.id.speed);
 
+        mStopTime=(Button)findViewById(R.id.stoptime) ;
+
+        MCzas=(TextView) findViewById(R.id.czas);
 
         MLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +112,15 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 return;
             }
         });
+
+        mStopTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timeSwapBuff+=timeinMiliseconds;
+                customHandler.removeCallbacks(updateTimerThread);
+            }
+        });
+
 
 
     }
@@ -151,7 +186,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             @Override
             public void onClick(View view) {
+                startTime= SystemClock.uptimeMillis();
 
+                customHandler.postDelayed(updateTimerThread,0);
                     for(int i=0;i<1;i++)
                     mFirstLocation=location;
 
@@ -182,7 +219,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                 Location.distanceBetween( first.getLatitude(), first.getLongitude(),
                         second.getLatitude(), second.getLongitude(), distance);
-
+                
 
 
                 MDistance.setText("Dystans to:"+ String.valueOf(distance[0]));
