@@ -50,6 +50,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,13 +67,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     Button mStopTime,mResetTime;
     EditText MDistance,MSpeed;
     TextView MCzas;
+    int secs;
     Handler customHandler=new Handler();
     Runnable updateTimerThread=new Runnable() {
         @Override
         public void run() {
             timeinMiliseconds=SystemClock.uptimeMillis()-startTime;
             updateTime=timeinMiliseconds+timeSwapBuff;
-            int secs=(int)(updateTime/1000);
+             secs=(int)(updateTime/1000);
             int mins=secs/60;
             secs%=60;
             int milliseconds=(int)(updateTime%1000);
@@ -197,37 +199,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                 first.setLatitude(firstKnownLatLng.latitude);
                 first.setLongitude(firstKnownLatLng.longitude);
-                System.out.println("poczatek"+ first.getLatitude());
-                System.out.println("poczatek"+ first.getLongitude());
 
 
 
-
-        MEnd.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                endKnownLatLng=new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-                second.setLatitude(endKnownLatLng.latitude);
-                second.setLongitude(endKnownLatLng.longitude);
-                System.out.println("koniec"+ second.getLatitude());
-
-                System.out.println("koniec"+ second.getLongitude());
-
-                float[] distance = new float[3];
-
-                Location.distanceBetween( first.getLatitude(), first.getLongitude(),
-                        second.getLatitude(), second.getLongitude(), distance);
-                
-
-
-                MDistance.setText("Dystans to:"+ String.valueOf(distance[0]));
-                String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference distance_history_db = FirebaseDatabase.getInstance().getReference().child("Users").child("History").child(userid);
-                distance_history_db.setValue(distance[0]);
-            }
-        });
 
 
     }
@@ -243,8 +217,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(3000);
-        mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -275,7 +249,36 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
     private void updateTrack() {
         List<LatLng> points = gpsTrack.getPoints();
+        final Location first=new Location("");
+        final Location second=new Location("");
         points.add(lastKnownLatLng);
+        float[] distance = new float[3];
+        float suma=0;
+        Location.distanceBetween( first.getLatitude(), first.getLongitude(),
+                second.getLatitude(), second.getLongitude(), distance);
+
+        for(int i=0;i<points.size();i++){
+            for (int j = i+1; j < points.size(); j++) {
+
+                first.setLatitude(points.get(i).latitude);
+                first.setLongitude(points.get(i).longitude);
+                second.setLatitude(points.get(j).latitude);
+                second.setLongitude(points.get(j).longitude);
+                Location.distanceBetween( first.getLatitude(), first.getLongitude(),
+                        second.getLatitude(), second.getLongitude(), distance);
+                
+                suma+=distance[0];
+                System.out.println(j+"dystans to"+distance[0]);
+                System.out.println(j+"suma to"+suma);
+
+                MDistance.setText("Dystans to:"+ suma);
+                double km= 3.6;
+                double avgspeed= (suma/secs)* km ;
+                DecimalFormat df = new DecimalFormat("#.##");
+                MSpeed.setText("Predkosc to:"+df.format(avgspeed)+"km/h");
+            }
+        }
+
         gpsTrack.setPoints(points);
     }
 }
