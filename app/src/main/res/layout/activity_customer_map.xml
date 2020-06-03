@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,17 +9,53 @@
     android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/start"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:text="Zacznij Trening" />
-
-    <Button
-        android:id="@+id/end"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Zakoncz Trening" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/start"
+            android:layout_width="130dp"
+            android:layout_height="35dp"
+            android:text="Zacznij Trening" />
+
+        <Button
+            android:id="@+id/end"
+            android:layout_width="270dp"
+            android:layout_height="35dp"
+            android:text="Zakoncz Trening" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/czas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Czas to:"
+
+            />
+
+        <Button
+            android:id="@+id/stoptime"
+            android:layout_width="98dp"
+            android:layout_height="match_parent"
+            android:text="Stop " />
+        <EditText
+            android:id="@+id/speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Predkosc to:"
+
+            />
+
+
+    </LinearLayout>
+
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
