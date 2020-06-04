@@ -74,7 +74,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         public void run() {
             timeinMiliseconds=SystemClock.uptimeMillis()-startTime;
             updateTime=timeinMiliseconds+timeSwapBuff;
-             secs=(int)(updateTime/1000);
+            secs=(int)(updateTime/1000);
             int mins=secs/60;
             secs%=60;
             int milliseconds=(int)(updateTime%1000);
@@ -122,7 +122,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 customHandler.removeCallbacks(updateTimerThread);
             }
         });
+        MStart.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View view) {
+                startTime= SystemClock.uptimeMillis();
+
+                customHandler.postDelayed(updateTimerThread,0);
+
+            }
+        });
 
 
     }
@@ -136,7 +145,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             return;
         }
         buildGoogleApiClient();
-            mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled(true);
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.CYAN);
         polylineOptions.width(4);
@@ -153,6 +162,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -191,7 +201,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 startTime= SystemClock.uptimeMillis();
 
                 customHandler.postDelayed(updateTimerThread,0);
-                    for(int i=0;i<1;i++)
+                for(int i=0;i<1;i++)
                     mFirstLocation=location;
 
 
@@ -204,8 +214,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
 
 
-    }
-});
+            }
+        });
 
 
         // Set listeners for click events.
@@ -240,10 +250,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onStop() {
         super.onStop();
-        String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("userAvailable");
-        GeoFire geoFire=new GeoFire(ref);
-        geoFire.removeLocation(userid);
+
     }
 
 
@@ -257,19 +264,19 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         Location.distanceBetween( first.getLatitude(), first.getLongitude(),
                 second.getLatitude(), second.getLongitude(), distance);
 
-        for(int i=0;i<points.size();i++){
-            for (int j = i+1; j < points.size(); j++) {
+        for(int i=0;i<points.size()-1;i++){
+
 
                 first.setLatitude(points.get(i).latitude);
                 first.setLongitude(points.get(i).longitude);
-                second.setLatitude(points.get(j).latitude);
-                second.setLongitude(points.get(j).longitude);
+                second.setLatitude(points.get(i+1).latitude);
+                second.setLongitude(points.get(i+1).longitude);
                 Location.distanceBetween( first.getLatitude(), first.getLongitude(),
                         second.getLatitude(), second.getLongitude(), distance);
-                
+
                 suma+=distance[0];
-                System.out.println(j+"dystans to"+distance[0]);
-                System.out.println(j+"suma to"+suma);
+                System.out.println(i+"dystans to"+distance[0]);
+                System.out.println(i+"suma to"+suma);
 
                 MDistance.setText("Dystans to:"+ suma);
                 double km= 3.6;
@@ -277,7 +284,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 DecimalFormat df = new DecimalFormat("#.##");
                 MSpeed.setText("Predkosc to:"+df.format(avgspeed)+"km/h");
             }
-        }
+
 
         gpsTrack.setPoints(points);
     }

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".CustomerLoginActivity">
 
     <EditText
         android:id="@+id/email"
@@ -19,9 +19,17 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Wpisz Haslo :"
-        android:inputType="textPassword" />
+        android:hint="password"
+
+        />
+
+    <EditText
+        android:id="@+id/rpassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="repeatpassword"
+
+        />
 
     <Button
         android:id="@+id/registration"
@@ -35,7 +43,13 @@
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="login"/>
+        android:hint="login"
+
+        /><![CDATA[
+
+    />
 
 
+
+    ]]>
 </LinearLayout>
