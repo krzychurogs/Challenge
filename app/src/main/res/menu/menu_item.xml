@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/nevaccount"
-        android:title="Moje Konto"/>
+        android:title="Moje Konto"
+        android:icon="@drawable/ic_account_box_black_24dp"/>
     <item android:id="@+id/nevhistory"
-        android:title="Historia"/>
-    <item android:id="@+id/options"
-        android:title="Ustawienia"/>
+        android:title="Historia"
+        android:icon="@drawable/ic_settings_applications_black_24dp"/>
+    <item android:id="@+id/wylogujdraw"
+        android:title="Wyloguj"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"/>
 
 
 

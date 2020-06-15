@@ -2,10 +2,13 @@ package com.example.challenge;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -14,11 +17,13 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
@@ -45,6 +50,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,7 +60,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -62,12 +68,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     Location mFirstLocation;
     LocationRequest mLocationRequest;
     private Polyline gpsTrack;
+    private FirebaseAuth mAuth;
     private LatLng lastKnownLatLng,endKnownLatLng,firstKnownLatLng;
-    Button MLogout,MStart,MEnd;
+    Button MStart,MEnd;
     Button mStopTime,mResetTime;
     EditText MDistance,MSpeed;
     TextView MCzas;
     int secs;
+    DrawerLayout drawerLayout;
+
+
     Handler customHandler=new Handler();
     Runnable updateTimerThread=new Runnable() {
         @Override
@@ -89,31 +99,28 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
+        mAuth = FirebaseAuth.getInstance();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        MLogout=(Button)findViewById(R.id.logout);
+
         MStart=(Button)findViewById(R.id.start);
         MEnd=(Button)findViewById(R.id.end);
         MDistance=(EditText)findViewById(R.id.distance);
         MSpeed=(EditText)findViewById(R.id.speed);
+        drawerLayout=(DrawerLayout)findViewById((R.id.drawer));
+        NavigationView navigationView=findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
 
         mStopTime=(Button)findViewById(R.id.stoptime) ;
 
         MCzas=(TextView) findViewById(R.id.czas);
 
-        MLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent=new Intent(CustomerMapActivity.this,CustomerLoginActivity.class);
-                startActivity(intent);
-                finish();
-                return;
-            }
-        });
+
 
         mStopTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +185,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference("userAvailable");
         GeoFire geoFire=new GeoFire(ref);
+
         geoFire.setLocation(userid, new GeoLocation(location.getLatitude(), location.getLongitude()), new
                 GeoFire.CompletionListener() {
                     @Override
@@ -261,31 +269,70 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         points.add(lastKnownLatLng);
         float[] distance = new float[3];
         float suma=0;
+
         Location.distanceBetween( first.getLatitude(), first.getLongitude(),
                 second.getLatitude(), second.getLongitude(), distance);
 
         for(int i=0;i<points.size()-1;i++){
 
 
-                first.setLatitude(points.get(i).latitude);
-                first.setLongitude(points.get(i).longitude);
-                second.setLatitude(points.get(i+1).latitude);
-                second.setLongitude(points.get(i+1).longitude);
-                Location.distanceBetween( first.getLatitude(), first.getLongitude(),
-                        second.getLatitude(), second.getLongitude(), distance);
+            first.setLatitude(points.get(i).latitude);
+            first.setLongitude(points.get(i).longitude);
+            second.setLatitude(points.get(i+1).latitude);
+            second.setLongitude(points.get(i+1).longitude);
+            Location.distanceBetween( first.getLatitude(), first.getLongitude(),
+                    second.getLatitude(), second.getLongitude(), distance);
 
-                suma+=distance[0];
-                System.out.println(i+"dystans to"+distance[0]);
-                System.out.println(i+"suma to"+suma);
+            suma+=distance[0];
+            System.out.println(i+"dystans to"+distance[0]);
+            System.out.println(i+"suma to"+suma);
 
-                MDistance.setText("Dystans to:"+ suma);
-                double km= 3.6;
-                double avgspeed= (suma/secs)* km ;
-                DecimalFormat df = new DecimalFormat("#.##");
-                MSpeed.setText("Predkosc to:"+df.format(avgspeed)+"km/h");
-            }
+            MDistance.setText("Dystans to:"+ suma);
+            double km= 3.6;
+            final double avgspeed= (suma/secs)* km ;
+            DecimalFormat df = new DecimalFormat("#.##");
+            MSpeed.setText("Predkosc to:"+df.format(avgspeed)+"km/h");
+            MEnd.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    String user_id = mAuth.getCurrentUser().getUid();
+                    DecimalFormat df = new DecimalFormat("#.##");
+
+                    String szybkosc= df.format(avgspeed).toString();
+
+                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Historia").child(user_id).child(szybkosc);
+                    current_user_db.setValue(szybkosc);
+
+                }
+            });
+        }
 
 
         gpsTrack.setPoints(points);
+
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId())
+        {
+            case R.id.wylogujdraw: {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(CustomerMapActivity.this, CustomerLoginActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            }
+            case R.id.nevhistory:
+                {
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.drawer,new FragmentHistory()).commit();
+                break;
+            }
+        }
+        return true;
     }
 }
