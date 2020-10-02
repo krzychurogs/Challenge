@@ -23,13 +23,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomerLoginActivity extends AppCompatActivity {
+public class CustomerLoginActivity extends AppCompatActivity implements FragmentHistory.FragmentHistoryListener {
 
     private EditText mEmail, mPassword;
 
     private Button mLogin, mRegistration,MLogout;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    private FragmentHistory fragmenta;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
         final DatabaseReference mRef=database.getReference("sim");
 
         mAuth = FirebaseAuth.getInstance();
+        fragmenta= new FragmentHistory();
 
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -49,6 +51,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                     return;
+
                 }
             }
         };
@@ -111,5 +114,10 @@ public class CustomerLoginActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mAuth.removeAuthStateListener(firebaseAuthListener);
+    }
+
+    @Override
+    public void onInputSent(CharSequence input) {
+
     }
 }

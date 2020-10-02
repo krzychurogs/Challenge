@@ -17,6 +17,8 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -55,12 +57,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.auth.User;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentHistory.FragmentHistoryListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -75,7 +82,15 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     EditText MDistance,MSpeed;
     TextView MCzas;
     int secs;
+    public float suma=0;
     DrawerLayout drawerLayout;
+    TextToSpeech textToSpeech;
+    private Object [] table;
+    private int nElems;
+
+
+
+
 
 
     Handler customHandler=new Handler();
@@ -198,6 +213,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
+
         final Location first=new Location("");
         final Location second=new Location("");
 
@@ -263,12 +279,13 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
 
 
     private void updateTrack() {
-        List<LatLng> points = gpsTrack.getPoints();
+        final List<LatLng> points = gpsTrack.getPoints();
+
         final Location first=new Location("");
         final Location second=new Location("");
         points.add(lastKnownLatLng);
         float[] distance = new float[3];
-        float suma=0;
+
 
         Location.distanceBetween( first.getLatitude(), first.getLongitude(),
                 second.getLatitude(), second.getLongitude(), distance);
@@ -284,26 +301,77 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                     second.getLatitude(), second.getLongitude(), distance);
 
             suma+=distance[0];
-            System.out.println(i+"dystans to"+distance[0]);
-            System.out.println(i+"suma to"+suma);
+         //   System.out.println(i+"dystans to"+distance[0]);
+           // System.out.println(i+"suma to"+suma);
 
             MDistance.setText("Dystans to:"+ suma);
+
+
+            textToSpeech=new TextToSpeech(CustomerMapActivity.this, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(status!= TextToSpeech.ERROR)
+                    {
+                        textToSpeech.setLanguage(new Locale("pl", "PL"));
+
+                         DecimalFormat df = new DecimalFormat("0") ;
+                        String text=String.valueOf(df.format(suma)+"kilometrów");
+                        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
+
+
+
+                    }
+                }
+            });
+
             double km= 3.6;
             final double avgspeed= (suma/secs)* km ;
             DecimalFormat df = new DecimalFormat("#.##");
             MSpeed.setText("Predkosc to:"+df.format(avgspeed)+"km/h");
+            final double finalSuma = suma;
             MEnd.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
+
                     String user_id = mAuth.getCurrentUser().getUid();
                     DecimalFormat df = new DecimalFormat("#.##");
 
                     String szybkosc= df.format(avgspeed).toString();
-
+                    Toast.makeText(getApplicationContext(),"Dobry trening",Toast.LENGTH_SHORT).show();
                     DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child
-                            ("Customers").child("Historia").child(user_id).child(szybkosc);
+                            ("Customers").child("Historia").child(user_id).child("predkosc");
                     current_user_db.setValue(szybkosc);
+                    DatabaseReference distancer = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Historia").child(user_id).child("dystans");
+                    distancer.setValue(finalSuma);
+                    DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Historia").child(user_id).child("waypointy");
+
+                   String [] table;  //Referencja do tablicy
+                   int nElems=0;
+                   table=new String[5];
+                   for(int j=0;j<points.size();j++) {
+
+
+                       if (nElems >= table.length) {
+                           String[] locTable = new String[table.length * 2];
+                           for (int i = 0; i < table.length; i++) locTable[i] = table[i];
+                           table = locTable;
+                       }
+
+                       table[nElems] = String.valueOf(points.get(j));        // Wstawiamy element
+                       nElems++;
+                   }
+                   List nameList = new ArrayList<String>(Arrays.asList(table));
+                   road.setValue(nameList);
+
+
+
+
+
+
+
 
                 }
             });
@@ -334,5 +402,22 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
             }
         }
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        if(textToSpeech!=null)
+        {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+
+        }
+
+        super.onPause();
+    }
+
+    @Override
+    public void onInputSent(CharSequence input) {
+
     }
 }
