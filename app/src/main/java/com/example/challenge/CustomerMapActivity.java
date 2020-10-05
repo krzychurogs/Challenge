@@ -128,8 +128,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
         drawerLayout=(DrawerLayout)findViewById((R.id.drawer));
         NavigationView navigationView=findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
-
-
+        //MStart.setVisibility(View.GONE);
 
         mStopTime=(Button)findViewById(R.id.stoptime) ;
 

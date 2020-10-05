@@ -40,7 +40,6 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
-    private Polyline gpsTrack;
     Location mLastLocation;
     LocationRequest mLocationRequest;
     Location flocation;
@@ -129,11 +128,6 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         }
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.CYAN);
-        polylineOptions.width(4);
-        gpsTrack = mMap.addPolyline(polylineOptions);
-
     }
 
     @Override
@@ -163,10 +157,9 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-
+        ArrayList<LatLng> coordList = new ArrayList<LatLng>();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(19));
-        final List<LatLng> points = gpsTrack.getPoints();
         for(int i=0;i<listofplace.size();i++)
         {
             Double latide=21.9927641;
@@ -180,18 +173,23 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
 
                 latide=Double.valueOf(listofplace.get(i));
             }
-            lastKnownLatLng = new LatLng(latide, longtide);
-
-
-
-            points.add(lastKnownLatLng);
-
-
+            coordList.add(new LatLng(longtide, latide));
         }
 
-        gpsTrack.setPoints(points);
+       // coordList.add(new LatLng(50.0226336,21.9927568));
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        // Create polyline options with existing LatLng ArrayList
+        polylineOptions.addAll(coordList);
+        polylineOptions
+                .width(5)
+                .color(Color.RED);
+
+        // Adding multiple points in map using polyline and arraylist
+        mMap.addPolyline(polylineOptions);
+
         /*
-            coordList.add(new LatLng(latide, longtide));
+
 
 
 
