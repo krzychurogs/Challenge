@@ -13,7 +13,7 @@ public class Questions {
     private String mChoices [][]=
             {
                     {"bardzo", "srednio", "slabo", "kompletnie sie nie ruszam"},
-                    {" Częściej niż 4 razy w tygodniu", "1-2 razy w tygodniu", "1-3 razy w miesiącu", "nie uprawiam sportu"},
+                    {"Częściej niż 4 razy w tygodniu", "1-2 razy w tygodniu", "1-3 razy w miesiącu", "nie uprawiam sportu"},
                     {"w łatwy sposob", "raczej tak", "z problemami ale tak", "ciezko"},
                     {"tak", "czasami", "raczej nie", "kompletnie nie"},
                     {"powyzej 90 minut", " 30 - 80 minut","Poniżej 15 minut", "0-3 minuty"},

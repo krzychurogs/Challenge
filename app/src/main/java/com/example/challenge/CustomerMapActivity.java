@@ -314,7 +314,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                         textToSpeech.setLanguage(new Locale("pl", "PL"));
 
                          DecimalFormat df = new DecimalFormat("0") ;
-                        String text=String.valueOf(df.format(suma)+"kilometrów");
+                        String text=String.valueOf(df.format(suma)+"metrów");
                         textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 
 

@@ -2,15 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/holo_blue_dark"
-    android:orientation="vertical"
-    >
+
+    android:orientation="vertical">
 
     <fragment
         android:id="@+id/map2"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="357dp"
+        android:layout_height="279dp"
         tools:context=".FragmentHistory" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="123dp"
+        android:src="@drawable/ic_directions_run_black_24dp" />
+
+    <TextView
+        android:id="@+id/textdist"
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:textSize="28dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textspeed"
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:textSize="28dp"
+        android:text="TextView" />
+
+
 </LinearLayout>

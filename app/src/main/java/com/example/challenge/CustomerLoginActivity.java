@@ -17,10 +17,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CustomerLoginActivity extends AppCompatActivity implements FragmentHistory.FragmentHistoryListener {
@@ -28,6 +33,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
     private EditText mEmail, mPassword;
 
     private Button mLogin, mRegistration,MLogout;
+    DatabaseReference reff;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private FragmentHistory fragmenta;
@@ -47,6 +53,25 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null){
+                    String user_id = mAuth.getCurrentUser().getUid();
+                    reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id);
+                    reff.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.child("level").exists())
+                            {
+                                Intent intent = new Intent(CustomerLoginActivity.this, CustomerMapActivity.class);
+                                startActivity(intent);
+                                finish();
+                                return;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     Intent intent = new Intent(CustomerLoginActivity.this, QuizActivity.class);
                     startActivity(intent);
                     finish();

@@ -24,8 +24,9 @@ public class QuizActivity extends AppCompatActivity {
     private String verylowAnswer;
     private int mScore;
     int points=0;
+    public int count=0 ;
 
-    int count=0 ;
+
     private int mQuestionaLengtht=mQuestions.mQuestions.length;
     Random r;
 
@@ -40,31 +41,22 @@ public class QuizActivity extends AppCompatActivity {
         answer4 = findViewById(R.id.answer4);
         r=new Random();
         question = findViewById(R.id.question);
-        updateQuestion(count);
+
+        updateQuestion(0);
 
             answer1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (answer1.getText().toString().equals(mAnswer)) {
+                    if (answer1.getText().toString() == mAnswer) {
                         points+=4;
-                        updateQuestion(count+=1);
+                        int number=r.nextInt(mQuestionaLengtht);
+                        updateQuestion(number);
                         System.out.println(mAnswer);
-                        System.out.println(count);
+                        System.out.println("licznik"+count);
 
 
                     }
-                    else if (answer1.getText().toString().equals(medAnswer)) {
-                        points+=3;
-                        updateQuestion(count+=1);
-                    }
-                    else if (answer1.getText().toString().equals(lowAnswer)) {
-                        points+=2;
-                        updateQuestion(count+=1);
-                    }
-                    else if (answer1.getText().toString().equals(verylowAnswer)) {
-                        points+=1;
-                        updateQuestion(count+=1);
-                    }
+
 
 
                 }
@@ -73,72 +65,43 @@ public class QuizActivity extends AppCompatActivity {
             answer2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (answer2.getText().toString() == mAnswer) {
-                        points+=4;
-                        updateQuestion(count+=1);
-                    }
                     if (answer2.getText().toString() == medAnswer) {
-                        points+=3;
-                        updateQuestion(count+=1);
-                    }
-                    if (answer2.getText().toString() == lowAnswer) {
-                        points+=2;
-                        updateQuestion(count+=1);
-                    }
-                    if (answer2.getText().toString() == verylowAnswer) {
-                        points+=1;
-                        updateQuestion(count+=1);
+                        int number=r.nextInt(mQuestionaLengtht);
+                        updateQuestion(number);
+                        points += 4;
+
                     }
                 }
             });
             answer3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (answer3.getText().toString() == mAnswer) {
-                        points+=4;
-                        updateQuestion(count+=1);
-                    }
-                    if (answer3.getText().toString() == medAnswer) {
-                        points+=3;
-                        updateQuestion(count+=1);
-                    }
                     if (answer3.getText().toString() == lowAnswer) {
-                        points+=2;
-                        updateQuestion(count+=1);
+                        points+=4;
+                        updateQuestion(r.nextInt(mQuestionaLengtht));
                     }
-                    if (answer3.getText().toString() == verylowAnswer) {
-                        points+=1;
-                        updateQuestion(count+=1);
-                    }
+
                 }
             });
             answer4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (answer4.getText().toString() == mAnswer) {
-                        points+=4;
-                        updateQuestion(count+=1);
-                    }
-                    if (answer4.getText().toString() == medAnswer) {
-                        points+=3;
-                        updateQuestion(count+=1);
-                    }
-                    if (answer4.getText().toString() == lowAnswer) {
-                        points+=2;
-                        updateQuestion(count+=1);
-                    }
                     if (answer4.getText().toString() == verylowAnswer) {
-                        points+=1;
-                        updateQuestion(count+=1);
+                        points+=4;
+                        int number=r.nextInt(mQuestionaLengtht);
+                        updateQuestion(number);
                     }
+
                 }
             });
 
-                System.out.println(points);
-                String user_id = mAuth.getCurrentUser().getUid();
+
+
+               /* String user_id = mAuth.getCurrentUser().getUid();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Historia").child(user_id).child("level");
                 ref.setValue("wysoki lvl");
+                */
 
     }
 

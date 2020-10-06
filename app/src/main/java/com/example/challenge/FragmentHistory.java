@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +46,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     LocationRequest mLocationRequest;
     Location flocation;
     private FragmentHistoryListener listener;
+    TextView textdistance,textspeed;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
 
@@ -56,7 +59,14 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
+
+
         final View root = inflater.inflate(R.layout.fragment_history, container, false);
+
+        ImageView imageView1 = (ImageView) root.findViewById(R.id.imageView4);
+        textdistance= (TextView)  root.findViewById(R.id.textdist);
+        textspeed= (TextView)  root.findViewById(R.id.textspeed);
+
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
@@ -66,17 +76,23 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-               String value= dataSnapshot.child("predkosc").getValue(String.class);
+               String value= dataSnapshot.child("predkosc").getValue().toString();
+               String dystans= dataSnapshot.child("dystans").getValue().toString();
+               textdistance.setText("Dystans to: "+dystans +" metrów");
+               textspeed.setText("Predkosc to: "+value);
                List<String>newlist=new ArrayList<String>();
 
                 for (DataSnapshot snapshot : dataSnapshot.child("waypointy").getChildren()){
                     String data = snapshot.getValue(String.class);
+
                     String word[]=data.split(" ");
                     for(String w:word)
                     {
                         newlist.add(w);
                     }
                 }
+
+
                 for(int i=0;i<newlist.size();i++)
                 {
                     if(i%2==1)
