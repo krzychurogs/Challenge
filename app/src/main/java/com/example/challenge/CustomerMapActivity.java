@@ -54,9 +54,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
 
 import java.text.DecimalFormat;
@@ -87,6 +91,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     TextToSpeech textToSpeech;
     private Object [] table;
     private int nElems;
+    long maxid=0;
 
 
 
@@ -337,17 +342,30 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                     DecimalFormat df = new DecimalFormat("#.##");
 
                     String szybkosc= df.format(avgspeed).toString();
-                    Toast.makeText(getApplicationContext(),"Dobry trening",Toast.LENGTH_SHORT).show();
-                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child
-                            ("Customers").child("Historia").child(user_id).child("predkosc");
-                    current_user_db.setValue(szybkosc);
-                    DatabaseReference distancer = FirebaseDatabase.getInstance().getReference().child("Users").child
-                            ("Customers").child("Historia").child(user_id).child("dystans");
-                    distancer.setValue(finalSuma);
-                    DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                            ("Customers").child("Historia").child(user_id).child("waypointy");
+                    DatabaseReference historia = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Historia").child(user_id).child("historia").push();
+                    historia.setValue("test");
 
-                   String [] table;  //Referencja do tablicy
+
+                    historia.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists())
+                            {
+                                maxid=(dataSnapshot.getChildrenCount());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    historia.child("predkosc").setValue(szybkosc);
+                    historia.child("dystans").setValue(finalSuma);
+                    Toast.makeText(getApplicationContext(),"Dobry trening",Toast.LENGTH_SHORT).show();
+                    String [] table;  //Referencja do tablicy
                    int nElems=0;
                    table=new String[5];
                    for(int j=0;j<points.size();j++) {
@@ -363,23 +381,13 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                        nElems++;
                    }
                    List nameList = new ArrayList<String>(Arrays.asList(table));
-                   road.setValue(nameList);
 
-
-
-
-
-
-
-
+                   historia.child("waypointy").setValue(nameList);
                 }
             });
         }
 
-
         gpsTrack.setPoints(points);
-
-
     }
 
     @Override

@@ -97,11 +97,11 @@ public class QuizActivity extends AppCompatActivity {
 
 
 
-               /* String user_id = mAuth.getCurrentUser().getUid();
+                String user_id = mAuth.getCurrentUser().getUid();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Historia").child(user_id).child("level");
                 ref.setValue("wysoki lvl");
-                */
+
 
     }
 

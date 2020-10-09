@@ -35,5 +35,17 @@
         android:textSize="28dp"
         android:text="TextView" />
 
+    <Button
+        android:id="@+id/nextTraining"
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
+        android:text="Nastepny" />
+
+    <Button
+        android:id="@+id/backTraining"
+        android:layout_width="218dp"
+        android:layout_height="wrap_content"
+        android:text="Poprzedni" />
+
 
 </LinearLayout>
