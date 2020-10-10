@@ -55,6 +55,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
     List<String>distancelist=new ArrayList<String>();
+    private Polyline gpsTrack;
     List<String>speedlist=new ArrayList<String>();
     List<String>listofeachtrainingwaypoint=new ArrayList<>();
      public static int counttrain;
@@ -203,6 +204,10 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         }
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.CYAN);
+        polylineOptions.width(4);
+        gpsTrack = mMap.addPolyline(polylineOptions);
     }
 
     @Override

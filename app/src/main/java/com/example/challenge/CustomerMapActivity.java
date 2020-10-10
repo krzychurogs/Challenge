@@ -92,6 +92,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     private Object [] table;
     private int nElems;
     long maxid=0;
+    static boolean rusz=false;
 
 
 
@@ -146,6 +147,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
             public void onClick(View view) {
                 timeSwapBuff+=timeinMiliseconds;
                 customHandler.removeCallbacks(updateTimerThread);
+                rusz=false;
             }
         });
         MStart.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +157,12 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                 startTime= SystemClock.uptimeMillis();
 
                 customHandler.postDelayed(updateTimerThread,0);
+                rusz=true;
 
             }
         });
+
+
 
 
     }
@@ -194,60 +199,64 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     @Override
     public void onLocationChanged(final Location location) {
 
-        mLastLocation = location;
+       if(rusz==true)
+       {
+           mLastLocation = location;
 
-        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+           LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+           mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+           mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
 
-        String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("userAvailable");
-        GeoFire geoFire=new GeoFire(ref);
+           String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
+           DatabaseReference ref= FirebaseDatabase.getInstance().getReference("userAvailable");
+           GeoFire geoFire=new GeoFire(ref);
 
-        geoFire.setLocation(userid, new GeoLocation(location.getLatitude(), location.getLongitude()), new
-                GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        //Do some stuff if you want to
-                    }
-                });
-
-
-        lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
+           geoFire.setLocation(userid, new GeoLocation(location.getLatitude(), location.getLongitude()), new
+                   GeoFire.CompletionListener() {
+                       @Override
+                       public void onComplete(String key, DatabaseError error) {
+                           //Do some stuff if you want to
+                       }
+                   });
 
 
-        final Location first=new Location("");
-        final Location second=new Location("");
-
-
-        MStart.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                startTime= SystemClock.uptimeMillis();
-
-                customHandler.postDelayed(updateTimerThread,0);
-                for(int i=0;i<1;i++)
-                    mFirstLocation=location;
-
-
-                firstKnownLatLng=new LatLng(mFirstLocation.getLatitude(), mFirstLocation.getLongitude());
-
-                first.setLatitude(firstKnownLatLng.latitude);
-                first.setLongitude(firstKnownLatLng.longitude);
+           lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
 
+           final Location first=new Location("");
+           final Location second=new Location("");
 
 
-            }
-        });
+           MStart.setOnClickListener(new View.OnClickListener() {
+
+               @Override
+               public void onClick(View view) {
+                   startTime= SystemClock.uptimeMillis();
+
+                   customHandler.postDelayed(updateTimerThread,0);
+                   for(int i=0;i<1;i++)
+                       mFirstLocation=location;
 
 
-        // Set listeners for click events.
-        updateTrack();
+                   firstKnownLatLng=new LatLng(mFirstLocation.getLatitude(), mFirstLocation.getLongitude());
+
+                   first.setLatitude(firstKnownLatLng.latitude);
+                   first.setLongitude(firstKnownLatLng.longitude);
+
+
+
+
+
+               }
+           });
+
+
+           // Set listeners for click events.
+           updateTrack();
+       }
+
     }
 
 
@@ -258,6 +267,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -307,7 +317,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
             suma+=distance[0];
          //   System.out.println(i+"dystans to"+distance[0]);
            // System.out.println(i+"suma to"+suma);
-
+        }
             MDistance.setText("Dystans to:"+ suma);
 
 
@@ -385,7 +395,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                    historia.child("waypointy").setValue(nameList);
                 }
             });
-        }
+
 
         gpsTrack.setPoints(points);
     }
