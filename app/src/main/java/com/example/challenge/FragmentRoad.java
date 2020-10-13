@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,19 +77,33 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
 
-
-
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot snapshot : dataSnapshot.child("waypointy").getChildren()) {
+                    String data = snapshot.getValue(String.class);
+                    listofeachtrainingwaypoint.add(data);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        } ;
+        reff.addListenerForSingleValueEvent(valueEventListener);
 
 
 
         return root;
 
     }
-
-
 
     protected synchronized void buildGoogleApiClient(){
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
@@ -145,17 +160,52 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 .strokeColor(Color.RED)
                 .fillColor(Color.BLUE));
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        final List<LatLng> latLngPolygon = new ArrayList<>();
-        {
-            latLngPolygon.add(new LatLng(50.03,21.9987751));//delhi
-            latLngPolygon.add(new LatLng(50.0227154,21.9997975));//gujarat
-            latLngPolygon.add(new LatLng(50.002724,21.9927758));//pune
-            latLngPolygon.add(new LatLng(50.022724,21.9527758));
+        ArrayList<LatLng> coordList = new ArrayList<LatLng>();
+        for(int count=0;count<listofeachtrainingwaypoint.size();count++) {
+
+
+            List<String> newlist = new ArrayList<String>();
+            String word[] = listofeachtrainingwaypoint.get(count).split(" ");
+            for (String w : word) {
+                newlist.add(w);
+            }
+
+
+            for (int i = 0; i < newlist.size(); i++) {
+                if (i % 2 == 1) {
+                    String words[] = newlist.get(i).split(",");
+                    for (String w : words) {
+                        String str1 = w.replace("(", "");
+                        String strnew = str1.replace(")", "");
+
+                        listofplace.add(strnew);
+                    }
+                }
+            }
         }
-        System.out.println("w srodku"+isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) latLngPolygon));
+        for(int i=0;i<listofplace.size();i++)
+        {
+            Double latide=21.9927641;
+            Double longtide=  50.0226329;
 
+            if(i%2==0)//longtiude
+            {
+                longtide=Double.valueOf(listofplace.get(i));
+            }
+            if(i%2 == 1){
 
+                String lat=listofplace.get(i).toString().replace("]","");
+                latide=Double.valueOf(lat);
+            }
+            coordList.add(new LatLng(longtide, latide));
+
+        }
+
+        System.out.println("w srodku"+isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) coordList));
+
+        String user_id = mAuth.getCurrentUser().getUid();
     }
+
     private boolean isPointInPolygon(LatLng tap, ArrayList<LatLng> vertices) {
         int intersectCount = 0;
         for (int j = 0; j < vertices.size() - 1; j++) {
@@ -205,5 +255,37 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         super.onDetach();
         listener=null;
     }
+    public void dodawanietrasy()
+    {
+        final List<LatLng> latLngPolygon = new ArrayList<>();
+        {
+            latLngPolygon.add(new LatLng(50.03,21.9987751));//delhi
+            latLngPolygon.add(new LatLng(50.0227154,21.9997975));//gujarat
+            latLngPolygon.add(new LatLng(50.002724,21.9927758));//pune
+            latLngPolygon.add(new LatLng(50.022724,21.9527758));
+        }
+        System.out.println("w srodku"+isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) latLngPolygon));
+        DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Road").child("pierwsza trasa");
+        String [] table;  //Referencja do tablicy
+        int nElems=0;
+        table=new String[5];
+        for(int j=0;j<latLngPolygon.size();j++) {
+
+
+            if (nElems >= table.length) {
+                String[] locTable = new String[table.length * 2];
+                for (int i = 0; i < table.length; i++) locTable[i] = table[i];
+                table = locTable;
+            }
+
+            table[nElems] = String.valueOf(latLngPolygon.get(j));        // Wstawiamy element
+            nElems++;
+        }
+        List nameList = new ArrayList<String>(Arrays.asList(table));
+
+        road.child("waypointy").setValue(nameList);
+    }
+
 
 }
