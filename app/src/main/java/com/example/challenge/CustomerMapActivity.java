@@ -22,7 +22,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -81,9 +83,11 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     private Polyline gpsTrack;
     private FirebaseAuth mAuth;
     private LatLng lastKnownLatLng,endKnownLatLng,firstKnownLatLng;
-    Button MStart,MEnd;
-    Button mStopTime,mResetTime;
-    EditText MDistance,MSpeed;
+    ImageButton MStart;
+    ImageButton MEnd;
+    ImageButton mStopTime;
+    Button mResetTime;
+    TextView MDistance,MSpeed;
     TextView MCzas;
     int secs;
     public float suma=0;
@@ -93,29 +97,9 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     private int nElems;
     long maxid=0;
     static boolean rusz=false;
-
-
-
-
-
-
-    Handler customHandler=new Handler();
-    Runnable updateTimerThread=new Runnable() {
-        @Override
-        public void run() {
-            timeinMiliseconds=SystemClock.uptimeMillis()-startTime;
-            updateTime=timeinMiliseconds+timeSwapBuff;
-            secs=(int)(updateTime/1000);
-            int mins=secs/60;
-            secs%=60;
-            int milliseconds=(int)(updateTime%1000);
-            MCzas.setText(""+mins+":"
-                    +String.format("%2d",secs)+":"
-                    +String.format("%3d",milliseconds));
-            customHandler.postDelayed(this,0);
-        }
-    };
-    long startTime=0L,timeinMiliseconds=0L,timeSwapBuff=0L,updateTime=0L;
+    private Chronometer chronometer;
+    private boolean running;
+    private long pauseOffset;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,46 +111,70 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        MStart=(Button)findViewById(R.id.start);
-        MEnd=(Button)findViewById(R.id.end);
-        MDistance=(EditText)findViewById(R.id.distance);
-        MSpeed=(EditText)findViewById(R.id.speed);
+
+        MStart=(ImageButton)findViewById(R.id.start);
+        chronometer = findViewById(R.id.czas);
+        MEnd=(ImageButton)findViewById(R.id.end);
+        MDistance=(TextView)findViewById(R.id.distance);
+        MSpeed=(TextView)findViewById(R.id.speed);
         drawerLayout=(DrawerLayout)findViewById((R.id.drawer));
         NavigationView navigationView=findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
         //MStart.setVisibility(View.GONE);
 
-        mStopTime=(Button)findViewById(R.id.stoptime) ;
-
-        MCzas=(TextView) findViewById(R.id.czas);
-
+        mStopTime=(ImageButton)findViewById(R.id.stoptime) ;
+        chronometer.setFormat("%s");
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        mStopTime.setVisibility(View.GONE);
+        MEnd.setVisibility(View.GONE);
 
 
         mStopTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timeSwapBuff+=timeinMiliseconds;
-                customHandler.removeCallbacks(updateTimerThread);
                 rusz=false;
+                stopChronometer();
+                mStopTime.setVisibility(View.GONE);
+                MEnd.setVisibility(View.VISIBLE);
+                MStart.setVisibility(View.VISIBLE);
+                if(mStopTime.getVisibility() == View.VISIBLE) {
+                    MStart.setVisibility(View.INVISIBLE);
+                    mStopTime.setVisibility(View.GONE);
+                    MEnd.setVisibility(View.VISIBLE);
+                }
+                else if(mStopTime.getVisibility() == View.GONE)
+                {
+                    mStopTime.setVisibility(View.GONE);
+                    MStart.setVisibility(View.VISIBLE);
+                    MEnd.setVisibility(View.VISIBLE);
+                }
+
             }
         });
         MStart.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                startTime= SystemClock.uptimeMillis();
-
-                customHandler.postDelayed(updateTimerThread,0);
+                startChronometer();
                 rusz=true;
+                mStopTime.setVisibility(View.INVISIBLE);
+                MStart.setVisibility(View.GONE);
 
+                if(MStart.getVisibility() == View.VISIBLE) {
+                    MStart.setVisibility(View.INVISIBLE);
+                    mStopTime.setVisibility(View.VISIBLE);
+                    MEnd.setVisibility(View.INVISIBLE);
+                }
+                else if(MStart.getVisibility() == View.GONE)
+                {
+                    mStopTime.setVisibility(View.VISIBLE);
+                    MStart.setVisibility(View.INVISIBLE);
+                    MEnd.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
-
-
-
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -202,12 +210,9 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
        if(rusz==true)
        {
            mLastLocation = location;
-
            LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-
            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
            mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
-
            String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
            DatabaseReference ref= FirebaseDatabase.getInstance().getReference("userAvailable");
            GeoFire geoFire=new GeoFire(ref);
@@ -219,48 +224,12 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                            //Do some stuff if you want to
                        }
                    });
-
-
            lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-
-
-           final Location first=new Location("");
-           final Location second=new Location("");
-
-
-           MStart.setOnClickListener(new View.OnClickListener() {
-
-               @Override
-               public void onClick(View view) {
-                   startTime= SystemClock.uptimeMillis();
-
-                   customHandler.postDelayed(updateTimerThread,0);
-                   for(int i=0;i<1;i++)
-                       mFirstLocation=location;
-
-
-                   firstKnownLatLng=new LatLng(mFirstLocation.getLatitude(), mFirstLocation.getLongitude());
-
-                   first.setLatitude(firstKnownLatLng.latitude);
-                   first.setLongitude(firstKnownLatLng.longitude);
-
-
-
-
-
-               }
-           });
-
-
-           // Set listeners for click events.
            updateTrack();
        }
 
     }
-
-
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
@@ -318,7 +287,9 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
          //   System.out.println(i+"dystans to"+distance[0]);
            // System.out.println(i+"suma to"+suma);
         }
-            MDistance.setText("Dystans to:"+ suma);
+            DecimalFormat dfsuma = new DecimalFormat("#.##");
+            MDistance.setText(""+dfsuma.format(suma)+"km");
+
 
 
             textToSpeech=new TextToSpeech(CustomerMapActivity.this, new TextToSpeech.OnInitListener() {
@@ -341,7 +312,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
             double km= 3.6;
             final double avgspeed= (suma/secs)* km ;
             DecimalFormat df = new DecimalFormat("#.##");
-            MSpeed.setText("Predkosc to:"+df.format(avgspeed)+"km/h");
+            MSpeed.setText(""+df.format(avgspeed)+"km");
             final double finalSuma = suma;
             MEnd.setOnClickListener(new View.OnClickListener() {
 
@@ -400,6 +371,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
         gpsTrack.setPoints(points);
     }
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId())
@@ -448,5 +420,19 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     @Override
     public void onInputSent(CharSequence input) {
 
+    }
+    public void startChronometer() {
+        if (!running) {
+            chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+            chronometer.start();
+            running = true;
+        }
+    }
+    public void stopChronometer() {
+        if (running) {
+            chronometer.stop();
+            pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
+            running = false;
+        }
     }
 }
