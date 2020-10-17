@@ -91,6 +91,7 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
     TextView MCzas;
     int secs;
     public float suma=0;
+    float distancer=0;
     DrawerLayout drawerLayout;
     TextToSpeech textToSpeech;
     private Object [] table;
@@ -227,14 +228,16 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
            lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
            updateTrack();
+           //System.out.println("dyst"+location.getSpeed());
+
        }
 
     }
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(3000);
+        mLocationRequest.setFastestInterval(3000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
@@ -265,32 +268,39 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
         final List<LatLng> points = gpsTrack.getPoints();
 
         final Location first=new Location("");
+        float[] distance = new float[3];
         final Location second=new Location("");
         points.add(lastKnownLatLng);
-        float[] distance = new float[3];
 
+        int h=points.size();
+        if(h>2)
+            {
+                first.setLatitude(lastKnownLatLng.latitude);
+                first.setLongitude(lastKnownLatLng.longitude);
+                second.setLatitude(points.get(h-2).latitude);
+                second.setLongitude(points.get(h-2).longitude);
+                Location.distanceBetween( first.getLatitude(), first.getLongitude(),
+                        second.getLatitude(), second.getLongitude(), distance);
+                suma+=distance[0];
 
-        Location.distanceBetween( first.getLatitude(), first.getLongitude(),
-                second.getLatitude(), second.getLongitude(), distance);
+            }
+            else if (h<2)
+            {
+                suma+=0;
 
-        for(int i=0;i<points.size()-1;i++){
+            }
 
-
-            first.setLatitude(points.get(i).latitude);
-            first.setLongitude(points.get(i).longitude);
-            second.setLatitude(points.get(i+1).latitude);
-            second.setLongitude(points.get(i+1).longitude);
-            Location.distanceBetween( first.getLatitude(), first.getLongitude(),
-                    second.getLatitude(), second.getLongitude(), distance);
-
-            suma+=distance[0];
-         //   System.out.println(i+"dystans to"+distance[0]);
-           // System.out.println(i+"suma to"+suma);
-        }
+            //   System.out.println(i+"dystans to"+distance[0]);
+            // System.out.println(i+"suma to"+suma);
             DecimalFormat dfsuma = new DecimalFormat("#.##");
-            MDistance.setText(""+dfsuma.format(suma)+"km");
+            MDistance.setText(""+dfsuma.format(suma)+"m");
+            double km= 3.6;
 
-
+            int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
+            secs= elapsedMillis/1000;
+            final double avgspeed= (suma/secs)* km ;
+            DecimalFormat df = new DecimalFormat("#.##");
+            MSpeed.setText(""+df.format(avgspeed)+"km/h");
 
             textToSpeech=new TextToSpeech(CustomerMapActivity.this, new TextToSpeech.OnInitListener() {
                 @Override
@@ -309,10 +319,6 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                 }
             });
 
-            double km= 3.6;
-            final double avgspeed= (suma/secs)* km ;
-            DecimalFormat df = new DecimalFormat("#.##");
-            MSpeed.setText(""+df.format(avgspeed)+"km");
             final double finalSuma = suma;
             MEnd.setOnClickListener(new View.OnClickListener() {
 
