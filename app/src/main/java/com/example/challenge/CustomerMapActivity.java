@@ -68,12 +68,13 @@ import com.google.firebase.firestore.auth.User;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentHistory.FragmentHistoryListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentRoad.FragmentRoadListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentHistory.FragmentHistoryListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentRoad.FragmentRoadListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -348,7 +349,9 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
 
                         }
                     });
+                    Date nowDate = new Date();
 
+                    historia.child("data").setValue(nowDate);
                     historia.child("predkosc").setValue(szybkosc);
                     historia.child("dystans").setValue(finalSuma);
                     Toast.makeText(getApplicationContext(),"Dobry trening",Toast.LENGTH_SHORT).show();
@@ -401,12 +404,19 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                 getSupportFragmentManager().beginTransaction().replace(R.id.drawer,new FragmentRoad()).commit();
                 break;
             }
+            case R.id.nevAllTrainings:
+            {
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.drawer,new FragmentAllTraining()).commit();
+                break;
+            }
             case R.id.nevChoiceRoad:
             {
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.drawer,new FragmentChoiceRoad()).commit();
                 break;
             }
+
         }
         return true;
     }

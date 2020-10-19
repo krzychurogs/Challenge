@@ -237,7 +237,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-        ArrayList<LatLng> coordList = new ArrayList<LatLng>();
+        List<LatLng> coordList = gpsTrack.getPoints();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(19));
         for(int i=0;i<listofplace.size();i++)
@@ -254,20 +254,13 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                 String lat=listofplace.get(i).toString().replace("]","");
                 latide=Double.valueOf(lat);
             }
-            coordList.add(new LatLng(longtide, latide));
+            lastKnownLatLng= new LatLng(longtide, latide);
+            coordList.add(lastKnownLatLng);
         }
 
-        // coordList.add(new LatLng(50.0226336,21.9927568));
-        PolylineOptions polylineOptions = new PolylineOptions();
 
-        // Create polyline options with existing LatLng ArrayList
-        polylineOptions.addAll(coordList);
-        polylineOptions
-                .width(5)
-                .color(Color.RED);
+        gpsTrack.setPoints(coordList);
 
-        // Adding multiple points in map using polyline and arraylist
-        mMap.addPolyline(polylineOptions);
     }
 
     @Override
