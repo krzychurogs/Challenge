@@ -69,10 +69,21 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
+        Bundle bundle=getArguments();
+
+        System.out.println(bundle.getString("data"));
 
 
         final View root = inflater.inflate(R.layout.fragment_history, container, false);
+        String fullhour=bundle.getString("hour");
+        final String[] partshour = fullhour.split("/");
 
+        System.out.println(partshour[0]);
+        System.out.println(partshour[1]);
+        System.out.println(partshour[2]);
+        System.out.println(partshour[3]);
+        System.out.println(partshour[4]);
+        System.out.println(partshour[5]);
         ImageView imageView1 = (ImageView) root.findViewById(R.id.imageView4);
         textdistance= (TextView)  root.findViewById(R.id.textdist);
         textspeed= (TextView)  root.findViewById(R.id.textspeed);
@@ -91,18 +102,26 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String dystans = String.valueOf(ds.child("dystans").getValue(Double.class));
                     String predkosc = ds.child("predkosc").getValue(String.class);
-                    distancelist.add(dystans);
-                    speedlist.add(predkosc);
+                    String day = String.valueOf(ds.child("data").child("date").getValue());
+                    String month = String.valueOf(ds.child("data").child("month").getValue());
+                    String years = String.valueOf(ds.child("data").child("year").getValue());
+                    String minutes= String.valueOf(ds.child("data").child("minutes").getValue());
+                    String hours= String.valueOf(ds.child("data").child("hours").getValue());
+                    String seconds= String.valueOf(ds.child("data").child("seconds").getValue());
+                    if(partshour[0].equals(hours)&&partshour[1].equals(minutes)&&partshour[2].equals(seconds)&&
+                            partshour[3].equals(day)&&partshour[4].equals(month)&&partshour[5].equals(years))
+                    {
+                        textdistance.setText("Dystans to: "+dystans +" metrów");
+                        textspeed.setText("Predkosc to: "+predkosc) ;
+                        String data=ds.child("waypointy").getValue().toString();
 
-                    textdistance.setText("Dystans to: "+distancelist.get(0).toString() +" metrów");
-                    textspeed.setText("Predkosc to: "+speedlist.get(0).toString());
-
-                    String data=ds.child("waypointy").getValue().toString();
-
-                    listofeachtrainingwaypoint.add(data);
-
-
+                        listofeachtrainingwaypoint.add(data);
+                    }
                 }
+
+                pointsfromtrain();
+
+
             }
 
             @Override
@@ -111,57 +130,15 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
             }
         };
         reff.addListenerForSingleValueEvent(valueEventListener);
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(counttrain==distancelist.size()-1)
-                {
-                    int countdest=0;
-                    counttrain=countdest;
-                    textdistance.setText("Dystans to: "+distancelist.get(counttrain).toString() +" metrów");
-                    textspeed.setText("Predkosc to: "+speedlist.get(counttrain).toString());
-                    pointsfromtrain(counttrain);
-                }
-                else {
-                    counttrain+=1;
-                    textdistance.setText("Dystans to: "+distancelist.get(counttrain).toString() +" metrów");
-                    textspeed.setText("Predkosc to: "+speedlist.get(counttrain).toString());
-                    pointsfromtrain(counttrain);
-                }
-
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(counttrain>0) {
-                    counttrain -= 1;
-                    textdistance.setText("Dystans to: " + distancelist.get(counttrain).toString() + " metrów");
-                    textspeed.setText("Predkosc to: " + speedlist.get(counttrain).toString());
-                    pointsfromtrain(counttrain);
-                }
-                else {
-                    int countdest=distancelist.size()-1;
-                    counttrain=countdest;
-                    textdistance.setText("Dystans to: "+distancelist.get(counttrain).toString() +" metrów");
-                    textspeed.setText("Predkosc to: "+speedlist.get(counttrain).toString());
-                    pointsfromtrain(counttrain);
-                }
-
-
-            }
-        });
 
 
         return root;
 
     }
-    public void pointsfromtrain(int count)
+    public void pointsfromtrain()
         {
             List<String>newlist=new ArrayList<String>();
-            String word[]=listofeachtrainingwaypoint.get(count).split(" ");
+            String word[]=listofeachtrainingwaypoint.get(0).split(" ");
             for(String w:word)
             {
                 newlist.add(w);
@@ -179,9 +156,15 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                     String strnew=str1.replace(")","");
 
                     listofplace.add(strnew);
+
                 }
             }
             }
+            for(int i=0;i<listofplace.size();i++)
+            {
+                System.out.println(listofplace.get(i));
+            }
+
 
     }
 
