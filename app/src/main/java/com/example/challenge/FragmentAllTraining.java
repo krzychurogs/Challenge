@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,19 +21,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,9 +53,10 @@ public class FragmentAllTraining extends Fragment {
     int count=0;
     List<Integer>counter=new ArrayList<>();
     ArrayList<Integer> newList = new ArrayList<Integer>();//lista tygodni bez duplikatow
+    ArrayList<String> listofdateswithoutduplicates = new ArrayList<String>();//lista tygodni bez duplikatow
     ArrayList<String> listofdates = new ArrayList<String>();
     int counterofweekwithoutduplicates=0;
-
+    Button button=new Button(getActivity());
 
     public interface FragmentAllTrainingListener{
         void onInputSent(CharSequence input);
@@ -94,6 +83,7 @@ public class FragmentAllTraining extends Fragment {
                     int mon=monthinint+1;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
                     String fulldate=day+"/"+mon+"/"+yean;
                     counter.add( calendar(fulldate));
+
                 }
                 fork();
 
@@ -139,24 +129,22 @@ public class FragmentAllTraining extends Fragment {
             button.setLayoutParams(new LinearLayout.LayoutParams(600    ,150));
             button.setId(count);
             button.setText(start+" |"+end);
-            final int counter=i;
+            button.setFocusableInTouchMode(false);
 
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    lookfordateindatabase(newList.get(counter));
-
-
-                }
-            });
-            conc+=1;
             linearlayout.addView(button);
-            if(newList.size()==conc)
-            {
-                break;
-            }
-
+            button.setOnClickListener(getOnClick(i));
         }
+
+    }
+    private  View.OnClickListener getOnClick(final int i)
+    {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                lookfordateindatabase(newList.get(i));
+            }
+        };
     }
     public static boolean isDateInCurrentWeek(Date date,int week) {
         Calendar currentCalendar = Calendar.getInstance();
@@ -166,9 +154,13 @@ public class FragmentAllTraining extends Fragment {
         targetCalendar.setTime(date);
         int targetWeek = targetCalendar.get(Calendar.WEEK_OF_YEAR);
         int targetYear = targetCalendar.get(Calendar.YEAR);
-        System.out.println("week"+week);
-        System.out.println("targetweek"+targetWeek);
-        return week == targetWeek && year == targetYear;
+        if(week == targetWeek )
+        {
+            return true;
+        }
+        return false;
+
+
     }
     public int calendar(String fulldate)
     {
@@ -184,12 +176,10 @@ public class FragmentAllTraining extends Fragment {
     {
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
-
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String day = String.valueOf(ds.child("data").child("date").getValue());
                     String month = String.valueOf(ds.child("data").child("month").getValue());
@@ -200,25 +190,38 @@ public class FragmentAllTraining extends Fragment {
                     int monthinint=Integer.parseInt(month);
                     int mon=monthinint+1;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
                     String fulldate=day+"/"+mon+"/"+yean;
+
                     listofdates.add(fulldate);
-
-                        // System.out.println(isDateInCurrentWeek(convertStringToDate(listofdates.get(i)),nrofweek));
-
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
         reff.addListenerForSingleValueEvent(valueEventListener);
+        int ctr=0;
+         TextView mTextView;
         for(int i=0;i<listofdates.size();i++)
         {
-            System.out.println(listofdates.get(i));
+            if(isDateInCurrentWeek(convertStringToDate(listofdates.get(i)),nrofweek)==true)
+            {
+                ctr+=1;
+               // System.out.println(ctr);
 
+
+
+                Button button=new Button(getActivity());
+                button.setLayoutParams(new LinearLayout.LayoutParams(600    ,150));
+                button.setId(count);
+                button.setText(listofdates.get(i));
+                button.setFocusableInTouchMode(false);
+
+                linearlayout.addView(button);
+
+            }
         }
-
+        listofdates.clear();
     }
 
     public Date convertStringToDate(String dateString) {
