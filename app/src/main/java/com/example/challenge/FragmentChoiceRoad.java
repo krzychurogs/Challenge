@@ -83,7 +83,7 @@ public class FragmentChoiceRoad extends Fragment {
             public void onClick(View view) {
                 FragmentRoad roadfragment=new FragmentRoad();
                 FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                transaction.replace(R.id.drawer,roadfragment);
+                transaction.replace(R.id.drawer_layout,roadfragment);
                 transaction.commit();
             }
         });

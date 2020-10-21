@@ -31,9 +31,11 @@
             android:value="AIzaSyBaJbx4F9mikAy_lh0XEosbqLuKhidl0PM" />
 
         <activity
-            android:name=".CustomerMapActivity"
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_activity_customer_map" />
-        <activity android:name=".CustomerLoginActivity">
+        <activity android:name=".CustomerLoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

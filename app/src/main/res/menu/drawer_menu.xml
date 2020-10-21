@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_simply_training"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Zwykły Trening" />
+        <item
+            android:id="@+id/nav_all_training"
+            android:icon="@drawable/ic_account_box_black_24dp"
+            android:title="Wszystkie Treningi" />
+        <item
+            android:id="@+id/nav_choice_road"
+            android:icon="@drawable/ic_play_arrow_black_50dp"
+            android:title="Wszystkie trasy" />
+
+    </group>
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="Send" />
+        </menu>
+    </item>
+</menu>

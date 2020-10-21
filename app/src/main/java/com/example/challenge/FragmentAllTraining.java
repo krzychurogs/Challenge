@@ -257,7 +257,7 @@ public class FragmentAllTraining extends Fragment {
                         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
                         FragmentHistory fragmentHistory=new FragmentHistory();
                         fragmentHistory.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.drawer,fragmentHistory);
+                        fragmentTransaction.replace(R.id.drawer_layout,fragmentHistory);
                         fragmentTransaction.commit();
                     }
                 });

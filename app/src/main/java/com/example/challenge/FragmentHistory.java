@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +34,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class FragmentHistory extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
@@ -89,7 +86,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         textspeed= (TextView)  root.findViewById(R.id.textspeed);
         next=(Button)root.findViewById(R.id.nextTraining);
         back=(Button)root.findViewById(R.id.backTraining);
-        final CustomerMapActivity count=(CustomerMapActivity)getActivity();
+        final MainActivity count=(MainActivity)getActivity();
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map2);
