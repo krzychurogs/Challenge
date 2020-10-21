@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     Location flocation;
     private FragmentHistoryListener listener;
     Button next,back;
-    TextView textdistance,textspeed;
+    TextView textdistance,textspeed,texthighspeed,textkalorie,datahisttext;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
     List<String>distancelist=new ArrayList<String>();
@@ -82,8 +83,11 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         System.out.println(partshour[4]);
         System.out.println(partshour[5]);
         ImageView imageView1 = (ImageView) root.findViewById(R.id.imageView4);
-        textdistance= (TextView)  root.findViewById(R.id.textdist);
-        textspeed= (TextView)  root.findViewById(R.id.textspeed);
+        textdistance= (TextView)  root.findViewById(R.id.textDist);
+        textspeed= (TextView)  root.findViewById(R.id.textSpeed);
+        textkalorie= (TextView)  root.findViewById(R.id.textKalorie);
+        texthighspeed= (TextView)  root.findViewById(R.id.textHighSpeed);
+        datahisttext= (TextView)  root.findViewById(R.id.datatraintext);
         next=(Button)root.findViewById(R.id.nextTraining);
         back=(Button)root.findViewById(R.id.backTraining);
         final MainActivity count=(MainActivity)getActivity();
@@ -97,8 +101,10 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String>newlist=new ArrayList<String>();
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String dystans = String.valueOf(ds.child("dystans").getValue(Double.class));
-                    String predkosc = ds.child("predkosc").getValue(String.class);
+                    String dystans =  String.valueOf(ds.child("dystans").getValue());
+                    String predkosc = String.valueOf(ds.child("predkosc").getValue());
+                    String highspeed =String.valueOf(ds.child("highspeed").getValue());
+                    String kalorie = String.valueOf(ds.child("kalorie").getValue());
                     String day = String.valueOf(ds.child("data").child("date").getValue());
                     String month = String.valueOf(ds.child("data").child("month").getValue());
                     String years = String.valueOf(ds.child("data").child("year").getValue());
@@ -108,8 +114,12 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                     if(partshour[0].equals(hours)&&partshour[1].equals(minutes)&&partshour[2].equals(seconds)&&
                             partshour[3].equals(day)&&partshour[4].equals(month)&&partshour[5].equals(years))
                     {
-                        textdistance.setText("Dystans to: "+dystans +" metrów");
-                        textspeed.setText("Predkosc to: "+predkosc) ;
+                        DecimalFormat dfsuma = new DecimalFormat("#.##");
+                        textdistance.setText(dystans+"km");
+                        textspeed.setText(predkosc+ "km/h") ;
+                        texthighspeed.setText(highspeed+"km/h");
+                        textkalorie.setText(kalorie);
+                        datahisttext.setText(day+"/"+month+"/"+years+" "+minutes+":"+hours);
                         String data=ds.child("waypointy").getValue().toString();
 
                         listofeachtrainingwaypoint.add(data);

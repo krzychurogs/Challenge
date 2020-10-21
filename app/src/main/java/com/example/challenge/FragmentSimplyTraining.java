@@ -51,6 +51,7 @@ import com.google.firebase.firestore.auth.User;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -87,6 +88,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
     static boolean rusz=false;
     private boolean running;
     private long pauseOffset;
+    List<Double>highstedaverage=new ArrayList<Double>();
 
     public interface FragmentSimplyTrainingListener{
         void onInputSent(CharSequence input);
@@ -293,6 +295,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
         secs= elapsedMillis/1000;
         final double avgspeed= (suma/secs)* km ;
+        highstedaverage.add(avgspeed);
         DecimalFormat df = new DecimalFormat("#.##");
         MSpeed.setText(""+df.format(avgspeed)+"km/h");
 
@@ -346,7 +349,9 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
 
                 historia.child("data").setValue(nowDate);
                 historia.child("predkosc").setValue(szybkosc);
-                historia.child("dystans").setValue(finalSuma);
+                DecimalFormat dfsuma = new DecimalFormat("#.##");
+                historia.child("dystans").setValue(dfsuma.format(suma));
+                    historia.child("highspeed").setValue( dfsuma.format(Collections.max(highstedaverage)));
                 Toast.makeText(getActivity().getApplicationContext(),"Dobry trening",Toast.LENGTH_SHORT).show();
                 String [] table;  //Referencja do tablicy
                 int nElems=0;

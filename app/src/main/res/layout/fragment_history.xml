@@ -11,28 +11,152 @@
         android:id="@+id/map2"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="279dp"
+        android:layout_height="226dp"
         tools:context=".FragmentHistory" />
 
-    <ImageView
-        android:id="@+id/imageView4"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="123dp"
-        android:src="@drawable/ic_directions_run_black_24dp" />
+        android:layout_height="110dp"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textdist"
+        <ImageButton
+            android:id="@+id/imageView4"
+            android:layout_width="145dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_directions_run_black_70p" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="114dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="115dp"
+            android:layout_marginTop="20dp"
+            android:clickable="false"
+            android:text="Bieganie"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/datatraintext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="-25dp"
+            android:layout_marginTop="45dp"
+            android:clickable="false"
+            android:text="data"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+
+    </FrameLayout>
+
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:textSize="28dp"
-        android:text="TextView" />
+        android:layout_height="210dp"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textspeed"
-        android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:textSize="28dp"
-        android:text="TextView" />
+        <TextView
+            android:id="@+id/lblDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="0dp"
+            android:maxLines="1"
+            android:text="Dystans"
+            android:textSize="22dp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/textDist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="35dp"
+            android:drawableLeft="@drawable/ic_timer_black_52dp"
+            android:drawablePadding="5dp"
+            android:maxLines="1"
+            android:text=""
+            android:textSize="24dp"
+
+            />
+
+
+        <TextView
+            android:id="@+id/lblSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="0dp"
+            android:maxLines="1"
+            android:text="Śr.Tempo"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="35dp"
+            android:drawableLeft="@drawable/ic_fast_forward_black_52dp"
+            android:drawablePadding="5dp"
+            android:maxLines="1"
+            android:text=""
+            android:textSize="24dp" />
+
+
+        <TextView
+            android:id="@+id/lblKalorie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="95dp"
+            android:maxLines="1"
+            android:text="Kalorie"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textKalorie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="130dp"
+            android:drawableLeft="@drawable/ic_whatshot_black_55dp"
+            android:drawablePadding="5dp"
+            android:maxLines="1"
+            android:text=""
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/lblHighSpeed"
+            android:layout_width="219dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="95dp"
+            android:maxLines="1"
+            android:text="Maks.Predkość"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textHighSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="130dp"
+            android:drawableLeft="@drawable/ic_fast_forward_black_52dp"
+            android:drawablePadding="5dp"
+            android:maxLines="1"
+            android:text=""
+            android:textSize="24dp" />
+    </FrameLayout>
 
 </LinearLayout>
