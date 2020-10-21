@@ -15,6 +15,9 @@
     <item android:id="@+id/nevAllTrainings"
         android:title="Wszystkie Treningi"
         android:icon="@drawable/ic_settings_applications_black_24dp"/>
+    <item android:id="@+id/nevAllQuest"
+        android:title="Wszystkie Zadania"
+        android:icon="@drawable/ic_settings_applications_black_24dp"/>
     <item android:id="@+id/wylogujdraw"
         android:title="Wyloguj"
         android:icon="@drawable/ic_exit_to_app_black_24dp"/>

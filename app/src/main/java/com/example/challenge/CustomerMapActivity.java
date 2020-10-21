@@ -5,7 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.ActionBar;
@@ -74,7 +77,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentHistory.FragmentHistoryListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentRoad.FragmentRoadListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CustomerMapActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentQuest.FragmentQuestListener,FragmentHistory.FragmentHistoryListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentRoad.FragmentRoadListener,OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -416,7 +419,16 @@ public class CustomerMapActivity extends FragmentActivity implements NavigationV
                 getSupportFragmentManager().beginTransaction().replace(R.id.drawer,new FragmentChoiceRoad()).commit();
                 break;
             }
+            case R.id.nevAllQuest:
+            {
 
+                FragmentManager fragmentManager= getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+                FragmentQuest fragmentQuest=new FragmentQuest();
+                fragmentTransaction.replace(R.id.drawer,fragmentQuest);
+                fragmentTransaction.commit();
+                break;
+            }
         }
         return true;
     }
