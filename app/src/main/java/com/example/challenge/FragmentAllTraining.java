@@ -64,7 +64,7 @@ public class FragmentAllTraining extends Fragment {
     ArrayList<String> listofdates = new ArrayList<String>();
     ArrayList<String> elementofdates = new ArrayList<String>();
     int counterofweekwithoutduplicates=0;
-
+    double sumaofdistance=0.0;
 
 
     public interface FragmentAllTrainingListener{
@@ -198,6 +198,7 @@ public class FragmentAllTraining extends Fragment {
                     String minutes= String.valueOf(ds.child("data").child("minutes").getValue());
                     String hours= String.valueOf(ds.child("data").child("hours").getValue());
                     String seconds= String.valueOf(ds.child("data").child("seconds").getValue());
+                    String dystans = String.valueOf(ds.child("dystans").getValue());
                     int yearinint=Integer.parseInt(years);
                     int yean=yearinint+120;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
 
@@ -207,6 +208,8 @@ public class FragmentAllTraining extends Fragment {
                     String elementofday=hours+"/"+minutes+"/"+seconds+"/"+day+"/"+month+"/"+years;
                     listofdates.add(fulldate);
                     elementofdates.add(elementofday);
+                    String dystanswithoutdot=dystans.replace(",",".");
+                    sumaofdistance+=Double.parseDouble(dystanswithoutdot);
 
                 }
 
@@ -218,6 +221,7 @@ public class FragmentAllTraining extends Fragment {
         };
 
         reff.addListenerForSingleValueEvent(valueEventListener);
+
         int ctr=0;
         TextView mTextView;
         for(int i=0;i<listofdates.size();i++)
@@ -225,7 +229,6 @@ public class FragmentAllTraining extends Fragment {
             if(isDateInCurrentWeek(convertStringToDate(listofdates.get(i)),nrofweek)==true) {
                 ctr += 1;
                 // System.out.println(ctr);
-
                 Button button = new Button(getActivity());
                 button.setLayoutParams(new LinearLayout.LayoutParams(600, 150));
                 button.setId(numberoflin + 1);
@@ -247,7 +250,7 @@ public class FragmentAllTraining extends Fragment {
                 }
                 else {
                     linearlayout.addView(button, numberoflin + max);
-             }
+                }
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -354,20 +354,44 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         });
         DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                 ("Customers").child("Road").child("pierwsza trasa");
+        String user_id = mAuth.getCurrentUser().getUid();
         if(suma>=5 && suma<10)
         {
-            road.child("pierwszycheck").setValue(avgspeed);
+            road.child("pierwszycheck").child("srednia").child(user_id).setValue(avgspeed);
+            road.child("pierwszycheck").child("dystans").child(user_id).setValue(suma);
 
         }
         else if(suma>=10)
         {
-            road.child("drugicheck").setValue(avgspeed);
+            road.child("drugicheck").child("srednia").child(user_id).setValue(avgspeed);
+            road.child("drugicheck").child("dystans").child(user_id).setValue(suma);
 
         }
 
         final double finalSuma = suma;
 
         gpsTrack.setPoints(points);
+    }
+    public void showTable()
+    {
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot snapshot : dataSnapshot.child("waypointy").getChildren()) {
+                    String data = snapshot.getValue(String.class);
+                    listofeachtrainingwaypoint.add(data);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        } ;
+        reff.addListenerForSingleValueEvent(valueEventListener);
     }
     private boolean isPointInPolygon(LatLng tap, ArrayList<LatLng> vertices) {
         int intersectCount = 0;

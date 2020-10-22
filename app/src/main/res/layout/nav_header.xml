@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="Challenge"
+        android:id="@+id/nameofuser"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 </LinearLayout>

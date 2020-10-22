@@ -42,6 +42,7 @@ public class QuizActivity extends AppCompatActivity {
         r=new Random();
         question = findViewById(R.id.question);
 
+
         updateQuestion(0);
 
             answer1.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +102,7 @@ public class QuizActivity extends AppCompatActivity {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Historia").child(user_id).child("level");
                 ref.setValue("wysoki lvl");
+        System.out.println(user_id);
 
 
     }

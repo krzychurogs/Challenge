@@ -21,11 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class CustomerLoginActivity extends AppCompatActivity implements FragmentHistory.FragmentHistoryListener {
+public class CustomerRegisterActivity extends AppCompatActivity implements FragmentHistory.FragmentHistoryListener {
 
-    private EditText mEmail, mPassword;
+    private EditText mEmail, mPassword,mrPassword,mName;
 
-    private Button mLogin, mRegistration,MLogout;
+    private Button mRegistration,MLogout;
     DatabaseReference reff;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
@@ -33,7 +33,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_login);
+        setContentView(R.layout.activity_customer_register2);
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         final DatabaseReference mRef=database.getReference("sim");
 
@@ -53,7 +53,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("level").exists())
                             {
-                                Intent intent = new Intent(CustomerLoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(CustomerRegisterActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                                 return;
@@ -65,7 +65,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
 
                         }
                     });
-                    Intent intent = new Intent(CustomerLoginActivity.this, QuizActivity.class);
+                    Intent intent = new Intent(CustomerRegisterActivity.this, QuizActivity.class);
                     startActivity(intent);
                     finish();
                     return;
@@ -76,43 +76,28 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
 
         mEmail = (EditText) findViewById(R.id.et_email);
         mPassword = (EditText) findViewById(R.id.et_password);
-
-        mLogin = (Button) findViewById(R.id.btn_login);
-        mRegistration = (Button) findViewById(R.id.btn_register);
-
-
-        mRegistration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CustomerLoginActivity.this, CustomerRegisterActivity.class);
-                startActivity(intent);
-                finish();
-                return;
-            }
-        });
-        mLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
+        mName= (EditText) findViewById(R.id.et_name);
+        mrPassword= (EditText) findViewById(R.id.et_repassword);
+        mRegistration = (Button) findViewById(R.id.registration);
+        mRegistration.setOnClickListener(new View.OnClickListener() {@Override
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerRegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
-                            Toast.makeText(CustomerLoginActivity.this, "Logowanie sie nie powiodło", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CustomerRegisterActivity.this, "Rejestracja sie nie powiodla", Toast.LENGTH_SHORT).show();
+                        }else{
+                            String user_id = mAuth.getCurrentUser().getUid();
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+                            current_user_db.setValue(mName.getText().toString());
                         }
-
                     }
                 });
-
             }
         });
-
-
-
     }
-
-
     @Override
     protected void onStart() {
         super.onStart();

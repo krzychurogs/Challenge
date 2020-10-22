@@ -40,3 +40,4 @@ dependencies {
     implementation 'com.tokopedia.tkpdlib:expandableoption:0.7.2'
 
 }
+apply plugin: 'com.google.gms.google-services'
