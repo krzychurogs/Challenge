@@ -5,18 +5,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +51,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
 
@@ -53,9 +62,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
     DatabaseReference reff;
+    Query reffname;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -64,7 +75,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     Location flocation;
     private FragmentRoadListener listener;
     Button next,back;
-    TextView textdistance,textspeed;
+    TextView textdistance,textspeed,kalorie;
+    TextView labeldistance,labelspeed,labelkalorie,labelczas;
+    TextView nicksrednia,dystanscheckpoint;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
     List<String>distancelist=new ArrayList<String>();
@@ -80,10 +93,20 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     TextToSpeech textToSpeech;
     ImageButton MEnd;
     ImageButton mStopTime;
-    ImageButton MStart;
+    ImageButton MStart,MRefreshButton,MSort;
     static boolean rusz=false;
+    TableLayout tl;
     private boolean running;
     private long pauseOffset;
+    List<String>listofname=new ArrayList<String>();
+    TableLayout t1;
+    boolean dodaneDoBazy=false;
+
+
+
+
+
+    int textlength = 0;
 
     public interface FragmentRoadListener{
         void onInputSent(CharSequence input);
@@ -99,13 +122,27 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MStart=(ImageButton)root.findViewById(R.id.start);
         MDistance=(TextView)root.findViewById(R.id.distance);
         mStopTime=(ImageButton)root.findViewById(R.id.stoptime) ;
+        MSort=(ImageButton)root.findViewById(R.id.refsortbutton) ;
         MSpeed=(TextView)root.findViewById(R.id.speed);
+        MRefreshButton=(ImageButton)root.findViewById(R.id.refreshbutton);
+        kalorie=(TextView)root.findViewById(R.id.kalorie);
+        tl = (TableLayout) root.findViewById(R.id.main_table);
         MEnd=(ImageButton)root.findViewById(R.id.end);
+        nicksrednia=(TextView)root.findViewById(R.id.twojnick);
+        labeldistance=(TextView)root.findViewById(R.id.dystanslabel);
+        labelspeed=(TextView)root.findViewById(R.id.speedlabel);
+        labelkalorie=(TextView)root.findViewById(R.id.kalorielabel);
+        dystanscheckpoint=(TextView)root.findViewById(R.id.twojdystans);
+        labelczas=(TextView)root.findViewById(R.id.czaslabel);
         chronometer = root.findViewById(R.id.czas);
         chronometer.setFormat("%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
         mStopTime.setVisibility(View.GONE);
         MEnd.setVisibility(View.GONE);
+        nicksrednia.setVisibility(View.INVISIBLE);
+        dystanscheckpoint.setVisibility(View.INVISIBLE);
+        MSort.setVisibility(View.INVISIBLE);
+        tl.setVisibility(View.INVISIBLE );
         mStopTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,10 +187,32 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 }
             }
         });
+        reffname= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        ValueEventListener valueEventListener1 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = dataSnapshot.child("name").getValue(String.class);
+                    listofname.add(name);
+                    // imie po id
 
+                }
+
+                takeWaypoints();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        } ;
+        reffname.addListenerForSingleValueEvent(valueEventListener1);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
+
+
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -297,8 +356,30 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
             String user_id = mAuth.getCurrentUser().getUid();
         }
-    }
 
+    }
+    public void takeWaypoints()
+    {
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot snapshot : dataSnapshot.child("waypointy").getChildren()) {
+                    String data = snapshot.getValue(String.class);
+                    listofeachtrainingwaypoint.add(data);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        } ;
+        reff.addListenerForSingleValueEvent(valueEventListener);
+    }
     private void updateTrack() {
         final List<LatLng> points = gpsTrack.getPoints();
 
@@ -352,36 +433,145 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 }
             }
         });
-        DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                ("Customers").child("Road").child("pierwsza trasa");
+
         String user_id = mAuth.getCurrentUser().getUid();
-        if(suma>=5 && suma<10)
+
+
+
+        if(suma>=5 && suma<10 && dodaneDoBazy==false)
         {
-            road.child("pierwszycheck").child("srednia").child(user_id).setValue(avgspeed);
-            road.child("pierwszycheck").child("dystans").child(user_id).setValue(suma);
+
+                MSort.setVisibility(View.VISIBLE);
+                DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
+                        ("Customers").child("Road").child("pierwsza trasa").child("pierwszycheck").push();
+                //  road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
+                road.child("name").setValue(listofname.get(0));
+                road.child("dystans").setValue(100);
+                DecimalFormat dfs = new DecimalFormat("#.##");
+
+                road.child("srednia").setValue(dfs.format(avgspeed));
+                String pierwszycheck="pierwszycheck";
+                dodaneDoBazy=true;
+                 showTable(pierwszycheck,dfs.format(avgspeed));
 
         }
-        else if(suma>=10)
+        else if(suma>=10 && dodaneDoBazy==false)
         {
-            road.child("drugicheck").child("srednia").child(user_id).setValue(avgspeed);
-            road.child("drugicheck").child("dystans").child(user_id).setValue(suma);
+            //  showTable();
+            MSort.setVisibility(View.VISIBLE);
+            DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
+                    ("Customers").child("Road").child("pierwsza trasa").child("drugicheck").push();
+            road.child("name").setValue(listofname.get(0));
+            //road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
+            DecimalFormat dfs = new DecimalFormat("#.##");
+            road.child("srednia").setValue(dfs.format(avgspeed));
+            road.child("dystans").setValue(200);
+            String drugicheck="drugicheck";
+            dodaneDoBazy=true;
+            showTable(drugicheck,dfs.format(avgspeed));
 
         }
 
         final double finalSuma = suma;
 
+
+        MRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MSort.setVisibility(View.VISIBLE);
+                MRefreshButton.setVisibility(View.INVISIBLE);
+                tl.setVisibility(View.VISIBLE);
+                showvisibledata();
+                if(MSort.getVisibility() == View.VISIBLE) {
+
+                }
+                else if(MRefreshButton.getVisibility() == View.INVISIBLE)
+                {
+
+                }
+            }
+        });
+        MSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showvisbilityscore();
+                MSort.setVisibility(View.INVISIBLE);
+                MRefreshButton.setVisibility(View.VISIBLE);
+                if(MRefreshButton.getVisibility() == View.VISIBLE) {
+
+                }
+                else if(MSort.getVisibility() == View.INVISIBLE)
+                {
+
+                }
+            }
+        });
+
         gpsTrack.setPoints(points);
+
+
     }
-    public void showTable()
+    public void showTable(String check,final String avgcheck)
     {
-        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
+        tl.refreshDrawableState();
+        tl.invalidate();
+        tl.removeAllViews();
+
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffname= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa")
+                .child(check).orderByChild("srednia").limitToFirst(6);
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot snapshot : dataSnapshot.child("waypointy").getChildren()) {
-                    String data = snapshot.getValue(String.class);
-                    listofeachtrainingwaypoint.add(data);
+                int count=0;
+                TableRow row= new TableRow(getActivity());
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                row.setLayoutParams(lp);
+                row= new TableRow(getActivity());
+                lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                row.setLayoutParams(lp);
+                TextView tdate = new TextView(getActivity());
+                TextView tweight = new TextView(getActivity());
+                tdate = new TextView(getActivity());
+                tweight = new TextView(getActivity());
+                tdate.setText("imie");
+                tdate.setPadding(3, 3, 3, 3);
+                tweight.setText("średnia");
+                tweight.setPadding(3, 3, 3, 3);
+                row.addView(tdate);
+                row.addView(tweight);
+                tl.addView(row,0 );
+                count=1;
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    String name =    String.valueOf(ds.child("name").getValue() );
+                    String srednia =  String.valueOf(ds.child("srednia").getValue());
+                    String dystans =  String.valueOf(ds.child("dystans").getValue());
+
+                    row= new TableRow(getActivity());
+                    lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                    row.setLayoutParams(lp);
+                    tdate = new TextView(getActivity());
+                    tweight = new TextView(getActivity());
+                    System.out.println("listname"+listofname.get(0));
+
+                    row= new TableRow(getActivity());
+                    lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                    if(listofname.get(0).equals(name))
+                    {
+                        nicksrednia.setTypeface(null, Typeface.BOLD);
+                        nicksrednia.setText("Twoja Srednia"+" "+avgcheck);
+                        dystanscheckpoint.setText("Dystans "+dystans);
+                    }
+                    tdate.setText(name);
+                    tdate.setPadding(3, 3, 3, 3);
+                    tweight.setText(srednia);
+                    tweight.setPadding(3, 3, 3, 3);
+                    row.addView(tdate);
+                    row.addView(tweight);
+                    tl.addView(row,1);
 
                 }
             }
@@ -391,7 +581,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
             }
         } ;
-        reff.addListenerForSingleValueEvent(valueEventListener);
+        reffname.addListenerForSingleValueEvent(valueEventListener);
+
+
     }
     private boolean isPointInPolygon(LatLng tap, ArrayList<LatLng> vertices) {
         int intersectCount = 0;
@@ -487,6 +679,36 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             running = false;
         }
     }
+    public void showvisbilityscore()
+    {
+        MDistance.setVisibility(View.INVISIBLE);
+        MSpeed.setVisibility(View.INVISIBLE);
+        chronometer.setVisibility(View.INVISIBLE);
+        labelkalorie.setVisibility(View.INVISIBLE);
+        labelspeed.setVisibility(View.INVISIBLE);
+        nicksrednia.setVisibility(View.VISIBLE);
+        labeldistance.setVisibility(View.INVISIBLE);
+        dystanscheckpoint.setVisibility(View.VISIBLE);
+        kalorie.setVisibility(View.INVISIBLE);
+        labelczas.setVisibility(View.INVISIBLE);
+        tl.setVisibility(View.VISIBLE);
+    }
+    public void showvisibledata()
+    {
+        MDistance.setVisibility(View.VISIBLE);
+        MSpeed.setVisibility(View.VISIBLE);
+        chronometer.setVisibility(View.VISIBLE);
+        labelkalorie.setVisibility(View.VISIBLE);
+        labelspeed.setVisibility(View.VISIBLE);
+        labeldistance.setVisibility(View.VISIBLE);
+        kalorie.setVisibility(View.VISIBLE);
+        labelczas.setVisibility(View.VISIBLE);
+        nicksrednia.setVisibility(View.INVISIBLE);
+        dystanscheckpoint.setVisibility(View.INVISIBLE);
+        tl.setVisibility(View.INVISIBLE);
+    }
+
+
 
 
 }

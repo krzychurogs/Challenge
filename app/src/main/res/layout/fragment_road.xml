@@ -25,7 +25,6 @@ android:orientation="vertical">
         android:orientation="horizontal"
         android:background="@drawable/dotted_border">
 
-
         <TextView
             android:id="@+id/speed"
             android:layout_width="wrap_content"
@@ -76,6 +75,8 @@ android:orientation="vertical">
 
             /><![CDATA[
         />
+
+
         ]]>
 
         <TextView
@@ -119,6 +120,35 @@ android:orientation="vertical">
             />
         />
 
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:stretchColumns="0,1"
+            android:id="@+id/main_table" android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="match_parent">
+
+
+
+
+        </TableLayout>
+        <TextView
+            android:id="@+id/twojnick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Dystans"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:text="Dystans"
+            android:layout_marginTop="150dp"
+            android:visibility="visible" />
+        <TextView
+            android:id="@+id/twojdystans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Dystans"
+            android:textColor="#000000"
+            android:textSize="15dp"
+            android:text="Dystans"
+            android:layout_marginTop="120dp"
+            android:visibility="visible" />
         <TextView
             android:id="@+id/dystanslabel"
             android:layout_width="wrap_content"
@@ -132,6 +162,25 @@ android:orientation="vertical">
 
             />
 
+        <ImageButton
+            android:id="@+id/refreshbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="47dp"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="270dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_refresh_black_48dp"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/refsortbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="47dp"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="270dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_sort_black_48dp"
+            android:visibility="invisible" />
     </FrameLayout>
 
     <FrameLayout
@@ -146,6 +195,8 @@ android:orientation="vertical">
             android:layout_width="match_parent"
             android:layout_height="631dp"
             tools:context=".MainActivity" />
+
+
         <ImageButton
             android:id="@+id/stoptime"
             android:layout_width="wrap_content"

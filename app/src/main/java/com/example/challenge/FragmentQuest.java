@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,7 +55,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FragmentQuest extends Fragment {
-    DatabaseReference reff;
+    DatabaseReference reff,reffname;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -61,6 +64,7 @@ public class FragmentQuest extends Fragment {
     Location flocation;
     private FragmentQuestListener listener;
     Button next,back;
+    TableLayout tl;
     TextView textdistance,textspeed;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
@@ -88,6 +92,7 @@ public class FragmentQuest extends Fragment {
         String user_id = mAuth.getCurrentUser().getUid();
         final View root = inflater.inflate(R.layout.fragment_fragment_quest, container, false);
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -142,6 +147,7 @@ public class FragmentQuest extends Fragment {
                 }
 
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
