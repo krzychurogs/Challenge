@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -59,6 +61,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
      public static int counttrain;
 
 
+
     public interface FragmentHistoryListener{
         void onInputSent(CharSequence input);
     }
@@ -90,6 +93,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         datahisttext= (TextView)  root.findViewById(R.id.datatraintext);
         next=(Button)root.findViewById(R.id.nextTraining);
         back=(Button)root.findViewById(R.id.backTraining);
+
         final MainActivity count=(MainActivity)getActivity();
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()

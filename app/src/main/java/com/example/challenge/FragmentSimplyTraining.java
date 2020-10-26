@@ -325,7 +325,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 String user_id = mAuth.getCurrentUser().getUid();
                 DecimalFormat df = new DecimalFormat("#.##");
 
-                String szybkosc= df.format(avgspeed).toString();
+                               String szybkosc= df.format(avgspeed).toString();
                 DatabaseReference historia = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Historia").child(user_id).child("historia").push();
                 historia.setValue("test");

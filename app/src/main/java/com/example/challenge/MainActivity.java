@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentRoad.FragmentRoadListener, FragmentQuest.FragmentQuestListener,FragmentHistory.FragmentHistoryListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentSimplyTraining.FragmentSimplyTrainingListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentFriends.FragmentFriendsListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentRoad.FragmentRoadListener, FragmentQuest.FragmentQuestListener,FragmentHistory.FragmentHistoryListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentSimplyTraining.FragmentSimplyTrainingListener {
     private DrawerLayout drawer;
     DatabaseReference reff;
     private FirebaseAuth mAuth;
@@ -101,6 +101,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_Quest:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new FragmentQuest()).commit();
+                break;
+            case R.id.nav_Friends:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new FragmentFriends()).commit();
                 break;
             case R.id.nav_Logout:
                 FirebaseAuth.getInstance().signOut();

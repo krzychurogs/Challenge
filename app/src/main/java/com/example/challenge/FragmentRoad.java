@@ -65,7 +65,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
-    DatabaseReference reff;
+    DatabaseReference reff,reffs;
     Query reffname;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
@@ -77,7 +77,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     Button next,back;
     TextView textdistance,textspeed,kalorie;
     TextView labeldistance,labelspeed,labelkalorie,labelczas;
-    TextView nicksrednia,dystanscheckpoint;
+    TextView nicksrednia,dystanscheckpoint,nickfriend;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
     List<String>distancelist=new ArrayList<String>();
@@ -99,8 +99,11 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     private boolean running;
     private long pauseOffset;
     List<String>listofname=new ArrayList<String>();
+    List<String>listoffriendname=new ArrayList<String>();
     TableLayout t1;
     boolean dodaneDoBazy=false;
+    boolean dodaneDoBazy1=false;
+
 
 
 
@@ -129,6 +132,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         tl = (TableLayout) root.findViewById(R.id.main_table);
         MEnd=(ImageButton)root.findViewById(R.id.end);
         nicksrednia=(TextView)root.findViewById(R.id.twojnick);
+        nickfriend=(TextView)root.findViewById(R.id.twojfriend);
         labeldistance=(TextView)root.findViewById(R.id.dystanslabel);
         labelspeed=(TextView)root.findViewById(R.id.speedlabel);
         labelkalorie=(TextView)root.findViewById(R.id.kalorielabel);
@@ -140,6 +144,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         mStopTime.setVisibility(View.GONE);
         MEnd.setVisibility(View.GONE);
         nicksrednia.setVisibility(View.INVISIBLE);
+        nickfriend.setVisibility(View.INVISIBLE);
         dystanscheckpoint.setVisibility(View.INVISIBLE);
         MSort.setVisibility(View.INVISIBLE);
         tl.setVisibility(View.INVISIBLE );
@@ -198,6 +203,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     // imie po id
 
                 }
+                showFriend();
 
                 takeWaypoints();
             }
@@ -455,7 +461,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                  showTable(pierwszycheck,dfs.format(avgspeed));
 
         }
-        else if(suma>=10 && dodaneDoBazy==false)
+         if(suma>=10 && dodaneDoBazy1==false)
         {
             //  showTable();
             MSort.setVisibility(View.VISIBLE);
@@ -467,7 +473,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             road.child("srednia").setValue(dfs.format(avgspeed));
             road.child("dystans").setValue(200);
             String drugicheck="drugicheck";
-            dodaneDoBazy=true;
+            dodaneDoBazy1=true;
             showTable(drugicheck,dfs.format(avgspeed));
 
         }
@@ -559,11 +565,17 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                     row= new TableRow(getActivity());
                     lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+
                     if(listofname.get(0).equals(name))
                     {
                         nicksrednia.setTypeface(null, Typeface.BOLD);
                         nicksrednia.setText("Twoja Srednia"+" "+avgcheck);
                         dystanscheckpoint.setText("Dystans "+dystans);
+                    }
+                    if(listoffriendname.get(0).equals(name))
+                    {
+                        nickfriend.setTypeface(null, Typeface.BOLD);
+                        nickfriend.setText("Srednia "+listoffriendname.get(0)+" "+srednia);
                     }
                     tdate.setText(name);
                     tdate.setPadding(3, 3, 3, 3);
@@ -687,6 +699,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         labelkalorie.setVisibility(View.INVISIBLE);
         labelspeed.setVisibility(View.INVISIBLE);
         nicksrednia.setVisibility(View.VISIBLE);
+        nickfriend.setVisibility(View.VISIBLE);
         labeldistance.setVisibility(View.INVISIBLE);
         dystanscheckpoint.setVisibility(View.VISIBLE);
         kalorie.setVisibility(View.INVISIBLE);
@@ -704,10 +717,33 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         kalorie.setVisibility(View.VISIBLE);
         labelczas.setVisibility(View.VISIBLE);
         nicksrednia.setVisibility(View.INVISIBLE);
+        nickfriend.setVisibility(View.INVISIBLE);
         dystanscheckpoint.setVisibility(View.INVISIBLE);
         tl.setVisibility(View.INVISIBLE);
     }
+    public void showFriend()
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffs= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("friends");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String namefriend =  String.valueOf(ds.getKey());
+                    listoffriendname.add(namefriend);
 
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffs.addListenerForSingleValueEvent(valueEventListener);
+    }
 
 
 
