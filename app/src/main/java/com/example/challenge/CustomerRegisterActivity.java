@@ -90,7 +90,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Fragm
                             Toast.makeText(CustomerRegisterActivity.this, "Rejestracja sie nie powiodla", Toast.LENGTH_SHORT).show();
                         }else{
                             String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("name");
                             current_user_db.setValue(mName.getText().toString());
                         }
                     }

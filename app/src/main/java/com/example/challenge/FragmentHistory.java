@@ -51,6 +51,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     Location flocation;
     private FragmentHistoryListener listener;
     Button next,back;
+    Button backtoall;
     TextView textdistance,textspeed,texthighspeed,textkalorie,datahisttext;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();
@@ -92,7 +93,8 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         texthighspeed= (TextView)  root.findViewById(R.id.textHighSpeed);
         datahisttext= (TextView)  root.findViewById(R.id.datatraintext);
         next=(Button)root.findViewById(R.id.nextTraining);
-        back=(Button)root.findViewById(R.id.backTraining);
+        backtoall=(Button)root.findViewById(R.id.backtoall);
+
 
         final MainActivity count=(MainActivity)getActivity();
 

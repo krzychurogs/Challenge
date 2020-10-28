@@ -295,9 +295,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     @Override
     public void onLocationChanged(Location location) {
         Polygon polygon = mMap.addPolygon(new PolygonOptions()
-                .add(new LatLng(50.03,21.9987751), new LatLng(50.0227154,21.9997975), new LatLng(50.002724,21.9927758), new LatLng(50.022724,21.9527758))
+                .add(new LatLng(50.019432, 21.994719), new LatLng(50.023823, 21.995047), new LatLng(50.024486, 21.988947), new LatLng(50.021395, 21.986917))
                 .strokeColor(Color.RED)
-                .fillColor(Color.YELLOW));
+                .fillColor(Color.GRAY));
         if(rusz==true) {
 
 
@@ -423,28 +423,32 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         DecimalFormat df = new DecimalFormat("#.##");
         MSpeed.setText(""+df.format(avgspeed)+"km/h");
 
-        textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status!= TextToSpeech.ERROR)
-                {
-                    textToSpeech.setLanguage(new Locale("pl", "PL"));
+        if(suma>100)
+        {
+            textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(status!= TextToSpeech.ERROR)
+                    {
+                        textToSpeech.setLanguage(new Locale("pl", "PL"));
 
-                    DecimalFormat df = new DecimalFormat("0") ;
-                    String text=String.valueOf(df.format(suma)+"metrów");
-                    textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
+                        DecimalFormat df = new DecimalFormat("0") ;
+                        String text=String.valueOf(df.format(suma)+"metrów");
+                        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 
 
 
+                    }
                 }
-            }
-        });
+            });
+        }
+
 
         String user_id = mAuth.getCurrentUser().getUid();
 
 
 
-        if(suma>=5 && suma<10 && dodaneDoBazy==false)
+        if(suma>=100 && suma<200 && dodaneDoBazy==false)
         {
 
                 MSort.setVisibility(View.VISIBLE);
@@ -461,7 +465,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                  showTable(pierwszycheck,dfs.format(avgspeed));
 
         }
-         if(suma>=10 && dodaneDoBazy1==false)
+         if(suma>=200 && dodaneDoBazy1==false)
         {
             //  showTable();
             MSort.setVisibility(View.VISIBLE);

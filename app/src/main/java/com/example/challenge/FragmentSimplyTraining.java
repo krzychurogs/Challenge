@@ -9,6 +9,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,7 +102,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         String user_id = mAuth.getCurrentUser().getUid();
 
 
-        final View root = inflater.inflate(R.layout.fragment_road, container, false);
+        final View root = inflater.inflate(R.layout.fragment_fragment_simply_training, container, false);
         MStart=(ImageButton)root.findViewById(R.id.start);
         MDistance=(TextView)root.findViewById(R.id.distance);
         mStopTime=(ImageButton)root.findViewById(R.id.stoptime) ;
@@ -240,7 +242,8 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
             mLastLocation = location;
             LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17 ));
             String userid= FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference ref= FirebaseDatabase.getInstance().getReference("userAvailable");
             GeoFire geoFire=new GeoFire(ref);
@@ -289,7 +292,8 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         //   System.out.println(i+"dystans to"+distance[0]);
         // System.out.println(i+"suma to"+suma);
         DecimalFormat dfsuma = new DecimalFormat("#.##");
-        MDistance.setText(""+dfsuma.format(suma)+"m");
+        DecimalFormat dfsumam = new DecimalFormat("#.#");
+        MDistance.setText(""+dfsumam.format(suma)+"m");
         double km= 3.6;
 
         int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
@@ -297,24 +301,30 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         final double avgspeed= (suma/secs)* km ;
         highstedaverage.add(avgspeed);
         DecimalFormat df = new DecimalFormat("#.##");
-        MSpeed.setText(""+df.format(avgspeed)+"km/h");
+        SpannableStringBuilder text = new SpannableStringBuilder();
+        text.append(df.format(avgspeed));
+        text.append(Html.fromHtml("<sup>km</sup>/<sub>h</sub>"));
+        MSpeed.setText(text);
+        if(suma>100)
+        {
+            textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(status!= TextToSpeech.ERROR)
+                    {
+                        textToSpeech.setLanguage(new Locale("pl", "PL"));
+                        DecimalFormat df = new DecimalFormat("0") ;
+                        String text=String.valueOf(df.format(avgspeed)+"kilometrów na godzine");
+                        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 
-        textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status!= TextToSpeech.ERROR)
-                {
-                    textToSpeech.setLanguage(new Locale("pl", "PL"));
-
-                    DecimalFormat df = new DecimalFormat("0") ;
-                    String text=String.valueOf(df.format(suma)+"metrów");
-                    textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
-
-
-
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
+
+
 
         final double finalSuma = suma;
         MEnd.setOnClickListener(new View.OnClickListener() {

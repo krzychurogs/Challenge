@@ -77,11 +77,13 @@ public class FragmentChoiceRoad extends Fragment {
 
         final View root = inflater.inflate(R.layout.fragment_fragment_choice_road, container, false);
         next=(Button)root.findViewById(R.id.nextTraining);
-        back=(Button)root.findViewById(R.id.backTraining);
+        final Bundle bundle=new Bundle();
+        bundle.putString("number","pierwszatrasa");
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentRoad roadfragment=new FragmentRoad();
+                roadfragment.setArguments(bundle);
                 FragmentTransaction transaction=getFragmentManager().beginTransaction();
                 transaction.replace(R.id.drawer_layout,roadfragment);
                 transaction.commit();

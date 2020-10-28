@@ -212,14 +212,14 @@ public void stats()
             for (int i = 0; i < distancelist.size(); i++) {
 
 
-                if(calendar(listofdates.get(i))== 43)
+                if(calendar(listofdates.get(i))== 44)
                 {
 
                     sumaofdistancefir+=Double.valueOf(distancelist.get(i).replace(",","."));
                     avgofdistancefir+=Double.valueOf(averagelist.get(i).replace(",","."));
                     counteroffirweek+=1;
                 }
-                if(calendar(listofdates.get(i))== 42)
+                if(calendar(listofdates.get(i))== 43)
                 {
 
                     sumaofdistancedw+=Double.valueOf(distancelist.get(i).replace(",","."));
