@@ -40,6 +40,8 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,33 +57,26 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class FragmentQuest extends Fragment {
     DatabaseReference reff,reffname,refquest;
     private FirebaseAuth mAuth;
-    private GoogleMap mMap;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    LocationRequest mLocationRequest;
-    Location flocation;
     private FragmentQuestListener listener;
-    Button next,back;
     TableLayout tl;
-    TextView textdistance,textspeed;
-    private LatLng lastKnownLatLng;
-    List<String>listofplace=new ArrayList<String>();
     List<String>distancelist=new ArrayList<String>();
     List<String>averagelist=new ArrayList<>();
     private Polyline gpsTrack;
     ArrayList<Integer> newList = new ArrayList<Integer>();//lista tygodni bez duplikatow
-    List<String>speedlist=new ArrayList<String>();
-    List<String>listofeachtrainingwaypoint=new ArrayList<>();
     public static int counttrain;
     List<LatLng> points ;
     ArrayList<String> listofdates = new ArrayList<String>();
@@ -89,15 +84,29 @@ public class FragmentQuest extends Fragment {
     List<Integer>licznik=new ArrayList<>();
     List<Integer>counterofweek=new ArrayList<>();
     List<String>listofsameweek=new ArrayList<>();
+    List<String>listofuniqdates=new ArrayList<>();
     List<String>listofdistancequest=new ArrayList<>();
     List<String>listofcounttrainquest=new ArrayList<>();
     List<String>listofaveragequest=new ArrayList<>();
     List<Double>listofmaxdistancefromweek=new ArrayList<>();
     List<Double>listofmaxavgfromweek=new ArrayList<>();
     List<Integer>listofnumberofromweek=new ArrayList<>();
+    List<Integer>listofweeksinyear=new ArrayList<>();
+    Map<Integer, Double> distanceinweek = new TreeMap<>();
+    Map<String, Double> distanceinday = new TreeMap<>();
+    ListMultimap<String, Double> m = MultimapBuilder.hashKeys().linkedListValues().build(); //multimap for distance
+    ListMultimap<String, Double> multimapavgday = MultimapBuilder.hashKeys().linkedListValues().build(); //multimap for distance
+    List<Double>listofmaxdistancefromday=new ArrayList<>();
+    List<Double>listofmaxavgfromday=new ArrayList<>();
+
+    Map<Integer, Double> avginweek = new TreeMap<>();
+
+    double sumaofdistanceday=0.0;
     double sumaofdistancefir=0.0;
     double sumaofdistancedw=0.0;
     double finalsumaofdistance=0.0;
+    double finaldistanceday=0.0;
+    double finalavgday=0.0;
     double finalavgofdistance=0.0;
     int finalnumberoftrain=0;
     double avgofdistancefir=0.0;
@@ -126,8 +135,9 @@ public class FragmentQuest extends Fragment {
         linearavg= (LinearLayout)  root.findViewById(R.id.linearforavg);
         linearcount= (LinearLayout)  root.findViewById(R.id.linearforcount);
         linearvertical=(LinearLayout)  root.findViewById(R.id.linearquest);
-        lineardayavg= (LinearLayout)    root.findViewById(R.id.linearforavg);
+        lineardayavg= (LinearLayout)    root.findViewById(R.id.linearfordayavg);
         lineardaydist= (LinearLayout)   root.findViewById(R.id.linearfordaydist);
+
         refquest=FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Questy").child("Easy").child("tygodniowe");
 
         refquest.addValueEventListener(new ValueEventListener() {
@@ -151,6 +161,10 @@ public class FragmentQuest extends Fragment {
               listofcounttrainquest.add(firstlvlcountt);
               listofcounttrainquest.add(secondlvlcountt);
               listofcounttrainquest.add(thirdlvlcountt);
+                for(int i=0;i<53;i++)
+                {
+                    listofweeksinyear.add(i);
+                }
                 stats();
             }
 
@@ -168,7 +182,6 @@ public class FragmentQuest extends Fragment {
 public void stats()
 {
     String user_id = mAuth.getCurrentUser().getUid();
-
     reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
     ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
@@ -198,48 +211,98 @@ public void stats()
                 distancelist.add(dystans);
                 averagelist.add(predkosc);
                 counter.add(calendar(fulldate));
-                // Display the view
-
+                m.put(fulldate,Double.valueOf(dystans.replace(",",".")));
+                multimapavgday.put(fulldate,Double.valueOf(predkosc.replace(",",".")));
             }
-
             Set<Integer> unique = new HashSet<Integer>(counter);
             for (Integer key : unique) {
                 licznik.add(key);
                 counterofweek.add(Collections.frequency(counter, key));
             }
             int counteroffirweek=0;
-            int counterofsecrweek=0;
-            for (int i = 0; i < distancelist.size(); i++) {
 
 
-                if(calendar(listofdates.get(i))== 44)
-                {
-
-                    sumaofdistancefir+=Double.valueOf(distancelist.get(i).replace(",","."));
-                    avgofdistancefir+=Double.valueOf(averagelist.get(i).replace(",","."));
-                    counteroffirweek+=1;
+            /*
+             * count avg from each day
+             * */
+            Set<String> keys1 = m.keySet();
+            for (String keyprint : keys1) {
+                // System.out.println("Key = " + keyprint);
+                Collection<Double> values = multimapavgday.get(keyprint);
+                double simplydayavg=0.0;
+                int counter=0;
+                for(Double value : values){
+                    simplydayavg+=value;
+                    counter+=1;
+                    // System.out.println("Value= "+ value);
                 }
-                if(calendar(listofdates.get(i))== 43)
-                {
-
-                    sumaofdistancedw+=Double.valueOf(distancelist.get(i).replace(",","."));
-                    avgofdistancesec+=Double.valueOf(averagelist.get(i).replace(",","."));
-                    counterofsecrweek+=1;
-
-                }
-                listofmaxavgfromweek.add(avgofdistancefir);
-                listofmaxavgfromweek.add(avgofdistancesec);
-                listofmaxdistancefromweek.add(sumaofdistancefir);
-                listofmaxdistancefromweek.add(sumaofdistancedw);
-                listofnumberofromweek.add(counteroffirweek);
-                listofnumberofromweek.add(counterofsecrweek);
+                listofmaxavgfromday.add(simplydayavg/counter);
+                simplydayavg=0.0;
+                counter=0;
             }
-            finalsumaofdistance=Collections.max(listofmaxdistancefromweek);
-            finalavgofdistance=Collections.max(listofmaxdistancefromweek)/counteroffirweek;
-            finalnumberoftrain=Collections.max(listofnumberofromweek);
-            System.out.println("max "+finalsumaofdistance);
-            System.out.println("43 "+sumaofdistancefir);
-            System.out.println("42 "+sumaofdistancedw);
+
+            /*
+            * count distance from each day
+            * */
+            Set<String> keys = m.keySet();
+            for (String keyprint : keys) {
+               // System.out.println("Key = " + keyprint);
+                Collection<Double> values = m.get(keyprint);
+                double simplyday=0.0;
+                for(Double value : values){
+                    simplyday+=value;
+                   // System.out.println("Value= "+ value);
+                }
+                listofmaxdistancefromday.add(simplyday);
+                simplyday=0.0;
+            }
+
+                for (int i = 0; i < licznik.size(); i++) {
+
+                for(int j=0;j<distancelist.size();j++)
+                {
+                    if(calendar(listofdates.get(j))== licznik.get(i))
+                    {
+                        sumaofdistancefir+=Double.valueOf(distancelist.get(j).replace(",","."));
+                        avgofdistancefir+=Double.valueOf(averagelist.get(j).replace(",","."));
+                        counteroffirweek+=1;
+                        distanceinweek.put(licznik.get(i),sumaofdistancefir);
+                        listofnumberofromweek.add(counteroffirweek);
+                    }
+                    if(counteroffirweek !=0)
+                    {
+                        double maxavg=avgofdistancefir/counteroffirweek;
+                        listofmaxavgfromweek.add(maxavg);
+                    }
+                }
+
+                counteroffirweek=0;
+                avgofdistancefir=0;
+                sumaofdistancefir=0;
+            }
+
+            Set<Integer> keySet = distanceinweek.keySet();
+          //  System.out.println("Klucze:\n" + keySet);
+            Collection<Double> values = distanceinweek.values();
+           // System.out.println("Wartości:\n" + values);
+            double max = Collections.max(distanceinweek.values());
+            double finaldist=0; //maksymalny dystans w tygodniu
+            Set<Map.Entry<Integer,Double>> entrySet = distanceinweek.entrySet();
+            for(Map.Entry<Integer, Double> entry: entrySet) {
+                if (entry.getValue()==max) {
+                    finaldist=entry.getValue();
+                }
+              //  System.out.println(entry.getKey() + " : " + entry.getValue());
+            }
+          //  System.out.println("Wynik:\n" + finaldist);
+
+            finalavgofdistance=Collections.max(listofmaxavgfromweek);//maksymalna srednia tygodniowa z listy
+            finalnumberoftrain=Collections.max(listofnumberofromweek);// maksymalna liczba treningow w tygodniu
+            finaldistanceday=Collections.max(listofmaxdistancefromday);
+            finalavgday=Collections.max(listofmaxavgfromday);
+
+
+
             TextView distancequest = new TextView(getActivity());
             TextView avgquest = new TextView(getActivity());
             TextView counttrainquest = new TextView(getActivity());
@@ -277,7 +340,7 @@ public void stats()
             DecimalFormat dfsuma = new DecimalFormat("#.##");
 
             checkdistance.setLayoutParams(layoutParamscheck);
-            checkdistance.setText(dfsuma.format(finalsumaofdistance)+"m.");
+            checkdistance.setText(dfsuma.format(finaldist)+"m.");
             checkdistance.setTextSize(16);
             checkdistance.setPadding(20,20,20,20);
 
@@ -295,18 +358,16 @@ public void stats()
             daydistancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
             dayavgquest.setLayoutParams(layoutParams);
-            dayavgquest.setText("Srednia w tygodniu: "+listofdistancequest.get(0));
+            dayavgquest.setText("Srednia w dniu: "+listofdistancequest.get(0));
             dayavgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
             checkdayavg.setLayoutParams(layoutParamscheck);
-            checkdayavg.setText("");
+            checkdayavg.setText(dfsuma.format(finalavgday)+"km/h");
             checkdayavg.setTextSize(16);
 
             checkdaydist.setLayoutParams(layoutParamscheck);
-            checkdaydist.setText("");
+            checkdaydist.setText(dfsuma.format(finaldistanceday)+"m.");
             checkdaydist.setTextSize(16);
-
-
 
             ; // hex color 0xAARRGGBB
             linearlayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -320,12 +381,11 @@ public void stats()
             linearavg.addView(checkavg);
 
             lineardayavg.setOrientation(LinearLayout.HORIZONTAL);
+            lineardayavg.addView(dayavgquest);
+            lineardayavg.addView(checkdayavg);
             lineardaydist.addView(daydistancequest);
             lineardaydist.addView(checkdaydist);
-
-
         }
-
 
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {

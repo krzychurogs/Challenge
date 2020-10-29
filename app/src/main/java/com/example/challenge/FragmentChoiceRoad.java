@@ -59,7 +59,7 @@ public class FragmentChoiceRoad extends Fragment {
     List<String>listofplace=new ArrayList<String>();
     List<String>distancelist=new ArrayList<String>();
     private Polyline gpsTrack;
-    List<String>speedlist=new ArrayList<String>();
+    List<String>roadlists=new ArrayList<String>();
     List<String>listofeachtrainingwaypoint=new ArrayList<>();
     public static int counttrain;
     List<LatLng> points ;
@@ -78,17 +78,41 @@ public class FragmentChoiceRoad extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_fragment_choice_road, container, false);
         next=(Button)root.findViewById(R.id.nextTraining);
         final Bundle bundle=new Bundle();
-        bundle.putString("number","pierwszatrasa");
-        next.setOnClickListener(new View.OnClickListener() {
+
+
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road");
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                FragmentRoad roadfragment=new FragmentRoad();
-                roadfragment.setArguments(bundle);
-                FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                transaction.replace(R.id.drawer_layout,roadfragment);
-                transaction.commit();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    String trasa=String.valueOf(ds.getKey());
+                    roadlists.add(trasa);
+                }
+                bundle.putString("number","pierwszatrasa");
+                next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FragmentRoad roadfragment=new FragmentRoad();
+                        roadfragment.setArguments(bundle);
+                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.drawer_layout,roadfragment);
+                        transaction.commit();
+                    }
+                }); 
+
+
+
+
             }
-        });
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reff.addListenerForSingleValueEvent(valueEventListener);
 
 
 

@@ -119,6 +119,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
+        Bundle bundle=getArguments();
+       System.out.println("bund"+bundle.getString("number"));
 
 
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
