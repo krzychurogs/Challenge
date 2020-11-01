@@ -52,11 +52,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FragmentMyFriends extends Fragment implements TextWatcher {
-    DatabaseReference reff,reffs;
+    DatabaseReference reff,reffs,reffsrequest;
     private FirebaseAuth mAuth;
     private FragmentMyFriendsListener listener;
     EditText e1;
-    ListView l1;
+    ListView l1,l2;
     List<String>listofkey=new ArrayList<String>();
     List<String>listofname=new ArrayList<String>();
     List<String>listoffriendname=new ArrayList<String>();
@@ -82,6 +82,7 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
 
         e1=(EditText)root.findViewById(R.id.editsearch);
         l1=(ListView)root.findViewById(R.id.sampleListView);
+        l2=(ListView)root.findViewById(R.id.sampleListViewRequest);
         e1.addTextChangedListener(this);
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("friends");
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -91,14 +92,9 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String namefriend =  String.valueOf(ds.getKey());
                     listoffriendname.add(namefriend);
-
-
                 }
 
                 stats();
-
-
-
 
             }
 
@@ -163,6 +159,34 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
                 System.out.println(listofname.get(position));
             }
         });
+
+    }
+    public void showRequest()
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffsrequest= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("FriendsRequest");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String current_state =  String.valueOf(ds.getValue());
+                    String userid =  String.valueOf(ds.getKey());
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffsrequest.addListenerForSingleValueEvent(valueEventListener);
+    }
+    public void showNameOfUserByKey()
+    {
 
     }
 

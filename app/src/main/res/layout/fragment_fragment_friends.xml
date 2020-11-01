@@ -14,16 +14,29 @@
 
     <ListView
         android:id="@+id/sampleListView"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="224dp"
         android:layout_below="@id/editsearch"
-        android:layout_height="fill_parent"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="5dp"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="#CCCCCC"
         android:dividerHeight="1dp"
-        android:paddingLeft="2dp" >
-    </ListView>
+        android:paddingLeft="2dp"></ListView>
+    android:text="Szukaj" />
+
+    <ListView
+        android:id="@+id/sampleListViewRequest"
+        android:layout_width="280dp"
+        android:layout_height="387dp"
+        android:layout_below="@id/editsearch"
+        android:layout_marginTop="289dp"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="#CCCCCC"
+        android:dividerHeight="1dp"
+        android:paddingLeft="2dp"></ListView>
 
 </RelativeLayout>

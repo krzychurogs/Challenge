@@ -52,49 +52,50 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FragmentFriends extends Fragment implements TextWatcher {
-    DatabaseReference reff,reffs;
+    DatabaseReference reff, reffs, reffrequest;
     private FirebaseAuth mAuth;
     private FragmentFriendsListener listener;
     EditText e1;
     ListView l1;
-    List<String>listofkey=new ArrayList<String>();
-    List<String>listofname=new ArrayList<String>();
+    List<String> listofkey = new ArrayList<String>();
+    List<String> listofname = new ArrayList<String>();
 
-    List<LatLng> points ;
-    String []name={"Pakistan","India","Szwecja"};
-    String []lvl={"Easy","Medium","High"};
-    ArrayList<SingleRow>mylist;
+    List<LatLng> points;
+    String[] name = {"Pakistan", "India", "Szwecja"};
+    String[] lvl = {"Easy", "Medium", "High"};
+    ArrayList<SingleRow> mylist;
     MyAdapter myAdapter;
-    public interface FragmentFriendsListener{
+
+    public interface FragmentFriendsListener {
         void onInputSent(CharSequence input);
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
-        mylist=new ArrayList<>();
+        mylist = new ArrayList<>();
         SingleRow singleRow;
 
 
         final View root = inflater.inflate(R.layout.fragment_fragment_friends, container, false);
 
-        e1=(EditText)root.findViewById(R.id.editsearch);
-        l1=(ListView)root.findViewById(R.id.sampleListView);
+        e1 = (EditText) root.findViewById(R.id.editsearch);
+        l1 = (ListView) root.findViewById(R.id.sampleListView);
         e1.addTextChangedListener(this);
-        reff= (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users");
-        Query query=reff.orderByChild("name").equalTo("Krzysztof");
+        reff = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users");
+        Query query = reff.orderByChild("name").equalTo("Krzysztof");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String key =  String.valueOf(ds.getKey());
-                    String name =  String.valueOf(ds.getValue());
+                List<String> newlist = new ArrayList<String>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String key = String.valueOf(ds.getKey());
+                    String name = String.valueOf(ds.getValue());
                     listofkey.add(key);
                 }
-                for(int i=1;i<listofkey.size();i++)
-                {
+                for (int i = 1; i < listofkey.size(); i++) {
                     stats(i);
 
                 }
@@ -114,7 +115,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            this.myAdapter.getFilter().filter(charSequence);
+        this.myAdapter.getFilter().filter(charSequence);
     }
 
     @Override
@@ -130,43 +131,42 @@ public class FragmentFriends extends Fragment implements TextWatcher {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof FragmentFriendsListener){
-            listener= (FragmentFriendsListener) context;
+        if (context instanceof FragmentFriendsListener) {
+            listener = (FragmentFriendsListener) context;
 
-        }
-        else {
-            throw new RuntimeException(context.toString()+" trzeba implementowac Listnera");
+        } else {
+            throw new RuntimeException(context.toString() + " trzeba implementowac Listnera");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        listener=null;
+        listener = null;
     }
-    public void stats(int i)
-    {
 
-        reffs= FirebaseDatabase.getInstance().getReference().child("Users").child(listofkey.get(i));
+    public void stats(int i) {
+
+
+        reffs = FirebaseDatabase.getInstance().getReference().child("Users").child(listofkey.get(i));
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String name =  String.valueOf(ds.getValue());
+                List<String> newlist = new ArrayList<String>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = String.valueOf(ds.getValue());
                     SingleRow singleRow = new SingleRow(name, "easy");
                     mylist.add(singleRow);
 
                     myAdapter = new MyAdapter(getActivity(), mylist);
                     l1.setAdapter(myAdapter);
+
                     l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                            System.out.println(listofname.get(position));
+                            // System.out.println(listofname.get(position));
                             String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference friends = FirebaseDatabase.getInstance().getReference().child("Users").child
-                                    ("Customers").child("Historia").child(user_id).child("friends").child(listofname.get(position));
-                            friends.setValue("easy");
+                            keyfriendname(listofkey.get(position+1));
                         }
                     });
                     listofname.add(name);
@@ -181,4 +181,12 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         reffs.addListenerForSingleValueEvent(valueEventListener);
     }
 
-}
+    public void keyfriendname(String key) {
+        String user_id = mAuth.getCurrentUser().getUid();
+        DatabaseReference requestfriend = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("FriendsRequest").child(key);
+        requestfriend.setValue("pended");
+
+        }
+    }
+

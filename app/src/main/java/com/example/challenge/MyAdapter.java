@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ public class MyAdapter extends BaseAdapter implements Filterable {
            View row= inflater.inflate(R.layout.customer_listview,null);
             TextView tname=(TextView) row.findViewById(R.id.textViewName);
             TextView tlvl=(TextView) row.findViewById(R.id.textViewLvl);
+            Button btnadd=(Button) row.findViewById(R.id.list_item_btn);
             tname.setText(originalArray.get(i).getName());
             tlvl.setText(originalArray.get(i).getLvl());
 
