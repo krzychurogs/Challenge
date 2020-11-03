@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,18 +47,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
-
+import com.example.challenge.MyAdapter.customButtonListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class FragmentFriends extends Fragment implements TextWatcher {
-    DatabaseReference reff, reffs, reffrequest;
+    DatabaseReference reff, reffs, reffrequest,reffforpending;
     private FirebaseAuth mAuth;
     private FragmentFriendsListener listener;
     EditText e1;
     ListView l1;
     List<String> listofkey = new ArrayList<String>();
+    List<String> listofkeyrequest = new ArrayList<String>();
     List<String> listofname = new ArrayList<String>();
 
     List<LatLng> points;
@@ -74,7 +76,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
-        String user_id = mAuth.getCurrentUser().getUid();
+        final String user_id = mAuth.getCurrentUser().getUid();
         mylist = new ArrayList<>();
         SingleRow singleRow;
 
@@ -83,23 +85,23 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
         e1 = (EditText) root.findViewById(R.id.editsearch);
         l1 = (ListView) root.findViewById(R.id.sampleListView);
+
         e1.addTextChangedListener(this);
         reff = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users");
         Query query = reff.orderByChild("name").equalTo("Krzysztof");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> newlist = new ArrayList<String>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String key = String.valueOf(ds.getKey());
                     String name = String.valueOf(ds.getValue());
-                    listofkey.add(key);
-                }
-                for (int i = 1; i < listofkey.size(); i++) {
-                    stats(i);
+                    if(!key.equals(user_id))
+                    {
+                        listofkey.add(key);
+                    }
 
                 }
-
+                checkForPendendInv(listofkey.get(1));
 
             }
 
@@ -159,19 +161,25 @@ public class FragmentFriends extends Fragment implements TextWatcher {
                     mylist.add(singleRow);
 
                     myAdapter = new MyAdapter(getActivity(), mylist);
-                    l1.setAdapter(myAdapter);
-
-                    l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    myAdapter.setCustomButtonListner(new customButtonListener() {
                         @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                            // System.out.println(listofname.get(position));
+                        public void onButtonClickListner(int position) {
+
                             String user_id = mAuth.getCurrentUser().getUid();
-                            keyfriendname(listofkey.get(position+1));
+
+                            keyfriendname(listofkey.get(position + 1));
+                            myAdapter.notifyDataSetChanged();
+
                         }
                     });
+                    l1.setAdapter(myAdapter);
+                    myAdapter.notifyDataSetChanged();
                     listofname.add(name);
+
                 }
+
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -187,6 +195,58 @@ public class FragmentFriends extends Fragment implements TextWatcher {
                 ("Customers").child("Historia").child(user_id).child("FriendsRequest").child(key);
         requestfriend.setValue("pended");
 
-        }
     }
+
+    public void checkForPendendInv(String key) {
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffforpending = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users").child("Customers")
+                .child("Historia").child(user_id).child("FriendsRequest");
+
+
+        Query query = reff.orderByChild(key).equalTo("pended");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    for(int i=1;i<listofkey.size();i++)
+                    {
+                        stats(i);
+                        System.out.println("test");
+                    }
+
+                }
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    String key = String.valueOf(ds.getKey());
+                    String name = String.valueOf(ds.getValue());
+                    listofkeyrequest.add(key);
+
+                }
+
+
+
+                    for(int i=1;i<listofkey.size();i++)
+                     {
+                        if(!listofkeyrequest.contains(listofkey.get(i)))
+                        {
+                            stats(i);
+                        }
+
+                     }
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffforpending.addListenerForSingleValueEvent(valueEventListener);
+
+    }
+}
+
 

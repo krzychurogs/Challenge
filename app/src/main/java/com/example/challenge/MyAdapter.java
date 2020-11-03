@@ -9,14 +9,24 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MyAdapter extends BaseAdapter implements Filterable {
 
     Context c;
+    customButtonListener customListner;
     ArrayList<SingleRow> originalArray,tempArray;
     CustomFilter cs;
+
+    public interface customButtonListener {
+        public void onButtonClickListner(int position);
+    }
+    public void setCustomButtonListner(customButtonListener listener) {
+        this.customListner = listener;
+    }
+
 
     public  MyAdapter(Context c, ArrayList<SingleRow>originalArray)
     {
@@ -40,17 +50,49 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         return i;
     }
         @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
             LayoutInflater inflater=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
            View row= inflater.inflate(R.layout.customer_listview,null);
+            ViewHolder viewHolder;
+            viewHolder = new ViewHolder();
+            viewHolder.text = (TextView) row.findViewById(R.id.textViewName);
+            viewHolder.button = (Button) row.findViewById(R.id.list_item_btn);
+
+
+            viewHolder.button.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if (customListner != null) {
+                        customListner.onButtonClickListner(i);
+                    }
+
+                }
+            });
+
+
+
             TextView tname=(TextView) row.findViewById(R.id.textViewName);
             TextView tlvl=(TextView) row.findViewById(R.id.textViewLvl);
-            Button btnadd=(Button) row.findViewById(R.id.list_item_btn);
+            Button btn=(Button) row.findViewById(R.id.list_item_btn);
             tname.setText(originalArray.get(i).getName());
             tlvl.setText(originalArray.get(i).getLvl());
+            btn.setText("Dodaj");
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (customListner != null) {
+                        customListner.onButtonClickListner(i);
 
-        return row;
+                    }
+                }
+            });
+
+
+
+            return row;
     }
+
 
     @Override
     public Filter getFilter() {
@@ -93,6 +135,10 @@ public class MyAdapter extends BaseAdapter implements Filterable {
             originalArray=(ArrayList<SingleRow>)filterResults.values;
             notifyDataSetChanged();
         }
+    }
+    public class ViewHolder {
+        TextView text;
+        Button button;
     }
 
 }

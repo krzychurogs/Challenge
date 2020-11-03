@@ -5,14 +5,22 @@
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="213dp"
-        android:gravity="center"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Name" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textViewLvl"
+        android:layout_width="142dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Lvl"
-        android:id="@+id/textViewLvl"/>
+        android:text="Lvl" />
+
+    <Button
+        android:id="@+id/list_item_btn"
+        android:layout_width="146dp"
+        android:layout_height="36dp"
+        android:text="Dodaj" />
+
 </LinearLayout>
