@@ -24,7 +24,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -52,7 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FragmentMyFriends extends Fragment implements TextWatcher {
-    DatabaseReference reff,reffs,reffsrequest,reffsktoname;
+    DatabaseReference reff,reffs,reffsrequest,reffsktoname,reffsdelete;
     private FirebaseAuth mAuth;
     private FragmentMyFriendsListener listener;
     EditText e1,e2;
@@ -71,7 +70,8 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
     String []lvl={"Easy","Medium","High"};
     ArrayList<SingleRow>mylist;
     ArrayList<SingleRow>pendlist;
-    MyAdapter myAdapter,myAdapterPend;
+    MyAdapter myAdapterPend;
+    AdapterDelete myAdapter;
     public interface FragmentMyFriendsListener{
         void onInputSent(CharSequence input);
     }
@@ -126,7 +126,6 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         this.myAdapter.getFilter().filter(charSequence);
-        this.myAdapterPend.getFilter().filter(charSequence);
     }
 
     @Override
@@ -310,15 +309,15 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
                     String name =  String.valueOf(ds.getValue());
                     SingleRow singleRow = new SingleRow(name, "easy");
                     mylist.add(singleRow);
-                    myAdapter = new MyAdapter(getActivity(), mylist);
-                    myAdapter.setCustomButtonListner(new customButtonListener() {
+                    myAdapter = new AdapterDelete(getActivity(), mylist);
+                    myAdapter.setCustomButtonListner(new AdapterDelete.customButtonListener() {
                         @Override
                         public void onButtonClickListner(int position) {
 
                             String user_id = mAuth.getCurrentUser().getUid();
-
-
+                            deletefriend(listofkeyfriend.get(position));
                             myAdapter.notifyDataSetChanged();
+
 
                         }
                     });
@@ -334,6 +333,13 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
             }
         };
         reffsktoname.addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    public void deletefriend(String key)
+    {
+        final String user_id = mAuth.getCurrentUser().getUid();
+        DatabaseReference db_node = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("friends").child(key);
+        db_node.removeValue();
     }
 
 }

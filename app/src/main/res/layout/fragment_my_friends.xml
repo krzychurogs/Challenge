@@ -35,10 +35,10 @@
 
     <ListView
         android:id="@+id/sampleListViewRequest"
-        android:layout_width="280dp"
-        android:layout_height="387dp"
+        android:layout_width="381dp"
+        android:layout_height="241dp"
         android:layout_below="@id/editsearchrequest"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="62dp"
         android:layout_marginBottom="10dp"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"

@@ -235,12 +235,6 @@ public class FragmentAllTraining extends Fragment {
                 int max = numberoflin + 1;
                 final String[] partshour = elementofdates.get(i).split("/");
 
-                System.out.println(partshour[0]);
-                System.out.println(partshour[1]);
-                System.out.println(partshour[2]);
-                System.out.println(partshour[3]);
-                System.out.println(partshour[4]);
-                System.out.println(partshour[5]);
                 button.setText(partshour[0]+":"+partshour[1]+" "+partshour[3]+"/"+partshour[4]+"/"+partshour[5]);
                 button.setFocusableInTouchMode(false);
                 final int x=i;

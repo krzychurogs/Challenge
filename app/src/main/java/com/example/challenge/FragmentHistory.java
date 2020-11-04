@@ -59,7 +59,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     private Polyline gpsTrack;
     List<String>speedlist=new ArrayList<String>();
     List<String>listofeachtrainingwaypoint=new ArrayList<>();
-     public static int counttrain;
+    public static int counttrain;
 
 
 
@@ -73,19 +73,9 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
 
-        System.out.println(bundle.getString("data"));
-
-
         final View root = inflater.inflate(R.layout.fragment_history, container, false);
         String fullhour=bundle.getString("hour");
         final String[] partshour = fullhour.split("/");
-
-        System.out.println(partshour[0]);
-        System.out.println(partshour[1]);
-        System.out.println(partshour[2]);
-        System.out.println(partshour[3]);
-        System.out.println(partshour[4]);
-        System.out.println(partshour[5]);
         ImageView imageView1 = (ImageView) root.findViewById(R.id.imageView4);
         textdistance= (TextView)  root.findViewById(R.id.textDist);
         textspeed= (TextView)  root.findViewById(R.id.textSpeed);
@@ -117,15 +107,17 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                     String minutes= String.valueOf(ds.child("data").child("minutes").getValue());
                     String hours= String.valueOf(ds.child("data").child("hours").getValue());
                     String seconds= String.valueOf(ds.child("data").child("seconds").getValue());
+                    int yearinint=Integer.parseInt(years);
+                    int yean=yearinint+1900;
                     if(partshour[0].equals(hours)&&partshour[1].equals(minutes)&&partshour[2].equals(seconds)&&
                             partshour[3].equals(day)&&partshour[4].equals(month)&&partshour[5].equals(years))
                     {
                         DecimalFormat dfsuma = new DecimalFormat("#.##");
-                        textdistance.setText(dystans+"km");
+                        textdistance.setText(dystans+"m");
                         textspeed.setText(predkosc+ "km/h") ;
                         texthighspeed.setText(highspeed+"km/h");
                         textkalorie.setText(kalorie);
-                        datahisttext.setText(day+"/"+month+"/"+years+" "+minutes+":"+hours);
+                        datahisttext.setText(day+"/"+month+"/"+yean+" "+hours+":"+minutes);
                         String data=ds.child("waypointy").getValue().toString();
 
                         listofeachtrainingwaypoint.add(data);
@@ -149,17 +141,19 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
 
     }
     public void pointsfromtrain()
+    {
+
+
+        List<String>newlist=new ArrayList<String>();
+        String word[]=listofeachtrainingwaypoint.get(0).split(" ");
+        for(String w:word)
         {
-            List<String>newlist=new ArrayList<String>();
-            String word[]=listofeachtrainingwaypoint.get(0).split(" ");
-            for(String w:word)
-            {
-                newlist.add(w);
-            }
+            newlist.add(w);
+        }
 
 
-            for(int i=0;i<newlist.size();i++)
-            {
+        for(int i=0;i<newlist.size();i++)
+        {
             if(i%2==1)
             {
                 String words[]=newlist.get(i).split(",");
@@ -172,11 +166,41 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
 
                 }
             }
+        }
+        for(int i=0;i<listofplace.size();i++)
+        {
+            System.out.println(listofplace.get(i));
+        }
+        List<LatLng> coordList = new ArrayList<LatLng>();
+
+        Double latide= Double.valueOf(listofplace.get(1));
+        Double longtide=  Double.valueOf(listofplace.get(0));
+
+        for(int i=0;i<listofplace.size();i++)
+        {
+            longtide=Double.valueOf(listofplace.get(i));
+
+            if(listofplace.size() > i + 1){
+                latide = Double.valueOf(listofplace.get(++i).toString().replace("]","")); //Change here
             }
-            for(int i=0;i<listofplace.size();i++)
-            {
-                System.out.println(listofplace.get(i));
-            }
+            lastKnownLatLng= new LatLng(longtide, latide);
+
+            coordList.add(lastKnownLatLng);
+        }
+
+        for(int i=0;i<coordList.size();i++)
+        {
+            System.out.println("cord"+coordList.get(i));
+
+
+        }
+        PolylineOptions options = new PolylineOptions()
+                .color(Color.BLUE)
+                .geodesic(true)
+                .width(5)
+                .addAll(coordList);
+
+        Polyline pfad = mMap.addPolyline(options);
 
 
     }
@@ -200,17 +224,16 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         }
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
-        PolylineOptions polylineOptions = new PolylineOptions();
-        polylineOptions.color(Color.CYAN);
-        polylineOptions.width(4);
-        gpsTrack = mMap.addPolyline(polylineOptions);
+
+
+
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(100000000);
+        mLocationRequest.setFastestInterval(100000000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -233,29 +256,12 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-        List<LatLng> coordList = gpsTrack.getPoints();
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(19));
-        for(int i=0;i<listofplace.size();i++)
-        {
-            Double latide=21.9927641;
-            Double longtide=  50.0226329;
-
-            if(i%2==0)//longtiude
-            {
-                longtide=Double.valueOf(listofplace.get(i));
-            }
-            if(i%2 == 1){
-
-                String lat=listofplace.get(i).toString().replace("]","");
-                latide=Double.valueOf(lat);
-            }
-            lastKnownLatLng= new LatLng(longtide, latide);
-            coordList.add(lastKnownLatLng);
-        }
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
 
-        gpsTrack.setPoints(coordList);
+
 
     }
 
