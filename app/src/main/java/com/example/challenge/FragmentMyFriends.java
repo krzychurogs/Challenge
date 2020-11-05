@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class FragmentMyFriends extends Fragment implements TextWatcher {
+public class FragmentMyFriends extends Fragment  {
     DatabaseReference reff,reffs,reffsrequest,reffsktoname,reffsdelete;
     private FirebaseAuth mAuth;
     private FragmentMyFriendsListener listener;
@@ -91,8 +91,7 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
         e2=(EditText)root.findViewById(R.id.editsearchrequest);
         l1=(ListView)root.findViewById(R.id.sampleListView);
         l2=(ListView)root.findViewById(R.id.sampleListViewRequest);
-        e1.addTextChangedListener(this);
-        e2.addTextChangedListener(this);
+
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("friends");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -123,20 +122,7 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
 
     }
 
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        this.myAdapter.getFilter().filter(charSequence);
-    }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -158,50 +144,56 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
     public void friends()
     {
         for(int i=0;i<listofkeyfriend.size();i++)
-            {
-               keytoname(listofkeyfriend.get(i));
-            }
+        {
+            keytoname(listofkeyfriend.get(i));
+        }
     }
 
 
-    public void showRequest(String key)
+    public void showRequest()
     {
         final String user_id = mAuth.getCurrentUser().getUid();
-        reffsrequest = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users").child("Customers")
-                .child("Historia").child(user_id).child("FriendsRequest");
 
 
-        Query query = reff.orderByChild(key).equalTo("pended");
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    for(int i=1;i<listofkey.size();i++)
-                    {
+
+
+
+            reffsrequest = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers")
+                    .child("Historia").child(user_id).child("FriendsRequest");
+
+
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
                         System.out.println("test");
                     }
 
+
+
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                            String key = String.valueOf(ds.getKey());
+                            String name = String.valueOf(ds.getValue());
+                            if(name.equals("pended"))
+                            {
+                                listofkeyrequest.add(key);
+                            }
+                    }
+
+                    for (int i = 0; i < listofkeyrequest.size(); i++) {
+                        showNameByKey(listofkeyrequest.get(i));
+                    }
+
                 }
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    String key = String.valueOf(ds.getKey());
-                    String name = String.valueOf(ds.getValue());
-                    listofkeyrequest.add(key);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
+            };
+            reffsrequest.addListenerForSingleValueEvent(valueEventListener);
 
-                for(int i=0;i<listofkeyrequest.size();i++)
-                {
-                    showNameByKey(listofkeyrequest.get(i));
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        reffsrequest.addListenerForSingleValueEvent(valueEventListener);
     }
 
     public void showNameByKey(final String key)
@@ -250,7 +242,18 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
         });
         l2.setAdapter(myAdapterPend);
         myAdapterPend.notifyDataSetChanged();
-
+        e2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                myAdapterPend.getFilter().filter(s);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     public void changeStatus(String key) {
@@ -284,7 +287,10 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
                     }
 
                 }
-                showRequest(listofkey.get(1));
+
+                    showRequest();
+
+
 
 
             }
@@ -323,6 +329,18 @@ public class FragmentMyFriends extends Fragment implements TextWatcher {
                     });
                     l1.setAdapter(myAdapter);
                     myAdapter.notifyDataSetChanged();
+                    e1.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        }
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            myAdapter.getFilter().filter(s);
+                        }
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
+                    });
 
                 }
             }

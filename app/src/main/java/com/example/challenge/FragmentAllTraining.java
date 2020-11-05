@@ -211,6 +211,7 @@ public class FragmentAllTraining extends Fragment {
                     String dystanswithoutdot=dystans.replace(",",".");
                     sumaofdistance+=Double.parseDouble(dystanswithoutdot);
 
+
                 }
 
             }

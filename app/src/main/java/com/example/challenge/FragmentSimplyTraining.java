@@ -83,6 +83,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
     long maxid=0;
     private Chronometer chronometer;
     TextView MDistance,MSpeed;
+    TextView MCalory;
     TextToSpeech textToSpeech;
     ImageButton MEnd;
     ImageButton mStopTime;
@@ -106,6 +107,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         MStart=(ImageButton)root.findViewById(R.id.start);
         MDistance=(TextView)root.findViewById(R.id.distance);
         mStopTime=(ImageButton)root.findViewById(R.id.stoptime) ;
+        MCalory=(TextView)root.findViewById(R.id.kalorie);
         MSpeed=(TextView)root.findViewById(R.id.speed);
         MEnd=(ImageButton)root.findViewById(R.id.end);
         chronometer = root.findViewById(R.id.czas);
@@ -299,12 +301,16 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
         secs= elapsedMillis/1000;
         final double avgspeed= (suma/secs)* km ;
+        final double calory= (suma*0.70)/1000;
         highstedaverage.add(avgspeed);
         DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat dfcalory = new DecimalFormat("#.#");
         SpannableStringBuilder text = new SpannableStringBuilder();
         text.append(df.format(avgspeed));
         text.append(Html.fromHtml("<sup>km</sup>/<sub>h</sub>"));
         MSpeed.setText(text);
+        System.out.println(calory);
+        MCalory.setText(dfcalory.format(calory));
         if(suma>100)
         {
             textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
@@ -335,7 +341,8 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 String user_id = mAuth.getCurrentUser().getUid();
                 DecimalFormat df = new DecimalFormat("#.##");
 
-                               String szybkosc= df.format(avgspeed).toString();
+                String szybkosc= df.format(avgspeed).toString();
+                String kalorie = df.format(calory).toString() ;
                 DatabaseReference historia = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Historia").child(user_id).child("historia").push();
                 historia.setValue("test");
@@ -359,6 +366,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
 
                 historia.child("data").setValue(nowDate);
                 historia.child("predkosc").setValue(szybkosc);
+                historia.child("kalorie").setValue(kalorie);
                 DecimalFormat dfsuma = new DecimalFormat("#.##");
                 historia.child("dystans").setValue(dfsuma.format(suma));
                     historia.child("highspeed").setValue( dfsuma.format(Collections.max(highstedaverage)));

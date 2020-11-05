@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 List<String> newlist = new ArrayList<String>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     name= String.valueOf(ds.getValue());
-
                 }
             }
 

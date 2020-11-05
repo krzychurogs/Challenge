@@ -207,14 +207,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    for(int i=1;i<listofkey.size();i++)
-                    {
-                        stats(i);
-                        System.out.println("test");
-                    }
 
-                }
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     String key = String.valueOf(ds.getKey());
@@ -223,22 +216,14 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
                 }
 
-
-
                     for(int i=1;i<listofkey.size();i++)
                      {
                         if(!listofkeyrequest.contains(listofkey.get(i)))
                         {
                             stats(i);
                         }
-
                      }
-
-
-
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
