@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -63,6 +65,10 @@ public class FragmentChoiceRoad extends Fragment {
     List<String>listofeachtrainingwaypoint=new ArrayList<>();
     public static int counttrain;
     List<LatLng> points ;
+    private RecyclerView mRecyclerView;
+    private ChoiceRoadAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    ArrayList<ChoiceRoadItem>exampleList=new ArrayList<>();
 
 
     public interface FragmentChoiceRoadListener{
@@ -76,11 +82,12 @@ public class FragmentChoiceRoad extends Fragment {
 
 
         final View root = inflater.inflate(R.layout.fragment_fragment_choice_road, container, false);
-        next=(Button)root.findViewById(R.id.nextTraining);
+        mRecyclerView = root.findViewById(R.id.recyclerView);
         final Bundle bundle=new Bundle();
 
 
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road");
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -89,21 +96,28 @@ public class FragmentChoiceRoad extends Fragment {
 
                     String trasa=String.valueOf(ds.getKey());
                     roadlists.add(trasa);
+                    exampleList.add(new ChoiceRoadItem(R.drawable.ic_circle_50dp,trasa));
                 }
-                bundle.putString("number","pierwszatrasa");
-                next.setOnClickListener(new View.OnClickListener() {
+
+
+                mRecyclerView.setHasFixedSize(true);
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mAdapter = new ChoiceRoadAdapter(exampleList);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.setOnItemClickListener(new ChoiceRoadAdapter.OnItemClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onItemClick(int position) {
+                        System.out.println(position);
+                        bundle.putString("name",roadlists.get(position));
                         FragmentRoad roadfragment=new FragmentRoad();
                         roadfragment.setArguments(bundle);
                         FragmentTransaction transaction=getFragmentManager().beginTransaction();
                         transaction.replace(R.id.drawer_layout,roadfragment);
                         transaction.commit();
+
                     }
-                }); 
-
-
-
+                });
 
             }
 
@@ -119,15 +133,6 @@ public class FragmentChoiceRoad extends Fragment {
         return root;
 
     }
-
-
-
-
-
-
-
-
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -145,5 +150,7 @@ public class FragmentChoiceRoad extends Fragment {
         super.onDetach();
         listener=null;
     }
+
+
 
 }

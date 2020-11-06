@@ -23,6 +23,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -65,7 +67,10 @@ public class FragmentAllTraining extends Fragment {
     ArrayList<String> elementofdates = new ArrayList<String>();
     int counterofweekwithoutduplicates=0;
     double sumaofdistance=0.0;
-
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    TrainAdapter mainRecyclerAdapter;
 
     public interface FragmentAllTrainingListener{
         void onInputSent(CharSequence input);
@@ -76,7 +81,7 @@ public class FragmentAllTraining extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
         final View root = inflater.inflate(R.layout.fragment_fragment_all_training, container, false);
-        linearlayout= (LinearLayout)  root.findViewById(R.id.linearl);
+        mRecyclerView = root.findViewById(R.id.recyclerView);
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -121,6 +126,7 @@ public class FragmentAllTraining extends Fragment {
             }
         }
         int conc=0;
+        ArrayList<ExampleItem>exampleList=new ArrayList<>();
         for (int i=0;i<newList.size();i++)
         {
             SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
@@ -132,16 +138,19 @@ public class FragmentAllTraining extends Fragment {
             calendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
             calendar.set(Calendar.WEEK_OF_YEAR, newList.get(i));
             start = dt.format(calendar.getTime());
+            System.out.println(start);
             calendar.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
             end = dt.format(calendar.getTime());
-            Button button=new Button(getActivity());
-            button.setLayoutParams(new LinearLayout.LayoutParams(600    ,150));
-            button.setId(count);
-            button.setText(start+" |"+end);
-            button.setFocusableInTouchMode(false);
-            linearlayout.addView(button);
-            button.setOnClickListener(getOnClick(i));
+            exampleList.add(new ExampleItem(R.drawable.ic_circle_50dp,start+"-",end));
+
         }
+
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mAdapter = new ExampleAdapter(exampleList);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
 
     }
     private  View.OnClickListener getOnClick(final int i)
@@ -298,6 +307,7 @@ public class FragmentAllTraining extends Fragment {
         super.onDetach();
         listener=null;
     }
+
 
 
 }

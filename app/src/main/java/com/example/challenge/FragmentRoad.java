@@ -120,7 +120,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         mAuth = FirebaseAuth.getInstance();
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
-       System.out.println("bund"+bundle.getString("number"));
+        System.out.println("bund"+bundle.getString("name"));
 
 
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
@@ -221,7 +221,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         mapFragment.getMapAsync(this);
 
 
-        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name")      );
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
