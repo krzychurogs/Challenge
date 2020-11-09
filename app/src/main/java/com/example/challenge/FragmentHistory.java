@@ -75,6 +75,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
 
         final View root = inflater.inflate(R.layout.fragment_history, container, false);
         String fullhour=bundle.getString("hour");
+        System.out.println("datatren"+fullhour);
         final String[] partshour = fullhour.split("/");
         ImageView imageView1 = (ImageView) root.findViewById(R.id.imageView4);
         textdistance= (TextView)  root.findViewById(R.id.textDist);
@@ -166,10 +167,6 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                 }
             }
         }
-        for(int i=0;i<listofplace.size();i++)
-        {
-            System.out.println(listofplace.get(i));
-        }
         List<LatLng> coordList = new ArrayList<LatLng>();
 
         Double latide= Double.valueOf(listofplace.get(1));
@@ -187,12 +184,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
             coordList.add(lastKnownLatLng);
         }
 
-        for(int i=0;i<coordList.size();i++)
-        {
-            System.out.println("cord"+coordList.get(i));
 
-
-        }
         PolylineOptions options = new PolylineOptions()
                 .color(Color.BLUE)
                 .geodesic(true)

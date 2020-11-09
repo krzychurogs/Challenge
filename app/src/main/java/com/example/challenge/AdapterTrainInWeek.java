@@ -9,8 +9,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
-    private ArrayList<ExampleItem> mExampleList;
+public class AdapterTrainInWeek extends RecyclerView.Adapter<AdapterTrainInWeek.ExampleViewHolder> {
+    private ArrayList<TrainInWeekItem> mExampleList;
     private OnItemClickListener mListener;
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -41,21 +41,20 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
             });
         }
     }
-    public ExampleAdapter(ArrayList<ExampleItem> exampleList) {
+    public AdapterTrainInWeek(ArrayList<TrainInWeekItem> exampleList) {
         mExampleList = exampleList;
     }
     @Override
     public ExampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.example_train, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item, parent, false);
         ExampleViewHolder evh = new ExampleViewHolder(v,mListener);
         return evh;
     }
     @Override
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
-        ExampleItem currentItem = mExampleList.get(position);
+        TrainInWeekItem  currentItem = mExampleList.get(position);
         holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mTextView1.setText(currentItem.getText1());
-        holder.mTextView2.setText(currentItem.getText2());
 
     }
     @Override

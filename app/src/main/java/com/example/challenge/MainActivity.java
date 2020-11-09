@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentMyFriends.FragmentMyFriendsListener ,FragmentFriends.FragmentFriendsListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentRoad.FragmentRoadListener, FragmentQuest.FragmentQuestListener,FragmentHistory.FragmentHistoryListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentSimplyTraining.FragmentSimplyTrainingListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentAllTrainInWeek.FragmentAllTrainInWeekListener,FragmentMyFriends.FragmentMyFriendsListener ,FragmentFriends.FragmentFriendsListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentRoad.FragmentRoadListener, FragmentQuest.FragmentQuestListener,FragmentHistory.FragmentHistoryListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentSimplyTraining.FragmentSimplyTrainingListener {
     private DrawerLayout drawer;
     DatabaseReference reff;
     private FirebaseAuth mAuth;

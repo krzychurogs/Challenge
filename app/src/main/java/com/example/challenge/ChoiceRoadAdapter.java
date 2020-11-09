@@ -1,17 +1,29 @@
 package com.example.challenge;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 public class ChoiceRoadAdapter extends RecyclerView.Adapter<ChoiceRoadAdapter.ExampleViewHolder> {
     private ArrayList<ChoiceRoadItem> mExampleList;
     private OnItemClickListener mListener;
+    private Context mContext;
+
+    public ChoiceRoadAdapter(ArrayList<ChoiceRoadItem> mExampleList, Context mContext) {
+        this.mExampleList = mExampleList;
+        this.mContext = mContext;
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
@@ -41,7 +53,7 @@ public class ChoiceRoadAdapter extends RecyclerView.Adapter<ChoiceRoadAdapter.Ex
             });
         }
     }
-    public ChoiceRoadAdapter(ArrayList<ChoiceRoadItem> exampleList) {
+    public ChoiceRoadAdapter(FragmentActivity activity, ArrayList<ChoiceRoadItem> exampleList) {
         mExampleList = exampleList;
     }
     @Override
@@ -53,8 +65,13 @@ public class ChoiceRoadAdapter extends RecyclerView.Adapter<ChoiceRoadAdapter.Ex
     @Override
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
         ChoiceRoadItem currentItem = mExampleList.get(position);
-        holder.mImageView.setImageResource(currentItem.getImageResource());
+
         holder.mTextView1.setText(currentItem.getText1());
+        Glide.with(mContext).load(mExampleList.get(position).getImageResource()).into(holder.mImageView);
+
+
+
+
 
     }
     @Override

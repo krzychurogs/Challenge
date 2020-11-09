@@ -1,11 +1,11 @@
 package com.example.challenge;
 
-public class ExampleItem {
+public class TrainInWeekItem {
     private int mImageResource;
     private String mText1;
     private String mText2;
 
-    public ExampleItem(int imageResource, String text1, String text2) {
+    public TrainInWeekItem(int imageResource, String text1, String text2) {
         mImageResource = imageResource;
         mText1 = text1;
         mText2 = text2;

@@ -68,9 +68,8 @@ public class FragmentAllTraining extends Fragment {
     int counterofweekwithoutduplicates=0;
     double sumaofdistance=0.0;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ExampleAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    TrainAdapter mainRecyclerAdapter;
 
     public interface FragmentAllTrainingListener{
         void onInputSent(CharSequence input);
@@ -145,41 +144,31 @@ public class FragmentAllTraining extends Fragment {
 
         }
 
+
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mAdapter = new ExampleAdapter(exampleList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-
-    }
-    private  View.OnClickListener getOnClick(final int i)
-    {
-        return new View.OnClickListener() {
+        mAdapter.setOnItemClickListener(new ExampleAdapter.OnItemClickListener(){
             @Override
-            public void onClick(View view) {
+            public void onItemClick(int position) {
+                System.out.println(position);
+                Bundle bundle=new Bundle();
+                bundle.putInt("number",position);
+                FragmentAllTrainInWeek trainweek=new FragmentAllTrainInWeek();
+                trainweek.setArguments(bundle);
+                FragmentTransaction transaction=getFragmentManager().beginTransaction();
+                transaction.replace(R.id.drawer_layout,trainweek);
+                transaction.commit();
 
-                int max=newList.size()-1;
-                lookfordateindatabase(newList.get(i),i,max);
             }
-        };
-    }
-    public static boolean isDateInCurrentWeek(Date date,int week) {
-        Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.set(Calendar.WEEK_OF_YEAR,week);
-        int year = currentCalendar.get(Calendar.YEAR);
-        Calendar targetCalendar = Calendar.getInstance();
-        targetCalendar.setTime(date);
-        int targetWeek = targetCalendar.get(Calendar.WEEK_OF_YEAR);
-        int targetYear = targetCalendar.get(Calendar.YEAR);
-        if(week == targetWeek )
-        {
-            return true;
-        }
-        return false;
+        });
 
 
     }
+
     public int calendar(String fulldate)
     {
         String format = "yyyyMMdd";
@@ -190,89 +179,6 @@ public class FragmentAllTraining extends Fragment {
         return  week;
     }
 
-    public void lookfordateindatabase(final int nrofweek,int numberoflin,int maksfork)
-    {
-        mAuth = FirebaseAuth.getInstance();
-        String user_id = mAuth.getCurrentUser().getUid();
-
-        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String day = String.valueOf(ds.child("data").child("date").getValue());
-                    String month = String.valueOf(ds.child("data").child("month").getValue());
-                    String years = String.valueOf(ds.child("data").child("year").getValue());
-                    String minutes= String.valueOf(ds.child("data").child("minutes").getValue());
-                    String hours= String.valueOf(ds.child("data").child("hours").getValue());
-                    String seconds= String.valueOf(ds.child("data").child("seconds").getValue());
-                    String dystans = String.valueOf(ds.child("dystans").getValue());
-                    int yearinint=Integer.parseInt(years);
-                    int yean=yearinint+120;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
-
-                    int monthinint=Integer.parseInt(month);
-                    int mon=monthinint+1;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
-                    String fulldate=day+"/"+mon+"/"+yean;
-                    String elementofday=hours+"/"+minutes+"/"+seconds+"/"+day+"/"+month+"/"+years;
-                    listofdates.add(fulldate);
-                    elementofdates.add(elementofday);
-                    String dystanswithoutdot=dystans.replace(",",".");
-                    sumaofdistance+=Double.parseDouble(dystanswithoutdot);
-
-
-                }
-
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        reff.addListenerForSingleValueEvent(valueEventListener);
-
-        int ctr=0;
-        TextView mTextView;
-        for(int i=0;i<listofdates.size();i++)
-        {
-            if(isDateInCurrentWeek(convertStringToDate(listofdates.get(i)),nrofweek)==true) {
-                ctr += 1;
-                // System.out.println(ctr);
-                Button button = new Button(getActivity());
-                button.setLayoutParams(new LinearLayout.LayoutParams(600, 150));
-                button.setId(numberoflin + 1);
-                int max = numberoflin + 1;
-                final String[] partshour = elementofdates.get(i).split("/");
-
-                button.setText(partshour[0]+":"+partshour[1]+" "+partshour[3]+"/"+partshour[4]+"/"+partshour[5]);
-                button.setFocusableInTouchMode(false);
-                final int x=i;
-                if (maksfork == numberoflin) {
-                    linearlayout.addView(button, numberoflin + 1);
-
-                }
-                else {
-                    linearlayout.addView(button, numberoflin + max);
-                }
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Bundle bundle=new Bundle();
-                        bundle.putString("hour",elementofdates.get(x))  ;
-                        FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-                        FragmentHistory fragmentHistory=new FragmentHistory();
-                        fragmentHistory.setArguments(bundle);
-                        fragmentTransaction.replace(R.id.drawer_layout,fragmentHistory);
-                        fragmentTransaction.commit();
-                    }
-                });
-
-            }
-        }
-        listofdates.clear();
-    }
 
     public Date convertStringToDate(String dateString) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");

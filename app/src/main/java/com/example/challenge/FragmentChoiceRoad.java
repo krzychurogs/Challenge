@@ -41,6 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -95,14 +96,20 @@ public class FragmentChoiceRoad extends Fragment {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
 
                     String trasa=String.valueOf(ds.getKey());
+                    String message=String.valueOf(ds.child("image").getValue());
+                    System.out.println(message);
+                    ChoiceRoadItem choiceRoadItem=new ChoiceRoadItem();
+                    choiceRoadItem.setmImageResource(message);
+                    choiceRoadItem.setmText1(trasa);
+
                     roadlists.add(trasa);
-                    exampleList.add(new ChoiceRoadItem(R.drawable.ic_circle_50dp,trasa));
+                    exampleList.add(choiceRoadItem);
                 }
 
 
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mAdapter = new ChoiceRoadAdapter(exampleList);
+                mAdapter = new ChoiceRoadAdapter(exampleList,getActivity());
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.setOnItemClickListener(new ChoiceRoadAdapter.OnItemClickListener() {
