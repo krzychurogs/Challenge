@@ -26,7 +26,7 @@ public class TrainAdapter extends RecyclerView.Adapter<TrainAdapter.ExampleViewH
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
             mTextView1 = itemView.findViewById(R.id.textView);
-            mTextView2 = itemView.findViewById(R.id.textView2);
+            mTextView2 = itemView.findViewById(R.id.textView6);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

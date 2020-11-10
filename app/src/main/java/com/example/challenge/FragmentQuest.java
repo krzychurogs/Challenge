@@ -69,7 +69,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class FragmentQuest extends Fragment {
-    DatabaseReference reff,reffname,refquest;
+    DatabaseReference reff,reffname,refquest,reffpkt,refflvl,reffpointsto;
     private FirebaseAuth mAuth;
     private FragmentQuestListener listener;
     TableLayout tl;
@@ -77,14 +77,10 @@ public class FragmentQuest extends Fragment {
     List<String>averagelist=new ArrayList<>();
     private Polyline gpsTrack;
     ArrayList<Integer> newList = new ArrayList<Integer>();//lista tygodni bez duplikatow
-    public static int counttrain;
-    List<LatLng> points ;
     ArrayList<String> listofdates = new ArrayList<String>();
     List<Integer>counter=new ArrayList<>();
     List<Integer>licznik=new ArrayList<>();
     List<Integer>counterofweek=new ArrayList<>();
-    List<String>listofsameweek=new ArrayList<>();
-    List<String>listofuniqdates=new ArrayList<>();
     List<String>listofdistancequest=new ArrayList<>();
     List<String>listofcounttrainquest=new ArrayList<>();
     List<String>listofaveragequest=new ArrayList<>();
@@ -118,6 +114,9 @@ public class FragmentQuest extends Fragment {
     LinearLayout lineardayavg;
     LinearLayout lineardaydist;
     TextView questinfo;
+    TextView pktinfo;
+    TextView lvlinfo;
+    TextView pkttoLvl;
 
     public interface FragmentQuestListener{
         void onInputSent(CharSequence input);
@@ -137,43 +136,31 @@ public class FragmentQuest extends Fragment {
         linearvertical=(LinearLayout)  root.findViewById(R.id.linearquest);
         lineardayavg= (LinearLayout)    root.findViewById(R.id.linearfordayavg);
         lineardaydist= (LinearLayout)   root.findViewById(R.id.linearfordaydist);
+        pktinfo= (TextView)   root.findViewById(R.id.textViewPkt);
+        lvlinfo= (TextView)   root.findViewById(R.id.lvl);
+        pkttoLvl= (TextView)   root.findViewById(R.id.textViewPktLvl);
 
-        refquest=FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Questy").child("Easy").child("tygodniowe");
 
-        refquest.addValueEventListener(new ValueEventListener() {
+        /*DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
+        pkt.setValue("niski lvl");
+*/
+
+        refflvl = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
+
+        ValueEventListener postListener1 = new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-              String firstlvldist=String.valueOf(dataSnapshot.child("dystans").child("1lvl").getValue());
-              String secondlvldist=String.valueOf(dataSnapshot.child("dystans").child("2lvl").getValue());
-              String thirdlvldist=String.valueOf(dataSnapshot.child("dystans").child("3lvl").getValue());
-              String firstlvlsred=String.valueOf(dataSnapshot.child("srednia").child("1lvl").getValue());
-              String secondlvlsred=String.valueOf(dataSnapshot.child("srednia").child("2lvl").getValue());
-              String thirdlvlsred=String.valueOf(dataSnapshot.child("srednia").child("3lvl").getValue());
-              String firstlvlcountt=String.valueOf(dataSnapshot.child("liczbatreningow").child("1lvl").getValue());
-              String secondlvlcountt=String.valueOf(dataSnapshot.child("liczbatreningow").child("2lvl").getValue());
-              String thirdlvlcountt=String.valueOf(dataSnapshot.child("liczbatreningow").child("3lvl").getValue());
-              listofdistancequest.add(firstlvldist);
-              listofdistancequest.add(secondlvldist);
-              listofdistancequest.add(thirdlvldist);
-              listofaveragequest.add(firstlvlsred);
-              listofaveragequest.add(secondlvlsred);
-              listofaveragequest.add(thirdlvlsred);
-              listofcounttrainquest.add(firstlvlcountt);
-              listofcounttrainquest.add(secondlvlcountt);
-              listofcounttrainquest.add(thirdlvlcountt);
-                for(int i=0;i<53;i++)
-                {
-                    listofweeksinyear.add(i);
-                }
-                stats();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String lvlinfo = dataSnapshot.getValue(String.class);
+                setTextLvl(lvlinfo);
+                showQuestForLvl(lvlinfo);
             }
 
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
             }
-        });
+        };
+        refflvl.addValueEventListener(postListener1);
 
         return root;
 
@@ -440,6 +427,115 @@ public void stats()
     public void onDetach() {
         super.onDetach();
         listener=null;
+    }
+    public void showQuestForLvl(String lvl)
+    {
+
+        System.out.println(lvl);
+
+        reffpointsto = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Questy").child(lvl);
+
+        ValueEventListener postListener2 = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String lvlinfo = String.valueOf(dataSnapshot.child("maxpunkty").getValue());
+                System.out.println("pkt na lvl"+lvlinfo);
+                showPoints(lvlinfo);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+            }
+        };
+        reffpointsto.addValueEventListener(postListener2);
+
+
+
+
+
+
+
+
+        refquest=FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Questy").child(lvl).child("tygodniowe");
+
+        refquest.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String firstlvldist=String.valueOf(dataSnapshot.child("dystans").child("1lvl").getValue());
+                System.out.println(firstlvldist);
+                String secondlvldist=String.valueOf(dataSnapshot.child("dystans").child("2lvl").getValue());
+                String thirdlvldist=String.valueOf(dataSnapshot.child("dystans").child("3lvl").getValue());
+                String firstlvlsred=String.valueOf(dataSnapshot.child("srednia").child("1lvl").getValue());
+                String secondlvlsred=String.valueOf(dataSnapshot.child("srednia").child("2lvl").getValue());
+                String thirdlvlsred=String.valueOf(dataSnapshot.child("srednia").child("3lvl").getValue());
+                String firstlvlcountt=String.valueOf(dataSnapshot.child("liczbatreningow").child("1lvl").getValue());
+                String secondlvlcountt=String.valueOf(dataSnapshot.child("liczbatreningow").child("2lvl").getValue());
+                String thirdlvlcountt=String.valueOf(dataSnapshot.child("liczbatreningow").child("3lvl").getValue());
+                listofdistancequest.add(firstlvldist);
+                listofdistancequest.add(secondlvldist);
+                listofdistancequest.add(thirdlvldist);
+                listofaveragequest.add(firstlvlsred);
+                listofaveragequest.add(secondlvlsred);
+                listofaveragequest.add(thirdlvlsred);
+                listofcounttrainquest.add(firstlvlcountt);
+                listofcounttrainquest.add(secondlvlcountt);
+                listofcounttrainquest.add(thirdlvlcountt);
+                for(int i=0;i<53;i++)
+                {
+                    listofweeksinyear.add(i);
+                }
+                stats();
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void showPoints(final String pointstolvl)
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int pktinfo = dataSnapshot.getValue(Integer.class);
+                String pktint=String.valueOf(pktinfo);
+                System.out.println("poin"+pointstolvl);
+                System.out.println(pktint);
+                int max=Integer.parseInt(pointstolvl);
+                int diff=max-pktinfo;
+                pkttoLvl.setText("Punkty do nastepnęgo lvl:"+String.valueOf(diff));
+                setTextPkt(pktint);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+            }
+        };
+        reffpkt.addValueEventListener(postListener);
+    }
+    public void pointsToLvl()
+    {
+
+    }
+
+
+public void setTextPkt(String value)
+{
+    pktinfo.setText("Twoje punkty: "+value);
+}
+public void setTextLvl(String value)
+    {
+        lvlinfo.setText("Level: "+value);
+
     }
 
 }

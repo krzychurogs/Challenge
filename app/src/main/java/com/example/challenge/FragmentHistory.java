@@ -154,6 +154,8 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
 
         for(int i=0;i<newlist.size();i++)
         {
+
+
             if(i%2==1)
             {
                 String words[]=newlist.get(i).split(",");

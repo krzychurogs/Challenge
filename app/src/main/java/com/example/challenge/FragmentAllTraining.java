@@ -26,6 +26,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,19 +37,23 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
 import com.tokopedia.expandable.ExpandableOptionRadio;
-
+import java.text.DecimalFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,22 +61,27 @@ public class FragmentAllTraining extends Fragment {
     DatabaseReference reff;
     private FirebaseAuth mAuth;
     private FragmentAllTrainingListener listener;
-    Button[] btnWord = new Button[3];
-    LinearLayout linearlayout;
-
-    List<Button> btnList = new ArrayList<>();
-    int count=0;
+    List<Double>listofmaxdistancefromday=new ArrayList<>();
+    List<String>distancelist=new ArrayList<String>();
     List<Integer>counter=new ArrayList<>();
     ArrayList<Integer> newList = new ArrayList<Integer>();//lista tygodni bez duplikatow
-    ArrayList<String> listofdateswithoutduplicates = new ArrayList<String>();//lista tygodni bez duplikatow
     ArrayList<String> listofdates = new ArrayList<String>();
     ArrayList<String> elementofdates = new ArrayList<String>();
     int counterofweekwithoutduplicates=0;
+    List<String>averagelist=new ArrayList<>();
     double sumaofdistance=0.0;
+    double avgofdistancefir=0.0;
+    List<Double>listofmaxavgfromweek=new ArrayList<>();
+    List<Integer>licznik=new ArrayList<>();
     private RecyclerView mRecyclerView;
+    double sumaofdistancefir=0.0;
+    Map<Integer, Double> distanceinweek = new TreeMap<>();
+    Map<Integer, Double> avginweek = new TreeMap<>();
+    Map<Integer, Integer> counterinweek = new TreeMap<>();
     private ExampleAdapter mAdapter;
+    List<Integer>listofnumberofromweek=new ArrayList<>();
     private RecyclerView.LayoutManager mLayoutManager;
-
+    ListMultimap<String, Double> m = MultimapBuilder.hashKeys().linkedListValues().build(); //multimap for distance
     public interface FragmentAllTrainingListener{
         void onInputSent(CharSequence input);
     }
@@ -88,7 +99,9 @@ public class FragmentAllTraining extends Fragment {
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String day = String.valueOf(ds.child("data").child("date").getValue());
                     String month = String.valueOf(ds.child("data").child("month").getValue());
+                    String predkosc = String.valueOf(ds.child("predkosc").getValue());
                     String years = String.valueOf(ds.child("data").child("year").getValue());
+                    String dystans = String.valueOf(ds.child("dystans").getValue());
                     int yearinint=Integer.parseInt(years);
                     int yean=yearinint+120;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
 
@@ -96,8 +109,19 @@ public class FragmentAllTraining extends Fragment {
                     int mon=monthinint+1;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
                     String fulldate=day+"/"+mon+"/"+yean;
                     counter.add( calendar(fulldate));
+                    listofdates.add(fulldate);
+                    m.put(fulldate,Double.valueOf(dystans.replace(",",".")));
+                    distancelist.add(dystans);
+                    averagelist.add(predkosc);
+                }
+                Set<Integer> unique = new HashSet<Integer>(counter);
+                for (Integer key : unique) {
+                    licznik.add(key);
 
                 }
+                int counteroffirweek=0;
+
+
                 fork();
 
             }
@@ -124,13 +148,44 @@ public class FragmentAllTraining extends Fragment {
                 newList.add(element);
             }
         }
+
+        int counteroffirweek=0;
+        for (int i = 0; i < licznik.size(); i++) {
+
+            for(int j=0;j<distancelist.size();j++)
+            {
+                if(calendar(listofdates.get(j))== licznik.get(i))
+                {
+                    sumaofdistancefir+=Double.valueOf(distancelist.get(j).replace(",","."));
+                    avgofdistancefir+=Double.valueOf(averagelist.get(j).replace(",","."));
+                    counteroffirweek+=1;
+                    distanceinweek.put(licznik.get(i),sumaofdistancefir);
+                    counterinweek.put(licznik.get(i),counteroffirweek);
+
+                }
+                if(counteroffirweek !=0)
+                {
+                    double maxavg=avgofdistancefir/counteroffirweek;
+                    avginweek.put(licznik.get(i),maxavg);
+                }
+            }
+
+            counteroffirweek=0;
+            avgofdistancefir=0;
+            sumaofdistancefir=0;
+        }
+
         int conc=0;
         ArrayList<ExampleItem>exampleList=new ArrayList<>();
-        for (int i=0;i<newList.size();i++)
+
+        for (int i = newList.size() - 1; i >= 0; i--)
         {
             SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
             String start ="";
             String end ="";
+            String dist ="";
+            String avg ="";
+            String counter ="";
             int year = 2020;
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, year);
@@ -140,7 +195,36 @@ public class FragmentAllTraining extends Fragment {
             System.out.println(start);
             calendar.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
             end = dt.format(calendar.getTime());
-            exampleList.add(new ExampleItem(R.drawable.ic_circle_50dp,start+"-",end));
+            String fork=start +"-" +end;
+            Set<Map.Entry<Integer,Double>> entrySet = distanceinweek.entrySet();
+            DecimalFormat df = new DecimalFormat("#");
+            for(Map.Entry<Integer, Double> entry: entrySet) {
+                if(entry.getKey() == newList.get(i))
+                {
+                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                    dist=df.format(entry.getValue());
+                }
+            }
+            Set<Map.Entry<Integer,Double>> entrySetavg = avginweek.entrySet();
+            for(Map.Entry<Integer, Double> entry: entrySetavg) {
+                if(entry.getKey() == newList.get(i))
+                {
+                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                    avg=String.valueOf(entry.getValue());
+
+                }
+            }
+            Set<Map.Entry<Integer,Integer>> entrySetCounter = counterinweek.entrySet();
+            for(Map.Entry<Integer, Integer> entry: entrySetCounter) {
+                if(entry.getKey() == newList.get(i))
+                {
+                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                    counter=String.valueOf(entry.getValue());
+                }
+            }
+
+
+            exampleList.add(new ExampleItem(R.drawable.ic_circle_50dp,R.drawable.ic_location_on_black_52dp,R.drawable.ic_timer_black_52dp,fork,dist+"m",avg+"km/h",counter    ));
 
         }
 

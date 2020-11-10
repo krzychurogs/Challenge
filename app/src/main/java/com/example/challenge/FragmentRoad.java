@@ -1,3 +1,4 @@
+
 package com.example.challenge;
 
 import android.app.AlertDialog;
@@ -103,11 +104,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     TableLayout t1;
     boolean dodaneDoBazy=false;
     boolean dodaneDoBazy1=false;
-
-
-
-
-
+    ArrayList<LatLng> coordList = new ArrayList<LatLng>();
 
     int textlength = 0;
 
@@ -221,24 +218,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         mapFragment.getMapAsync(this);
 
 
-        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name")      );
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot snapshot : dataSnapshot.child("waypointy").getChildren()) {
-                    String data = snapshot.getValue(String.class);
-                    listofeachtrainingwaypoint.add(data);
 
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        } ;
-        reff.addListenerForSingleValueEvent(valueEventListener);
 
 
 
@@ -296,59 +276,16 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
     @Override
     public void onLocationChanged(Location location) {
-        Polygon polygon = mMap.addPolygon(new PolygonOptions()
-                .add(new LatLng(50.019432, 21.994719), new LatLng(50.023823, 21.995047), new LatLng(50.024486, 21.988947), new LatLng(50.021395, 21.986917))
-                .strokeColor(Color.RED)
-                .fillColor(Color.GRAY));
+
         if(rusz==true) {
 
 
             lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            ArrayList<LatLng> coordList = new ArrayList<LatLng>();
-            for (int count = 0; count < listofeachtrainingwaypoint.size(); count++) {
-
-
-                List<String> newlist = new ArrayList<String>();
-                String word[] = listofeachtrainingwaypoint.get(count).split(" ");
-                for (String w : word) {
-                    newlist.add(w);
-                }
-
-
-                for (int i = 0; i < newlist.size(); i++) {
-                    if (i % 2 == 1) {
-                        String words[] = newlist.get(i).split(",");
-                        for (String w : words) {
-                            String str1 = w.replace("(", "");
-                            String strnew = str1.replace(")", "");
-
-                            listofplace.add(strnew);
-                        }
-                    }
-                }
-            }
-            for (int i = 0; i < listofplace.size(); i++) {
-                Double latide = 21.9927641;
-                Double longtide = 50.0226329;
-
-                if (i % 2 == 0)//longtiude
-                {
-                    longtide = Double.valueOf(listofplace.get(i));
-                }
-                if (i % 2 == 1) {
-
-                    String lat = listofplace.get(i).toString().replace("]", "");
-                    latide = Double.valueOf(lat);
-                }
-                coordList.add(new LatLng(longtide, latide));
-
-            }
-
             System.out.println("w srodku" + isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) coordList));
 
-            if (isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) coordList) == false) {
+            if (isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) coordList) == true) {
                 updateTrack();
-            } else if (isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) coordList) == true) {
+            } else if (isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) coordList) == false) {
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Alert");
                 alertDialog.setMessage("Jesteś poza obszarem");
@@ -362,7 +299,10 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
             }
 
-            String user_id = mAuth.getCurrentUser().getUid();
+
+
+
+
         }
 
     }
@@ -378,6 +318,58 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     listofeachtrainingwaypoint.add(data);
 
                 }
+
+
+
+                for(int i=0;i<listofeachtrainingwaypoint.size();i++)
+                {
+                    String word[] = listofeachtrainingwaypoint.get(i).split(" ");
+                    for (String w : word) {
+                        newlist.add(w);
+                    }
+                }
+
+
+                    for (int i = 0; i < newlist.size(); i++) {
+                        if (i % 3 == 0) {
+                        }
+                        else {
+                            String words[] = newlist.get(i).split(",");
+                            for (String w : words) {
+                                String str1 = w.replace("(", "");
+                                String strnew = str1.replace(")", "");
+
+                                listofplace.add(strnew);
+                            }
+                        }
+
+                }
+                Double latide= Double.valueOf(listofplace.get(1));
+                Double longtide=  Double.valueOf(listofplace.get(0));
+                for(int i=0;i<listofplace.size();i++) {
+
+
+                    longtide=Double.valueOf(listofplace.get(i));
+
+                    if(listofplace.size() > i + 1){
+                        latide = Double.valueOf(listofplace.get(++i).toString().replace("]","")); //Change here
+                    }
+                    lastKnownLatLng= new LatLng(longtide, latide);
+
+                    coordList.add(lastKnownLatLng);
+                }
+                for(int i=0;i<coordList.size();i++)
+                {
+                    System.out.println(coordList.get(i).latitude);
+                    System.out.println(coordList.get(i).longitude);
+                }
+                PolygonOptions options = new PolygonOptions()
+                        .strokeColor(Color.RED)
+                        .fillColor(Color.GRAY)
+                        .geodesic(true)
+                        .addAll(coordList);
+
+                Polygon pfad = mMap.addPolygon(options);
 
             }
 
@@ -453,21 +445,21 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         if(suma>=100 && suma<200 && dodaneDoBazy==false)
         {
 
-                MSort.setVisibility(View.VISIBLE);
-                DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                        ("Customers").child("Road").child("pierwsza trasa").child("pierwszycheck").push();
-                //  road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
-                road.child("name").setValue(listofname.get(0));
-                road.child("dystans").setValue(100);
-                DecimalFormat dfs = new DecimalFormat("#.##");
+            MSort.setVisibility(View.VISIBLE);
+            DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
+                    ("Customers").child("Road").child("pierwsza trasa").child("pierwszycheck").push();
+            //  road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
+            road.child("name").setValue(listofname.get(0));
+            road.child("dystans").setValue(100);
+            DecimalFormat dfs = new DecimalFormat("#.##");
 
-                road.child("srednia").setValue(dfs.format(avgspeed));
-                String pierwszycheck="pierwszycheck";
-                dodaneDoBazy=true;
-                 showTable(pierwszycheck,dfs.format(avgspeed));
+            road.child("srednia").setValue(dfs.format(avgspeed));
+            String pierwszycheck="pierwszycheck";
+            dodaneDoBazy=true;
+            showTable(pierwszycheck,dfs.format(avgspeed));
 
         }
-         if(suma>=200 && dodaneDoBazy1==false)
+        if(suma>=200 && dodaneDoBazy1==false)
         {
             //  showTable();
             MSort.setVisibility(View.VISIBLE);
@@ -611,7 +603,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             }
         }
 
-        return ((intersectCount % 2) == 1); // odd = inside, even = outside;
+            return ((intersectCount % 2) == 1); // odd = inside, even = outside;
     }
 
     private boolean rayCastIntersect(LatLng tap, LatLng vertA, LatLng vertB) {

@@ -21,13 +21,23 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
+        public ImageView mImageView1;
+        public ImageView mImageView2;
         public TextView mTextView1;
         public TextView mTextView2;
+        public TextView mTextView3;
+        public TextView mTextView4;
+        public TextView mTextView5;
         public ExampleViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
+            mImageView1 = itemView.findViewById(R.id.imageViewDist);
+            mImageView2 = itemView.findViewById(R.id.imageViewAvg);
             mTextView1 = itemView.findViewById(R.id.textView);
-            mTextView2 = itemView.findViewById(R.id.textView2);
+
+            mTextView3 = itemView.findViewById(R.id.textView3);
+            mTextView4 = itemView.findViewById(R.id.textView6);
+            mTextView5 = itemView.findViewById(R.id.textViewinImage);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -54,8 +64,13 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
         ExampleItem currentItem = mExampleList.get(position);
         holder.mImageView.setImageResource(currentItem.getImageResource());
+        holder.mImageView1.setImageResource(currentItem.getmImageResource1());
+        holder.mImageView2.setImageResource(currentItem.getmImageResource2());
         holder.mTextView1.setText(currentItem.getText1());
-        holder.mTextView2.setText(currentItem.getText2());
+        holder.mTextView3.setText(currentItem.getmText3());
+        holder.mTextView4.setText(currentItem.getmText4());
+        holder.mTextView5.setText(currentItem.getmText5());
+
 
     }
     @Override
