@@ -47,13 +47,13 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null){
                     String user_id = mAuth.getCurrentUser().getUid();
-                    reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id);
+                    reff= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
                     reff.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.child("level").exists())
+                            if (dataSnapshot.child("lvl").exists())
                             {
-                                Intent intent = new Intent(CustomerLoginActivity.this, MainActivity.class);
+                                Intent intent = new Intent(CustomerLoginActivity.this, MainActivity .class);
                                 startActivity(intent);
                                 finish();
                                 return;
@@ -65,7 +65,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
 
                         }
                     });
-                    Intent intent = new Intent(CustomerLoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(CustomerLoginActivity.this, QuizActivity.class);
                     startActivity(intent);
                     finish();
                     return;
@@ -79,8 +79,6 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
 
         mLogin = (Button) findViewById(R.id.btn_login);
         mRegistration = (Button) findViewById(R.id.btn_register);
-
-
         mRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,11 +106,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
             }
         });
 
-
-
     }
-
-
     @Override
     protected void onStart() {
         super.onStart();

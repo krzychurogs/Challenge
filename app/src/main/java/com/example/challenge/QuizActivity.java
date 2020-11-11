@@ -1,7 +1,10 @@
 package com.example.challenge;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,8 +28,7 @@ public class QuizActivity extends AppCompatActivity {
     private int mScore;
     int points=0;
     public int count=0 ;
-
-
+    private int num = 0;
     private int mQuestionaLengtht=mQuestions.mQuestions.length;
     Random r;
 
@@ -42,34 +44,28 @@ public class QuizActivity extends AppCompatActivity {
         r=new Random();
         question = findViewById(R.id.question);
 
-
-        updateQuestion(0);
-
+        updateQuestion();
             answer1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (answer1.getText().toString() == mAnswer) {
                         points+=4;
-                        int number=r.nextInt(mQuestionaLengtht);
-                        updateQuestion(number);
+                        updateQuestion();
                         System.out.println(mAnswer);
-                        System.out.println("licznik"+count);
-
-
+                        System.out.println("licznik"+points);
                     }
-
-
-
                 }
             });
 
             answer2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    System.out.println(medAnswer);
                     if (answer2.getText().toString() == medAnswer) {
-                        int number=r.nextInt(mQuestionaLengtht);
-                        updateQuestion(number);
-                        points += 4;
+                        System.out.println(medAnswer);
+                        updateQuestion();
+                        points += 3;
+                        System.out.println("licznik"+points);
 
                     }
                 }
@@ -78,8 +74,10 @@ public class QuizActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (answer3.getText().toString() == lowAnswer) {
-                        points+=4;
-                        updateQuestion(r.nextInt(mQuestionaLengtht));
+                        System.out.println(lowAnswer);
+                        points+=2;
+                        updateQuestion();
+                        System.out.println("licznik"+points);
                     }
 
                 }
@@ -88,35 +86,62 @@ public class QuizActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (answer4.getText().toString() == verylowAnswer) {
-                        points+=4;
-                        int number=r.nextInt(mQuestionaLengtht);
-                        updateQuestion(number);
+                        points+=1;
+
+                        updateQuestion();
+                        System.out.println("licznik"+points);
                     }
 
                 }
             });
-
-
-
-                String user_id = mAuth.getCurrentUser().getUid();
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child
-                        ("Customers").child("Historia").child(user_id).child("level");
-                ref.setValue("wysoki lvl");
-        System.out.println(user_id);
-
-
     }
 
-    public void updateQuestion(int num)
+    public void updateQuestion()
     {
-        question.setText(mQuestions.getQuestion(num));
-        answer1.setText(mQuestions.getChoice1(num));
-        answer2.setText(mQuestions.getChoice2(num));
-        answer3.setText(mQuestions.getChoice3(num));
-        answer4.setText(mQuestions.getChoice4(num));
-        mAnswer=mQuestions.getCorrectAnswer(num);
-        medAnswer=mQuestions.getCorrectAnswersformedium(num);
-        lowAnswer=mQuestions.getCorrectAnswersforlow(num);
-        verylowAnswer=mQuestions.getCorrectAnswersforverylow(num);
+        if(num<mQuestionaLengtht)
+        {
+            question.setText(mQuestions.getQuestion(num));
+            answer1.setText(mQuestions.getChoice1(num));
+            answer2.setText(mQuestions.getChoice2(num));
+            answer3.setText(mQuestions.getChoice3(num));
+            answer4.setText(mQuestions.getChoice4(num));
+            mAnswer=mQuestions.getCorrectAnswer(num);
+            medAnswer=mQuestions.getCorrectAnswersformedium(num);
+            lowAnswer=mQuestions.getCorrectAnswersforlow(num);
+            verylowAnswer=mQuestions.getCorrectAnswersforverylow(num);
+            num++;
+        }
+        else {
+            String lvl="";
+            if(points>35)
+            {
+                lvl="High";
+            } else if (points>20) {
+                lvl="Medium";
+            }
+            else {
+                lvl="Easy";
+            }
+
+            final String finallvl=lvl;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Wynik ankiety");
+            builder.setMessage("Plan treningowy dobrany dla ciebie bedzie na poziomie "+lvl);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String user_id = mAuth.getCurrentUser().getUid();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
+                    ref.setValue(finallvl);
+                    Intent intent = new Intent(QuizActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return;
+                }
+            });
+            builder.setCancelable(false);
+            builder.show();
+        }
+
     }
 }
