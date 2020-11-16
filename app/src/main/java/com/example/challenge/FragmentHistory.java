@@ -83,7 +83,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         textkalorie= (TextView)  root.findViewById(R.id.textKalorie);
         texthighspeed= (TextView)  root.findViewById(R.id.textHighSpeed);
         datahisttext= (TextView)  root.findViewById(R.id.datatraintext);
-        backtoall=(Button)root.findViewById(R.id.backtoall);
+
 
 
         final MainActivity count=(MainActivity)getActivity();

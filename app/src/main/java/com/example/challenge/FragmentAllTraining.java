@@ -67,7 +67,10 @@ public class FragmentAllTraining extends Fragment {
     ArrayList<Integer> newList = new ArrayList<Integer>();//lista tygodni bez duplikatow
     ArrayList<String> listofdates = new ArrayList<String>();
     ArrayList<String> elementofdates = new ArrayList<String>();
+    ArrayList<Integer> listOfForks = new ArrayList<Integer>();
+    ArrayList<Integer> listOfForksReverse = new ArrayList<Integer>();
     int counterofweekwithoutduplicates=0;
+    ArrayList<Integer> posWeek = new ArrayList<Integer>();
     List<String>averagelist=new ArrayList<>();
     double sumaofdistance=0.0;
     double avgofdistancefir=0.0;
@@ -177,7 +180,7 @@ public class FragmentAllTraining extends Fragment {
 
         int conc=0;
         ArrayList<ExampleItem>exampleList=new ArrayList<>();
-
+        int posi=0;
         for (int i = newList.size() - 1; i >= 0; i--)
         {
             SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
@@ -225,8 +228,12 @@ public class FragmentAllTraining extends Fragment {
 
 
             exampleList.add(new ExampleItem(R.drawable.ic_circle_50dp,R.drawable.ic_location_on_black_52dp,R.drawable.ic_timer_black_52dp,fork,dist+"m",avg+"km/h",counter    ));
+            listOfForks.add(posi);
+
+            posi++;
 
         }
+
 
 
         mRecyclerView.setHasFixedSize(true);
@@ -234,18 +241,20 @@ public class FragmentAllTraining extends Fragment {
         mAdapter = new ExampleAdapter(exampleList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
+        listOfForksReverse=reverseList(listOfForks);
         mAdapter.setOnItemClickListener(new ExampleAdapter.OnItemClickListener(){
             @Override
             public void onItemClick(int position) {
                 System.out.println(position);
+                System.out.println(listOfForksReverse.get(position));
                 Bundle bundle=new Bundle();
-                bundle.putInt("number",position);
+                bundle.putInt("number",listOfForksReverse.get(position));
                 FragmentAllTrainInWeek trainweek=new FragmentAllTrainInWeek();
                 trainweek.setArguments(bundle);
                 FragmentTransaction transaction=getFragmentManager().beginTransaction();
                 transaction.replace(R.id.drawer_layout,trainweek);
                 transaction.commit();
+
 
             }
         });
@@ -296,6 +305,12 @@ public class FragmentAllTraining extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener=null;
+    }
+    public static<T> ArrayList<T> reverseList(List<T> list)
+    {
+        ArrayList<T> reverse = new ArrayList<>(list);
+        Collections.reverse(reverse);
+        return reverse;
     }
 
 

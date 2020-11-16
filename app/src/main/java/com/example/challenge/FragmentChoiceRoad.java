@@ -72,6 +72,7 @@ public class FragmentChoiceRoad extends Fragment {
     ArrayList<ChoiceRoadItem>exampleList=new ArrayList<>();
 
 
+
     public interface FragmentChoiceRoadListener{
         void onInputSent(CharSequence input);
     }
@@ -97,10 +98,22 @@ public class FragmentChoiceRoad extends Fragment {
 
                     String trasa=String.valueOf(ds.getKey());
                     String message=String.valueOf(ds.child("image").getValue());
-                    System.out.println(message);
+                    String dist=String.valueOf(ds.child("odleglosc").getValue());
+                    String maxavg=String.valueOf(ds.child("avgmax").getValue());
+                    System.out.println(maxavg);
                     ChoiceRoadItem choiceRoadItem=new ChoiceRoadItem();
                     choiceRoadItem.setmImageResource(message);
+                    choiceRoadItem.setmImageResourceAvg(R.drawable.ic_timer_black_52dp);
+                    choiceRoadItem.setmImageResourceDist(R.drawable.ic_location_on_black_52dp);
                     choiceRoadItem.setmText1(trasa);
+                    choiceRoadItem.setmText2(dist+"m");
+                    if(maxavg.equals("null"))
+                    {
+                        choiceRoadItem.setmText3("brak");
+                    }
+                    else {
+                        choiceRoadItem.setmText3(maxavg+" km/h");
+                    }
 
                     roadlists.add(trasa);
                     exampleList.add(choiceRoadItem);

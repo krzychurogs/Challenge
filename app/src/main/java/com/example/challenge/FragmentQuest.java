@@ -69,7 +69,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class FragmentQuest extends Fragment {
-    DatabaseReference reff,reffname,refquest,reffpkt,refflvl,reffpointsto;
+    DatabaseReference reff,reffname,refquest,reffpkt,refflvl,reffpointsto,refquestday;
     private FirebaseAuth mAuth;
     private FragmentQuestListener listener;
     TableLayout tl;
@@ -82,6 +82,8 @@ public class FragmentQuest extends Fragment {
     List<Integer>licznik=new ArrayList<>();
     List<Integer>counterofweek=new ArrayList<>();
     List<String>listofdistancequest=new ArrayList<>();
+    List<String>listofdistancequestday=new ArrayList<>();
+    List<String>listofavgquestday=new ArrayList<>();
     List<String>listofcounttrainquest=new ArrayList<>();
     List<String>listofaveragequest=new ArrayList<>();
     List<Double>listofmaxdistancefromweek=new ArrayList<>();
@@ -152,7 +154,9 @@ public class FragmentQuest extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String lvlinfo = dataSnapshot.getValue(String.class);
                 setTextLvl(lvlinfo);
+                showQuestDay(lvlinfo);
                 showQuestForLvl(lvlinfo);
+
             }
 
             @Override
@@ -341,11 +345,11 @@ public void stats()
             checkcounttrain.setTextSize(16);
 
             daydistancequest.setLayoutParams(layoutParams);
-            daydistancequest.setText("Dystans w dniu: "+listofdistancequest.get(0));
+            daydistancequest.setText("Dystans w dniu: "+listofdistancequestday.get(0));
             daydistancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
             dayavgquest.setLayoutParams(layoutParams);
-            dayavgquest.setText("Srednia w dniu: "+listofdistancequest.get(0));
+            dayavgquest.setText("Srednia w dniu: "+listofavgquestday.get(0));
             dayavgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
             checkdayavg.setLayoutParams(layoutParamscheck);
@@ -537,5 +541,36 @@ public void setTextLvl(String value)
         lvlinfo.setText("Level: "+value);
 
     }
+public void showQuestDay(String lvl)
+{
+    refquestday=FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Questy").child(lvl).child("dzienne");
+
+    refquestday.addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            String firstlvldist=String.valueOf(dataSnapshot.child("dystans").child("1lvl").getValue());
+            System.out.println(firstlvldist);
+            String secondlvldist=String.valueOf(dataSnapshot.child("dystans").child("2lvl").getValue());
+            String thirdlvldist=String.valueOf(dataSnapshot.child("dystans").child("3lvl").getValue());
+            String firstlvlsred=String.valueOf(dataSnapshot.child("srednia").child("1lvl").getValue());
+            String secondlvlsred=String.valueOf(dataSnapshot.child("srednia").child("2lvl").getValue());
+            String thirdlvlsred=String.valueOf(dataSnapshot.child("srednia").child("3lvl").getValue());
+            listofdistancequestday.add(firstlvldist);
+            listofdistancequestday.add(secondlvldist);
+            listofdistancequestday.add(thirdlvldist);
+            listofavgquestday.add(firstlvlsred);
+            listofavgquestday.add(secondlvlsred);
+            listofavgquestday.add(thirdlvlsred);
+
+
+        }
+
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    });
+}
 
 }

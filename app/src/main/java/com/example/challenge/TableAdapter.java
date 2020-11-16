@@ -1,28 +1,19 @@
 package com.example.challenge;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.google.common.collect.Table;
 
 import java.util.ArrayList;
-public class ChoiceRoadAdapter extends RecyclerView.Adapter<ChoiceRoadAdapter.ExampleViewHolder> {
-    private ArrayList<ChoiceRoadItem> mExampleList;
+public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewHolder> {
+    private ArrayList<TableItem> mExampleList;
     private OnItemClickListener mListener;
-    private Context mContext;
-
-    public ChoiceRoadAdapter(ArrayList<ChoiceRoadItem> mExampleList, Context mContext) {
-        this.mExampleList = mExampleList;
-        this.mContext = mContext;
-    }
-
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
@@ -31,20 +22,17 @@ public class ChoiceRoadAdapter extends RecyclerView.Adapter<ChoiceRoadAdapter.Ex
     }
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
-        public ImageView mImageViewdist;
-        public ImageView mImageViewAvg;
+
         public TextView mTextView1;
         public TextView mTextView2;
-        public TextView mTextViewAvg;
+        public TextView mTextView3;
         public ExampleViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imageView);
-            mImageViewdist= itemView.findViewById(R.id.imageViewDist);
-            mImageViewAvg= itemView.findViewById(R.id.imageViewAvg);
-            mTextView1 = itemView.findViewById(R.id.textView);
-            mTextView2 = itemView.findViewById(R.id.textDystans);
-            mTextViewAvg= itemView.findViewById(R.id.textBestAvg);
+
+            mTextView1 = itemView.findViewById(R.id.txtRank);
+            mTextView3 = itemView.findViewById(R.id.txtAvg);
+            mTextView2 = itemView.findViewById(R.id.txtLvl);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -58,27 +46,21 @@ public class ChoiceRoadAdapter extends RecyclerView.Adapter<ChoiceRoadAdapter.Ex
             });
         }
     }
-    public ChoiceRoadAdapter(FragmentActivity activity, ArrayList<ChoiceRoadItem> exampleList) {
+    public TableAdapter(ArrayList<TableItem> exampleList) {
         mExampleList = exampleList;
     }
     @Override
     public ExampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.example_road, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.table_list_item, parent, false);
         ExampleViewHolder evh = new ExampleViewHolder(v,mListener);
         return evh;
     }
     @Override
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
-        ChoiceRoadItem currentItem = mExampleList.get(position);
-        holder.mTextView1.setText(currentItem.getText1());
+        TableItem currentItem = mExampleList.get(position);
+        holder.mTextView1.setText(currentItem.getmText1());
+        holder.mTextView3.setText(currentItem.getmText3());
         holder.mTextView2.setText(currentItem.getmText2());
-        holder.mTextViewAvg.setText(currentItem.getmText3());
-        holder.mImageViewdist.setImageResource(currentItem.getmImageResourceDist());
-        holder.mImageViewAvg.setImageResource(currentItem.getmImageResourceAvg());
-        Glide.with(mContext).load(mExampleList.get(position).getImageResource()).into(holder.mImageView);
-
-
-
 
 
     }

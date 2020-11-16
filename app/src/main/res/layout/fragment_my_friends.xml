@@ -1,44 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".FragmentMyFriends">
+    tools:context=".FragmentFriends">
+
+    <TextView
+        android:id="@+id/textFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="15dp"
+        android:layout_toStartOf="@+id/editsearch"
+        android:text="Twoi Znajomi"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
 
     <EditText
         android:id="@+id/editsearch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Szukaj" />
+        android:layout_height="50dp"
+        android:hint="Szukaj"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:drawableStart="@drawable/ic_search_black_40dp"
+        android:padding="15dp"
+        android:background="@drawable/et_custom"
+        android:textSize="15sp" />
 
     <ListView
         android:id="@+id/sampleListView"
-        android:layout_width="392dp"
-        android:layout_height="313dp"
+        android:layout_width="match_parent"
+        android:layout_height="201dp"
         android:layout_below="@id/editsearch"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="0dp"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="#CCCCCC"
         android:dividerHeight="1dp"
-        android:paddingLeft="2dp"></ListView>
+        android:paddingLeft="2dp"
+        android:text="Szukaj"></ListView>
 
 
+    <TextView
+        android:id="@+id/textRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="10dp"
+        android:layout_toStartOf="@+id/editsearch"
+        android:text="Zaproszenia do grona znajomych"
+        android:textColor="@android:color/black"
+
+        android:textSize="28sp"
+        android:textStyle="bold" />
     <EditText
         android:id="@+id/editsearchrequest"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sampleListView"
-        android:text="Szukaj" />
+        android:layout_height="50dp"
+        android:hint="Szukaj"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:drawableStart="@drawable/ic_search_black_40dp"
+        android:padding="15dp"
+        android:background="@drawable/et_custom"
+        android:textSize="15sp" />
 
     <ListView
         android:id="@+id/sampleListViewRequest"
-        android:layout_width="381dp"
-        android:layout_height="241dp"
-        android:layout_below="@id/editsearchrequest"
-        android:layout_marginTop="62dp"
+        android:layout_width="match_parent"
+        android:layout_height="186dp"
+        android:layout_below="@id/editsearch"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
@@ -46,4 +89,6 @@
         android:dividerHeight="1dp"
         android:paddingLeft="2dp"></ListView>
 
-</RelativeLayout>
+
+
+</LinearLayout>

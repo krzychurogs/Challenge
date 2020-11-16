@@ -159,6 +159,8 @@ public class FragmentAllTrainInWeek extends Fragment {
             }
         }
         int max=newList.size()-1;
+        System.out.println(newList.get(i));
+        System.out.println("max "+max);
         lookfordateindatabase(newList.get(i),i,max);
 
 
@@ -235,7 +237,8 @@ public class FragmentAllTrainInWeek extends Fragment {
                         System.out.println(partshour[0]+":"+partshour[1]+" "+partshour[3]+"/"+partshour[4]+"/"+partshour[5]);
 
                       int year=Integer.parseInt(partshour[5])+1900;
-                      String nazwa=partshour[0]+":"+partshour[1]+" "+partshour[3]+"/"+partshour[4]+"/"+String.valueOf(year);
+                      int month=Integer.parseInt(partshour[4])+1;
+                      String nazwa=partshour[0]+":"+partshour[1]+" "+partshour[3]+"/"+String.valueOf(month)+"/"+String.valueOf(year);
                       String test="d";
                       exampleList.add(new TrainInWeekItem(R.drawable.ic_circle_50dp,nazwa,test));
                       elementofdatesinweek.add(elementofdates.get(i));

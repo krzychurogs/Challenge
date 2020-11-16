@@ -1,42 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context=".FragmentFriends">
 
+    <TextView
+        android:id="@+id/textFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="15dp"
+        android:layout_toStartOf="@+id/editsearch"
+        android:text="Twoi Znajomi"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+
     <EditText
         android:id="@+id/editsearch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Szukaj" />
+        android:layout_height="50dp"
+        android:hint="Szukaj"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:drawableStart="@drawable/ic_search_black_40dp"
+        android:padding="15dp"
+        android:background="@drawable/et_custom"
+        android:textSize="15sp" />
 
     <ListView
         android:id="@+id/sampleListView"
         android:layout_width="match_parent"
-        android:layout_height="224dp"
+        android:layout_height="459dp"
         android:layout_below="@id/editsearch"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="0dp"
         android:background="@android:color/transparent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="#CCCCCC"
         android:dividerHeight="1dp"
-        android:paddingLeft="2dp"></ListView>
-    android:text="Szukaj" />
+        android:paddingLeft="2dp"
+        android:text="Szukaj"></ListView>
 
-    <ListView
-        android:id="@+id/sampleListViewRequest"
-        android:layout_width="280dp"
-        android:layout_height="387dp"
-        android:layout_below="@id/editsearch"
-        android:layout_marginTop="289dp"
-        android:layout_marginBottom="10dp"
-        android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="#CCCCCC"
-        android:dividerHeight="1dp"
-        android:paddingLeft="2dp"></ListView>
 
-</RelativeLayout>
+</LinearLayout>

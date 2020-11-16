@@ -53,7 +53,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FragmentFriends extends Fragment implements TextWatcher {
-    DatabaseReference reff, reffs, reffrequest,reffforpending;
+    DatabaseReference reff, reffs, reffrequest,reffforpending,reffallkey;
     private FirebaseAuth mAuth;
     private FragmentFriendsListener listener;
     EditText e1;
@@ -61,6 +61,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
     List<String> listofkey = new ArrayList<String>();
     List<String> listofkeyrequest = new ArrayList<String>();
     List<String> listofname = new ArrayList<String>();
+    List<String> listOfNameFriends = new ArrayList<String>();
 
     List<LatLng> points;
     String[] name = {"Pakistan", "India", "Szwecja"};
@@ -79,7 +80,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         final String user_id = mAuth.getCurrentUser().getUid();
         mylist = new ArrayList<>();
         SingleRow singleRow;
-
+        showKeys();
 
         final View root = inflater.inflate(R.layout.fragment_fragment_friends, container, false);
 
@@ -87,30 +88,8 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         l1 = (ListView) root.findViewById(R.id.sampleListView);
 
         e1.addTextChangedListener(this);
-        reff = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users");
-        Query query = reff.orderByChild("name").equalTo("Krzysztof");
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String key = String.valueOf(ds.getKey());
-                    String name = String.valueOf(ds.getValue());
-                    if(!key.equals(user_id))
-                    {
-                        listofkey.add(key);
-                    }
 
-                }
-                checkForPendendInv(listofkey.get(1));
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        reff.addListenerForSingleValueEvent(valueEventListener);
         return root;
 
     }
@@ -147,36 +126,42 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         listener = null;
     }
 
-    public void stats(int i) {
+    public void stats(String k) {
 
-
-        reffs = FirebaseDatabase.getInstance().getReference().child("Users").child(listofkey.get(i));
+        mylist.clear();
+        listOfNameFriends.add(k);
+        reffs = FirebaseDatabase.getInstance().getReference().child("Users").child(k);
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> newlist = new ArrayList<String>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String name = String.valueOf(ds.getValue());
+                    String key= String.valueOf(ds.getKey());
+                    System.out.println("nam"+name);
                     SingleRow singleRow = new SingleRow(name, "easy");
                     mylist.add(singleRow);
-
                     myAdapter = new MyAdapter(getActivity(), mylist);
-                    myAdapter.setCustomButtonListner(new customButtonListener() {
-                        @Override
-                        public void onButtonClickListner(int position) {
-
-                            String user_id = mAuth.getCurrentUser().getUid();
-
-                            keyfriendname(listofkey.get(position + 1));
-                            myAdapter.notifyDataSetChanged();
-
-                        }
-                    });
                     l1.setAdapter(myAdapter);
-                    myAdapter.notifyDataSetChanged();
-                    listofname.add(name);
 
                 }
+
+                myAdapter.setCustomButtonListner(new customButtonListener() {
+                    @Override
+                    public void onButtonClickListner(int position) {
+
+                        System.out.println("wyslij"+listOfNameFriends.get(position));
+                        keyfriendname(listOfNameFriends.get(position));
+                        mylist.remove(position);
+                        myAdapter.notifyDataSetChanged();
+                        listOfNameFriends.clear();
+                        showKeys();
+
+
+                    }
+                });
+
+
 
             }
 
@@ -194,6 +179,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         DatabaseReference requestfriend = FirebaseDatabase.getInstance().getReference().child("Users").child
                 ("Customers").child("Historia").child(user_id).child("FriendsRequest").child(key);
         requestfriend.setValue("pended");
+        myAdapter.notifyDataSetChanged();
 
     }
 
@@ -201,7 +187,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         String user_id = mAuth.getCurrentUser().getUid();
         reffforpending = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users").child("Customers")
                 .child("Historia").child(user_id).child("FriendsRequest");
-
+        listofkeyrequest.clear();
 
         Query query = reff.orderByChild(key).equalTo("pended");
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -220,7 +206,9 @@ public class FragmentFriends extends Fragment implements TextWatcher {
                      {
                         if(!listofkeyrequest.contains(listofkey.get(i)))
                         {
-                            stats(i);
+                            System.out.println(listofkey.get(i));
+                            stats(listofkey.get(i));
+
                         }
                      }
             }
@@ -231,6 +219,87 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         };
         reffforpending.addListenerForSingleValueEvent(valueEventListener);
 
+    }
+    public void showKeys()
+    {
+        listofname.clear();
+        final String user_id = mAuth.getCurrentUser().getUid();
+        reffallkey= FirebaseDatabase.getInstance().getReference().child("Users");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String namefriend =  String.valueOf(ds.getKey());
+
+                    listofname.add(namefriend);
+
+                }
+                showNameAfterId(listofname.get(1));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffallkey.addListenerForSingleValueEvent(valueEventListener);
+    }
+    public void showNameAfterId(String key)
+    {
+
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffs= FirebaseDatabase.getInstance().getReference().child("Users").child(key);
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    // System.out.println(ds.getKey());
+                    // System.out.println(ds.getValue());
+                    String namefriend =  String.valueOf(ds.getValue()   );
+                   // System.out.println("name"+namefriend);
+                    nameofFriends(namefriend);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffs.addListenerForSingleValueEvent(valueEventListener);
+    }
+    public void nameofFriends(String namefriend)
+    {
+        final String user_id = mAuth.getCurrentUser().getUid();
+        listofkey.clear();
+        reff = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users");
+        Query query = reff.orderByChild("name").equalTo(namefriend);
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String key = String.valueOf(ds.getKey());
+                    String name = String.valueOf(ds.getValue());
+                    if(!key.equals(user_id))
+                    {
+                        listofkey.add(key);
+                    }
+
+                }
+                checkForPendendInv(listofkey.get(1));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reff.addListenerForSingleValueEvent(valueEventListener);
     }
 }
 

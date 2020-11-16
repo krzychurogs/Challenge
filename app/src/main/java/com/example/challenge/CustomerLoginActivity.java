@@ -53,7 +53,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("lvl").exists())
                             {
-                                Intent intent = new Intent(CustomerLoginActivity.this, MainActivity .class);
+                                Intent intent = new Intent(CustomerLoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                                 return;
@@ -65,7 +65,7 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
 
                         }
                     });
-                    Intent intent = new Intent(CustomerLoginActivity.this, QuizActivity.class);
+                    Intent intent = new Intent(CustomerLoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                     return;
