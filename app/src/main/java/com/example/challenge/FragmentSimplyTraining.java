@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
-    DatabaseReference reff;
+    DatabaseReference reff,reffpkt;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -90,6 +90,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
     ImageButton MStart;
     static boolean rusz=false;
     private boolean running;
+    boolean start=false;
     private long pauseOffset;
     List<Double>highstedaverage=new ArrayList<Double>();
 
@@ -142,9 +143,31 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
             @Override
             public void onClick(View view) {
                 startChronometer();
+                final  String user_id = mAuth.getCurrentUser().getUid();
                 rusz=true;
                 mStopTime.setVisibility(View.INVISIBLE);
                 MStart.setVisibility(View.GONE);
+                reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
+
+                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
+                    boolean processDone = false;
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && !processDone) {
+                            int pktinfo = dataSnapshot.getValue(Integer.class);
+                            System.out.println(pktinfo);
+                            addpoints(pktinfo);
+                        } else {
+                            // do process 2
+                            processDone = true;
+                        }
+                    }
+
+                    @Override public void onCancelled(DatabaseError databaseError) {}
+                });
+
+
 
                 if(MStart.getVisibility() == View.VISIBLE) {
                     MStart.setVisibility(View.INVISIBLE);
@@ -309,7 +332,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         text.append(df.format(avgspeed));
         text.append(Html.fromHtml("<sup>km</sup>/<sub>h</sub>"));
         MSpeed.setText(text);
-        System.out.println(calory);
+       // System.out.println(calory);
         MCalory.setText(dfcalory.format(calory));
         if(suma>100)
         {
@@ -333,12 +356,17 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
 
 
         final double finalSuma = suma;
+        final boolean oneCheck=false;
         MEnd.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
-                String user_id = mAuth.getCurrentUser().getUid();
+                final  String user_id = mAuth.getCurrentUser().getUid();
+
+
+
+
                 DecimalFormat df = new DecimalFormat("#.##");
 
                 String szybkosc= df.format(avgspeed).toString();
@@ -389,6 +417,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 List nameList = new ArrayList<String>(Arrays.asList(table));
 
                 historia.child("waypointy").setValue(nameList);
+
             }
         });
 
@@ -428,6 +457,16 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
             running = false;
         }
     }
-
+public void addpoints(int pktinfo)
+{
+    final  String user_id = mAuth.getCurrentUser().getUid();
+    int minus=30;
+    final int score=pktinfo-minus;
+    String pktint=String.valueOf(score);
+    System.out.println(score);
+    DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+            ("Customers").child("Historia").child(user_id).child("punkty");
+    pkt.setValue(score);
+}
 
 }
