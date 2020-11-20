@@ -4,6 +4,7 @@ public class ChoiceRoadItem {
     private String mImageResource;
     private int mImageResourceDist;
     private int mImageResourceAvg;
+    private int mImageResourceStats;
     private String mText1;
     private String mText2;
     private String mText3;
@@ -75,5 +76,13 @@ public class ChoiceRoadItem {
 
     public void setmText3(String mText3) {
         this.mText3 = mText3;
+    }
+
+    public int getmImageResourceStats() {
+        return mImageResourceStats;
+    }
+
+    public void setmImageResourceStats(int mImageResourceStats) {
+        this.mImageResourceStats = mImageResourceStats;
     }
 }

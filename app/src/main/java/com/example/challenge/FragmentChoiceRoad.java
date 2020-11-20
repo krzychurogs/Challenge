@@ -73,6 +73,7 @@ public class FragmentChoiceRoad extends Fragment {
 
 
 
+
     public interface FragmentChoiceRoadListener{
         void onInputSent(CharSequence input);
     }
@@ -105,6 +106,8 @@ public class FragmentChoiceRoad extends Fragment {
                     choiceRoadItem.setmImageResource(message);
                     choiceRoadItem.setmImageResourceAvg(R.drawable.ic_timer_black_52dp);
                     choiceRoadItem.setmImageResourceDist(R.drawable.ic_location_on_black_52dp);
+                    choiceRoadItem.setmImageResourceStats(R.drawable.ic_location_on_black_52dp);
+
                     choiceRoadItem.setmText1(trasa);
                     choiceRoadItem.setmText2(dist+"m");
                     if(maxavg.equals("null"))
@@ -123,6 +126,20 @@ public class FragmentChoiceRoad extends Fragment {
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
                 mAdapter = new ChoiceRoadAdapter(exampleList,getActivity());
+                mAdapter.setCustomButtonListner(new ChoiceRoadAdapter.customButtonListener() {
+                    @Override
+                    public void onButtonClickListner(int position) {
+                        System.out.println(position);
+                        bundle.putString("name",roadlists.get(position));
+                        FragmentStatsMap statsFragment=new FragmentStatsMap();
+                        statsFragment.setArguments(bundle);
+                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.drawer_layout,statsFragment);
+                        transaction.commit();
+
+
+                    }
+                });
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.setOnItemClickListener(new ChoiceRoadAdapter.OnItemClickListener() {

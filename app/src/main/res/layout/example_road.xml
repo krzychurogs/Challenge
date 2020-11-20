@@ -80,5 +80,19 @@
             android:layout_marginRight="183dp"
             android:layout_marginBottom="-2dp"
             android:padding="2dp" />
+
+        <ImageView
+            android:id="@+id/imageViewStats"
+            android:layout_width="28dp"
+            android:layout_height="27dp"
+            android:layout_below="@id/textView"
+            android:layout_alignParentRight="false"
+            android:layout_marginLeft="200dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_sort_black_48dp"
+            android:layout_marginRight="183dp"
+            android:layout_marginBottom="-1dp"
+            android:padding="2dp" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
