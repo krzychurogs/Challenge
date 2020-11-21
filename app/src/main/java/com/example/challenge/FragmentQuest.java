@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class FragmentQuest extends Fragment {
@@ -112,6 +113,7 @@ public class FragmentQuest extends Fragment {
     int finalnumberoftrain=0;
     double avgofdistancefir=0.0;
     double avgofdistancesec=0.0;
+    double max=0;
     LinearLayout linearlayout;
     LinearLayout linearavg;
     LinearLayout linearcount;
@@ -279,7 +281,15 @@ public void stats()
           //  System.out.println("Klucze:\n" + keySet);
             Collection<Double> values = distanceinweek.values();
            // System.out.println("Wartości:\n" + values);
-            double max = Collections.max(distanceinweek.values());
+
+            try {
+               max = Collections.max(distanceinweek.values());
+            }
+            catch (Exception e)
+            {
+
+            }
+
             double finaldist=0; //maksymalny dystans w tygodniu
             Set<Map.Entry<Integer,Double>> entrySet = distanceinweek.entrySet();
             for(Map.Entry<Integer, Double> entry: entrySet) {
@@ -290,10 +300,18 @@ public void stats()
             }
           //  System.out.println("Wynik:\n" + finaldist);
             final double finaldistweek=finaldist;
-            finalavgofdistance=Collections.max(listofmaxavgfromweek);//maksymalna srednia tygodniowa z listy
-            finalnumberoftrain=Collections.max(listofnumberofromweek);// maksymalna liczba treningow w tygodniu
-            finaldistanceday=Collections.max(listofmaxdistancefromday);
-            finalavgday=Collections.max(listofmaxavgfromday);
+            try {
+                finalavgofdistance=Collections.max(listofmaxavgfromweek);//maksymalna srednia tygodniowa z listy
+                finalnumberoftrain=Collections.max(listofnumberofromweek);// maksymalna liczba treningow w tygodniu
+                finaldistanceday=Collections.max(listofmaxdistancefromday);
+                finalavgday=Collections.max(listofmaxavgfromday);
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
 
 
 
@@ -379,6 +397,12 @@ public void stats()
                         distancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
                     }
+                    else
+                    {
+                        distancequest.setLayoutParams(layoutParams);
+                        distancequest.setText(0+"- Dystans w tygodniu: "+listofdistancequest.get(0));
+                        distancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                    }
 
                 }
 
@@ -445,6 +469,11 @@ public void stats()
 
 
                     }
+                    else {
+                        avgquest.setLayoutParams(layoutParams);
+                        avgquest.setText(0+"- Srednia w tygodniu: "+listofaveragequest.get(0));
+                        avgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                    }
 
                 }
 
@@ -506,6 +535,12 @@ public void stats()
                         }
                         counttrainquest.setLayoutParams(layoutParams);
                         counttrainquest.setText(numberofQuestDay+"- Liczba treningów w tygodniu: "+listofcounttrainquest.get(numberofQuestDay));
+                        counttrainquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                    }
+                    else
+                    {
+                        counttrainquest.setLayoutParams(layoutParams);
+                        counttrainquest.setText(0+"- Liczba treningów w tygodniu: "+listofcounttrainquest.get(0));
                         counttrainquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     }
 
@@ -586,7 +621,9 @@ public void stats()
                         daydistancequest.setText(numberofQuestDay+"- Dystans w dniu: "+listofdistancequestday.get(numberofQuestDay));
                         daydistancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     } else {
-
+                        daydistancequest.setLayoutParams(layoutParams);
+                        daydistancequest.setText(0+"- Dystans w dniu: "+listofdistancequestday.get(0));
+                        daydistancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     }
 
                 }
@@ -655,7 +692,9 @@ public void stats()
                         dayavgquest.setText(numberofQuestDay+"- Srednia w dniu: "+listofavgquestday.get(numberofQuestDay));
                         dayavgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     } else {
-
+                        dayavgquest.setLayoutParams(layoutParams);
+                        dayavgquest.setText(0+"- Srednia w dniu: "+listofavgquestday.get(0));
+                        dayavgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     }
 
                 }
@@ -812,14 +851,18 @@ public void stats()
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int pktinfo = dataSnapshot.getValue(Integer.class);
-                String pktint=String.valueOf(pktinfo);
-               // System.out.println("poin"+pointstolvl);
-              //  System.out.println(pktint);
-                int max=Integer.parseInt(pointstolvl);
-                int diff=max-pktinfo;
-                pkttoLvl.setText("Punkty do nastepnęgo lvl:"+String.valueOf(diff));
-                setTextPkt(pktint);
+                if (dataSnapshot.exists())
+                {
+                    int pktinfo = dataSnapshot.getValue(Integer.class);
+                    String pktint=String.valueOf(pktinfo);
+                    // System.out.println("poin"+pointstolvl);
+                    //  System.out.println(pktint);
+                    int max=Integer.parseInt(pointstolvl);
+                    int diff=max-pktinfo;
+                    pkttoLvl.setText("Punkty do nastepnęgo lvl:"+String.valueOf(diff));
+                    setTextPkt(pktint);
+
+                }
 
             }
 

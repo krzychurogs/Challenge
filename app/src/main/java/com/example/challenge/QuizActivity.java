@@ -133,6 +133,29 @@ public class QuizActivity extends AppCompatActivity {
                     String user_id = mAuth.getCurrentUser().getUid();
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
                     ref.setValue(finallvl);
+
+                    if(finallvl.equals("Easy"))
+                    {
+                        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                                ("Customers").child("Historia").child(user_id).child("punkty");
+                        pkt.setValue(100);
+
+                    }
+                    if(finallvl.equals("Medium"))
+                    {
+                        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                                ("Customers").child("Historia").child(user_id).child("punkty");
+                        pkt.setValue(2001);
+
+                    }
+                    if(finallvl.equals("High"))
+                    {
+                        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                                ("Customers").child("Historia").child(user_id).child("punkty");
+                        pkt.setValue(4001);
+
+                    }
+
                     Intent intent = new Intent(QuizActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

@@ -1,4 +1,5 @@
 package com.example.challenge;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -137,6 +138,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_Logout:
                 FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this, CustomerLoginActivity.class);
+                startActivity(intent);
+                finish();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

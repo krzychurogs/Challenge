@@ -96,21 +96,24 @@
             android:text="@string/register"/>
 
         <ImageView
+            android:id="@+id/imageswitch"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/ic_arrow_left"
             android:layout_above="@id/swipeLeft"
-            android:layout_centerHorizontal="true"/>
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="98dp"
+            android:layout_marginBottom="-27dp"
+            android:src="@drawable/ic_arrow_left" />
 
         <TextView
             android:id="@+id/swipeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/swipe_right_for_login"
-            android:textSize="15sp"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:text="Powrót do Logowania"
+            android:textSize="15sp" />
 
     </RelativeLayout>
 
