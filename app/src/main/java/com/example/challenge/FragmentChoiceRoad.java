@@ -106,7 +106,7 @@ public class FragmentChoiceRoad extends Fragment {
                     choiceRoadItem.setmImageResource(message);
                     choiceRoadItem.setmImageResourceAvg(R.drawable.ic_timer_black_52dp);
                     choiceRoadItem.setmImageResourceDist(R.drawable.ic_location_on_black_52dp);
-                    choiceRoadItem.setmImageResourceStats(R.drawable.ic_location_on_black_52dp);
+                    choiceRoadItem.setmImageResourceStats(R.drawable.ic_sort_black_48dp);
 
                     choiceRoadItem.setmText1(trasa);
                     choiceRoadItem.setmText2(dist+"m");

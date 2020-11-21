@@ -33,10 +33,11 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentAllTrainInWeek.FragmentAllTrainInWeekListener,FragmentMyFriends.FragmentMyFriendsListener ,FragmentFriends.FragmentFriendsListener,FragmentAllTraining.FragmentAllTrainingListener,FragmentRoad.FragmentRoadListener, FragmentQuest.FragmentQuestListener,FragmentHistory.FragmentHistoryListener,FragmentChoiceRoad.FragmentChoiceRoadListener,FragmentSimplyTraining.FragmentSimplyTrainingListener,FragmentStatsMap.FragmentStatsListener {
     private DrawerLayout drawer;
-    DatabaseReference reff;
+    DatabaseReference reff,reffname;
     private FirebaseAuth mAuth;
     List<String>nameUser=new ArrayList<String>();
     String name="";
+    List<String>listofName=new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = (TextView) headerView.findViewById(R.id.nameofuser);
+        final TextView navUsername = (TextView) headerView.findViewById(R.id.nameofuser);
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("name");
 
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -68,7 +69,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
         reff.addListenerForSingleValueEvent(valueEventListener);
-        navUsername.setText("Krzysztof");
+
+
+
+
+        reffname= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        ValueEventListener valueEventListener1 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = dataSnapshot.child("name").getValue(String.class);
+                    listofName.add(name);
+                    // imie po id
+
+                }
+                navUsername.setText(listofName.get(0));
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        } ;
+        reffname.addListenerForSingleValueEvent(valueEventListener1);
 
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -129,5 +155,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onInputSent(CharSequence input) {
 
     }
+
 
 }

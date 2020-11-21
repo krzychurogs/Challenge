@@ -53,8 +53,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
     DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend;
@@ -85,6 +87,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     List<String>listofeachfirstwaypoint=new ArrayList<>();
     List<String>listofeachsecondwaypoint=new ArrayList<>();
     List<String>listofeachlastpoint=new ArrayList<>();
+    List<String>listofnamefrienddup=new ArrayList<String>();
+    List<String>listofavgefrienddup=new ArrayList<String>();
     int secs;
     public float suma=0;
     private Chronometer chronometer;
@@ -118,10 +122,20 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     ArrayList<TableItem>friendList=new ArrayList<>();
     ArrayList<TableItem>reverseList=new ArrayList<>();
     ArrayList<TableItem>reverseListFriend=new ArrayList<>();
+    List<String>reverselistofnamedup=new ArrayList<String>();
+    List<String>reverselistofavgdup=new ArrayList<String>();
+    List<String>reverselistofFriendnamedup=new ArrayList<String>();
+    List<String>reverselistofFriendavgdup=new ArrayList<String>();
+    List<String>listofavgDuplicates=new ArrayList<String>();
+    List<String>listofavgdup=new ArrayList<String>();
+    List<String>listofnameDuplicates=new ArrayList<String>();
+    List<String>listofName=new ArrayList<String>();
+    List<String>listofFriendnameDuplicates=new ArrayList<String>();
     boolean secondchecklock=false;
     boolean firstchecklock=false;
     boolean lastchecklock=false;
-
+    int counter=1;
+    int counterfriend=1;
     int textlength = 0;
 
     public interface FragmentRoadListener{
@@ -333,7 +347,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         {
             startcheck=true;
         }
-        else
+        else if(startcheck=false)
         {
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Alert");
@@ -638,7 +652,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         exampleList.clear();
         yourScore.setText("Twoja aktualna średnia "+avgcheck+" km/h");
         String user_id = mAuth.getCurrentUser().getUid();
-        final int limit=15;
+        final int limit=20;
         final Bundle bundle=getArguments();
 
         reffname= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name"))
@@ -649,7 +663,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String>newlist=new ArrayList<String>();
                 int count=10;
-                int max=10;
+                int max=20;
                 int maxfr=5;
                 int size=0;
                 int sizefr=0;
@@ -665,19 +679,20 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         listofCheckLocks.add(Boolean.valueOf(checkLock));
                         listofCheckLocks.add(Boolean.valueOf(secondcheckLock));
                         listofCheckLocks.add(Boolean.valueOf(lastcheckLock ));
-                        listofnamedup.add(name);
+
+                        if(name!=null && srednia!=null)
+                        {
+                            listofnamedup.add(name);
+                            listofavgdup.add(srednia);
+                        }
+
                         for(int i=0;i<listoffriendname.size();i++) {
                             if(name.contains(listoffriendname.get(i)))
                             {
-                                if(maxfr>sizefr)
-                                {
-                                    System.out.println("Srednia "+listoffriendname.get(i)+" "+srednia);
-                                    friendList.add((new TableItem(String.valueOf(licz),listoffriendname.get(i),srednia+" km/h")));
-                                    licz--;
-                                    sizefr++;
-                                }
-
+                                listofnamefrienddup.add(name);
+                                listofavgefrienddup.add(srednia);
                             }
+
                         }
                         if(check.equals("meta")&& count==1)
                         {
@@ -686,7 +701,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             road.child("avgmax").setValue(srednia);
                             System.out.println(check);
                         }
-                        exampleList.add(new TableItem(String.valueOf(count),name,srednia+" km/h"));
+
                     }
                     size++;
                     count--;
@@ -694,19 +709,80 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                 }
 
+
+                reverselistofnamedup=reverseList(listofnamedup);
+                reverselistofavgdup=reverseList(listofavgdup);
+                for(int i=0;i<reverselistofnamedup.size();i++)
+                {
+
+                    if(!listofnameDuplicates.contains(reverselistofnamedup.get(i)))
+                    {
+
+                        listofnameDuplicates.add(reverselistofnamedup.get(i));
+
+                        if(!reverselistofnamedup.get(i).equals("null"))
+                        {
+                            exampleList.add(new TableItem(String.valueOf(counter),reverselistofnamedup.get(i),reverselistofavgdup.get(i)+" km/h"));
+                            counter++;
+                        }
+
+                    }
+
+                }
+
+
+
+                Set<String> hashSet = new LinkedHashSet(listofnamefrienddup);
+                ArrayList<String> removedDuplicatesName = new ArrayList(hashSet);
+                Set<String> hashSet1 = new LinkedHashSet(listofavgefrienddup);
+                ArrayList<String> removedDuplicatesAvg= new ArrayList(hashSet1);
+
+                reverselistofFriendnamedup=reverseList(removedDuplicatesName);
+                reverselistofFriendavgdup=reverseList(removedDuplicatesAvg);
+                Set<String> hashSet2 = new LinkedHashSet(reverselistofFriendnamedup);
+                ArrayList<String> finalremovedDuplicatesName= new ArrayList(hashSet2);
+
+                Set<String> hashSet3 = new LinkedHashSet(reverselistofFriendavgdup);
+                ArrayList<String> finalremovedDuplicatesAvg= new ArrayList(hashSet3);
+
+
+
+
+                for(int i=0;i<finalremovedDuplicatesName.size();i++)
+                {
+
+
+                    if(!listofFriendnameDuplicates.contains(finalremovedDuplicatesName.get(i)))
+                    {
+
+                        listofFriendnameDuplicates.add(finalremovedDuplicatesName.get(i));
+
+                        if(!finalremovedDuplicatesName.get(i).equals("null"))
+                        {
+
+                            friendList.add(new TableItem(String.valueOf(counterfriend),finalremovedDuplicatesName.get(i),finalremovedDuplicatesAvg.get(i)+" km/h"));
+                            counterfriend++;
+                        }
+
+                    }
+
+                }
+
                 mRecyclerViewFriend.setHasFixedSize(true);
                 reverseListFriend = reverseList(friendList);
                 mLayoutFriendManager = new LinearLayoutManager(getActivity());
-                friendAdapter= new TableAdapter(reverseListFriend);
+                friendAdapter= new TableAdapter(friendList);
                 mRecyclerViewFriend.setLayoutManager(mLayoutFriendManager);
                 mRecyclerViewFriend.setAdapter(friendAdapter);
 
                 reverseList = reverseList(exampleList);
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mAdapter = new TableAdapter(reverseList);
+                mAdapter = new TableAdapter(exampleList);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
+
+
 
             }
 

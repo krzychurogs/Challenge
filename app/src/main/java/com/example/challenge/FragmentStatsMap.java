@@ -268,11 +268,6 @@ public class FragmentStatsMap extends Fragment {
 
                 }
 
-
-
-
-
-
                 mRecyclerViewFriend.setHasFixedSize(true);
                 reverseListFriend = reverseList(friendList);
                 mLayoutFriendManager = new LinearLayoutManager(getActivity());
