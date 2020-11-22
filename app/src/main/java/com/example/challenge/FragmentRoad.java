@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,7 +60,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
-    DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend;
+    DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend,reffcheckstart;
     Query reffname;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
@@ -79,14 +80,17 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     List<String>markerfirst=new ArrayList<String>();
     List<String>markersecond=new ArrayList<String>();
     List<String>markerfinal=new ArrayList<String>();
+    List<String>markerstart=new ArrayList<String>();
     List<String>listofplacesecondcheck=new ArrayList<String>();
     List<String>listofplacemetaheck=new ArrayList<String>();
+    List<String>listofplacestartheck=new ArrayList<String>();
     private Polyline gpsTrack;
     List<String>listofnamedup=new ArrayList<String>();
     List<String>listofeachtrainingwaypoint=new ArrayList<>();
     List<String>listofeachfirstwaypoint=new ArrayList<>();
     List<String>listofeachsecondwaypoint=new ArrayList<>();
     List<String>listofeachlastpoint=new ArrayList<>();
+    List<String>listofeachstartpoint=new ArrayList<>();
     List<String>listofnamefrienddup=new ArrayList<String>();
     List<String>listofavgefrienddup=new ArrayList<String>();
     int secs;
@@ -115,6 +119,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     ArrayList<LatLng> coordListFirst = new ArrayList<LatLng>();
     ArrayList<LatLng> coordListSecond = new ArrayList<LatLng>();
     ArrayList<LatLng> coordListLast = new ArrayList<LatLng>();
+    ArrayList<LatLng> coordListStart = new ArrayList<LatLng>();
     private RecyclerView mRecyclerView,mRecyclerViewFriend;
     private TableAdapter mAdapter,friendAdapter;
     private RecyclerView.LayoutManager mLayoutManager,mLayoutFriendManager;
@@ -148,7 +153,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
         System.out.println("bund"+bundle.getString("name"));
-        //dodawanietrasy();
+        dodawanietrasy();
 
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
         MStart=(ImageButton)root.findViewById(R.id.start);
@@ -241,6 +246,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                 }
 
+                setStartdCheckPoint();
                 setFirstCheckPoint();
                 setSecondCheckPoint();
                 setFinaldCheckPoint();
@@ -341,30 +347,31 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         boolean isInside = PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true);
-       // System.out.println("inside"+isInside);
+        System.out.println("inside"+isInside);
 
-        if (PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true) && startcheck==false)
-        {
-            startcheck=true;
-        }
-        else if(startcheck=false)
-        {
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-            alertDialog.setTitle("Alert");
-            alertDialog.setMessage("Musisz wystartować z tej pozycji");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        }
-        if(rusz==true && startcheck==true) {
 
-                if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true))  {
+        if(rusz==true ) {
+            if (PolyUtil.containsLocation(lastKnownLatLng, coordListStart, true)==true && startcheck==false)
+            {
+                startcheck=true;
+            }
+            else if(PolyUtil.containsLocation(lastKnownLatLng, coordListStart, true) == false && startcheck ==false)
+            {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setTitle("Alert");
+                alertDialog.setMessage("Musisz wystartować z tej pozycji");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+
+                if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)==true && startcheck==true)  {
                     updateTrack();
-                } else if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)) {
+                } else if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)== false) {
                     AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                     alertDialog.setTitle("Alert");
                     alertDialog.setMessage("Jesteś poza obszarem");
@@ -445,7 +452,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         .fillColor(Color.WHITE)
                         .geodesic(true)
                         .addAll(coordList).addHole(coordListFirst).fillColor(Color.GREEN)
-                        .addHole(coordListSecond).fillColor(Color.GREEN).addHole(coordListLast).fillColor(Color.GREEN);
+                        .addHole(coordListSecond).fillColor(Color.GREEN)
+                        .addHole(coordListLast).fillColor(Color.GREEN).addHole(coordListStart).fillColor(Color.GREEN);;
 
                 mMap.addPolygon(options);
 
@@ -494,25 +502,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         final double avgspeed= (suma/secs)* km ;
         DecimalFormat df = new DecimalFormat("#.##");
         MSpeed.setText(""+df.format(avgspeed)+"km/h");
-
-        if(suma>100)
-        {
-            textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    if(status!= TextToSpeech.ERROR)
-                    {
-                        textToSpeech.setLanguage(new Locale("pl", "PL"));
-                        DecimalFormat df = new DecimalFormat("0") ;
-                        String text=String.valueOf(df.format(suma)+"metrów");
-                        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
-
-                    }
-                }
-            });
-        }
-
-
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
 
@@ -531,7 +520,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             road.child("checkLock").setValue(firstchecklock);
 
             String pierwszycheck="pierwszycheck";
-            MDistCheck.setText("Pierwszy CheckPoint "+100 +"m");
+            MDistCheck.setText("Pierwszy CheckPoint "+150 +"m");
             dodaneDoBazy=true;
             showTable(pierwszycheck,dfs.format(avgspeed));
 
@@ -551,7 +540,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             String drugicheck="drugicheck";
             secondchecklock=true;
             road.child("secondcheckLock").setValue(secondchecklock);
-            MDistCheck.setText("Drugi CheckPoint "+200 +"m");
+            MDistCheck.setText("Drugi CheckPoint "+300 +"m");
             dodaneDoBazy1=true;
             showTable(drugicheck,dfs.format(avgspeed));
 
@@ -592,10 +581,11 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                                 MEnd.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        FragmentChoiceRoad roadfragment=new FragmentChoiceRoad();
-                                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                                        transaction.replace(R.id.drawer_layout,roadfragment);
-                                        transaction.commit();
+                                        FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
+                                        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+                                        FragmentChoiceRoad fragmentHistory=new FragmentChoiceRoad();
+                                        fragmentTransaction.replace(R.id.drawer_layout,fragmentHistory);
+                                        fragmentTransaction.commit();
                                     }
                                 });
 
@@ -848,16 +838,17 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     {
         final List<LatLng> latLngPolygon = new ArrayList<>();
         {
-                //latLngPolygon.add(new LatLng(50.020449, 21.991870));
-            latLngPolygon.add(new LatLng(50.020507, 21.992001));//delhi
-            latLngPolygon.add(new LatLng(50.020518, 21.991769));//gujarat
-            latLngPolygon.add(new LatLng(50.020398, 21.991753));//pune
-            latLngPolygon.add(new LatLng(50.020394, 21.991983));
+                latLngPolygon.add(new LatLng(50.023934, 21.992447));
+            /*latLngPolygon.add(new LatLng(50.023989, 21.992326));//delhi
+            latLngPolygon.add(new LatLng(50.023983, 21.992561));//gujarat
+            latLngPolygon.add(new LatLng(50.023902, 21.992531));//pune
+            latLngPolygon.add(new LatLng(50.023909, 21.992364));
+            */
 
         }
         // System.out.println("w srodku"+isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) latLngPolygon));
         DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                ("Customers").child("Road").child("pierwsza trasa").child("meta");
+                ("Customers").child("Road").child("pierwsza trasa").child("start");
         String [] table;  //Referencja do tablicy
         int nElems=0;
         table=new String[5];
@@ -875,7 +866,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         }
         List nameList = new ArrayList<String>(Arrays.asList(table));
 
-        road.child("checkwaypointy").setValue(nameList);
+        road.child("marker").setValue(nameList);
     }
     public void startChronometer() {
         if (!running) {
@@ -1183,14 +1174,14 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 for (String w : marketSplitdot) {
                     String str1 = w.replace("(", "");
                     String strnew = str1.replace(")", "");
-                    markerfinal.add(strnew);
+                    markerstart.add(strnew);
                 }
-                Double latMark= Double.valueOf(markerfinal.get(1));
-                Double longtideMark=  Double.valueOf(markerfinal.get(0));
+                Double latMark= Double.valueOf(markerstart.get(1));
+                Double longtideMark=  Double.valueOf(markerstart.get(0));
                 LatLng first = new LatLng(longtideMark, latMark);
                 mMap.addMarker(new MarkerOptions()
                         .position(first)
-                        .title("Meta"));
+                        .title("Start"));
 
 
 
@@ -1243,6 +1234,93 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             }
         } ;
         reffchecktwo.addListenerForSingleValueEvent(valueEventListener);
+    }
+    public void setStartdCheckPoint()
+    {
+        Bundle bundle=getArguments();
+        reffcheckstart= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name")).child("start");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                List<String>markerlist=new ArrayList<String>();
+                for(DataSnapshot snapshot : dataSnapshot.child("checkwaypointy").getChildren()) {
+                    String data = snapshot.getValue(String.class);
+                    listofeachstartpoint.add(data);
+
+                }
+                String marker="";
+                for(DataSnapshot snapshot : dataSnapshot.child("marker").getChildren()) {
+                    marker = snapshot.getValue(String.class);
+                }
+                String markerSplit[]=marker.split(" ");
+                for (String w : markerSplit) {
+                    markerlist.add(w);
+                }
+                String marketSplitdot[]=markerlist.get(1).split(",");
+                for (String w : marketSplitdot) {
+                    String str1 = w.replace("(", "");
+                    String strnew = str1.replace(")", "");
+                    markerfinal.add(strnew);
+                }
+                Double latMark= Double.valueOf(markerfinal.get(1));
+                Double longtideMark=  Double.valueOf(markerfinal.get(0));
+                LatLng first = new LatLng(longtideMark, latMark);
+                mMap.addMarker(new MarkerOptions()
+                        .position(first)
+                        .title("Start"));
+
+
+
+                for(int i=0;i<listofeachstartpoint.size();i++)
+                {
+                    String word[] = listofeachstartpoint.get(i).split(" ");
+                    for (String w : word) {
+                        newlist.add(w);
+                    }
+                }
+
+
+                for (int i = 0; i < newlist.size(); i++) {
+                    if (i % 3 == 0) {
+                    }
+                    else {
+                        String words[] = newlist.get(i).split(",");
+                        for (String w : words) {
+                            String str1 = w.replace("(", "");
+                            String strnew = str1.replace(")", "");
+
+                            listofplacestartheck.add(strnew);
+                        }
+                    }
+
+                }
+                Double latide= Double.valueOf(listofplacestartheck.get(1));
+                Double longtide=  Double.valueOf(listofplacestartheck.get(0));
+
+                for(int i=0;i<listofplacestartheck.size();i++) {
+
+
+                    longtide=Double.valueOf(listofplacestartheck.get(i));
+
+                    if(listofplacestartheck.size() > i + 1){
+                        latide = Double.valueOf(listofplacestartheck.get(++i).toString().replace("]","")); //Change here
+                    }
+                    lastKnownLatLngFirst= new LatLng(longtide, latide);
+
+                    coordListStart.add(lastKnownLatLngFirst);
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        } ;
+        reffcheckstart.addListenerForSingleValueEvent(valueEventListener);
     }
 
 
