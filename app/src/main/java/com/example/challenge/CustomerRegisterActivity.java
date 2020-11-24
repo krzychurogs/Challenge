@@ -123,6 +123,16 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Fragm
                                     String user_id = mAuth.getCurrentUser().getUid();
                                     DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("name");
                                     current_user_db.setValue(mName.getText().toString());
+                                    DatabaseReference nr_dzienne = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrDziennego");
+                                    nr_dzienne.setValue(0);
+                                    DatabaseReference nr_dzienne_avg = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrDziennegoAvg");
+                                    nr_dzienne_avg.setValue(0);
+                                    DatabaseReference nr_tygodnie_avg = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowegoAvg");
+                                    nr_tygodnie_avg.setValue(0);
+                                    DatabaseReference nr_tygodnie_dist = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowegoDist");
+                                    nr_tygodnie_dist.setValue(0);
+                                    DatabaseReference nr_tygodnie_count = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowyCount");
+                                    nr_tygodnie_count.setValue(0);
                                 }
                             }
                         });

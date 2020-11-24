@@ -199,6 +199,7 @@ public class FragmentMyFriends extends Fragment  {
 
     public void showNameByKey(final String key)
     {
+      //  System.out.println("ka"+key);
         listofuserspended.clear();
         listofkeyspended.clear();
         reffs= FirebaseDatabase.getInstance().getReference().child("Users").child(key);
@@ -206,14 +207,15 @@ public class FragmentMyFriends extends Fragment  {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String k =  String.valueOf(ds.getKey());
-                    String v =  String.valueOf(ds.getValue());
-                    listofuserspended.add(v);
+                String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
+                String lvl =  String.valueOf(dataSnapshot.child("lvl").getValue());
+                   // System.out.println("K"+key);
+                   // System.out.println("V"+namefriend);
+                    listofuserspended.add(namefriend);
                     listofkeyspended.add(key);
-                    showUsersInTable(v,key);
+                    showUsersInTable(namefriend,key,lvl);
 
-                }
+
 
             }
 
@@ -226,11 +228,11 @@ public class FragmentMyFriends extends Fragment  {
         reffs.addListenerForSingleValueEvent(valueEventListener);
 
     }
-    public void showUsersInTable(final String name,final String key)
+    public void showUsersInTable(final String name,final String key,String lvl)
     {
+        System.out.println("na"+name);
 
-
-        SingleRow singleRow = new SingleRow(name, "easy");
+        SingleRow singleRow = new SingleRow(name, lvl);
         pendlist.add(singleRow);
         myAdapterPend=new MyAdapter(getActivity(),pendlist);
         myAdapterPend.setCustomButtonListner(new customButtonListener() {
@@ -321,9 +323,9 @@ public class FragmentMyFriends extends Fragment  {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String name =  String.valueOf(ds.getValue());
-                    SingleRow singleRow = new SingleRow(name, "easy");
+                    String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
+                    String lvl =  String.valueOf(dataSnapshot.child("lvl").getValue());
+                    SingleRow singleRow = new SingleRow(namefriend,lvl);
                     mylist.add(singleRow);
                     myAdapter = new AdapterDelete(getActivity(), mylist);
                     myAdapter.setCustomButtonListner(new AdapterDelete.customButtonListener() {
@@ -353,7 +355,7 @@ public class FragmentMyFriends extends Fragment  {
                         }
                     });
 
-                }
+
             }
 
             @Override

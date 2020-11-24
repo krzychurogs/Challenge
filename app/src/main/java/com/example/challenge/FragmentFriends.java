@@ -127,7 +127,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
     }
 
     public void stats(String k) {
-
+        //System.out.println("ka"+k);
         mylist.clear();
         listOfNameFriends.add(k);
         reffs = FirebaseDatabase.getInstance().getReference().child("Users").child(k);
@@ -135,16 +135,16 @@ public class FragmentFriends extends Fragment implements TextWatcher {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> newlist = new ArrayList<String>();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String name = String.valueOf(ds.getValue());
-                    String key= String.valueOf(ds.getKey());
-                    System.out.println("nam"+name);
-                    SingleRow singleRow = new SingleRow(name, "easy");
+
+                    String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
+                    String lvl =  String.valueOf(dataSnapshot.child("lvl").getValue());
+                  //  System.out.println("nam"+name);
+                    SingleRow singleRow = new SingleRow(namefriend, lvl);
                     mylist.add(singleRow);
                     myAdapter = new MyAdapter(getActivity(), mylist);
                     l1.setAdapter(myAdapter);
 
-                }
+
 
                 myAdapter.setCustomButtonListner(new customButtonListener() {
                     @Override
@@ -184,6 +184,8 @@ public class FragmentFriends extends Fragment implements TextWatcher {
     }
 
     public void checkForPendendInv(String key) {
+        System.out.println("ka"+key);
+
         String user_id = mAuth.getCurrentUser().getUid();
         reffforpending = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users").child("Customers")
                 .child("Historia").child(user_id).child("FriendsRequest");
@@ -202,15 +204,15 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
                 }
 
-                    for(int i=1;i<listofkey.size();i++)
-                     {
-                        if(!listofkeyrequest.contains(listofkey.get(i)))
-                        {
-                            System.out.println(listofkey.get(i));
-                            stats(listofkey.get(i));
+                for(int i=2;i<listofkey.size();i++)
+                {
+                    if(!listofkeyrequest.contains(listofkey.get(i)))
+                    {
+                        // System.out.println("ka"+listofkey.get(i));
+                        stats(listofkey.get(i));
 
-                        }
-                     }
+                    }
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -255,13 +257,14 @@ public class FragmentFriends extends Fragment implements TextWatcher {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String>newlist=new ArrayList<String>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+
                     // System.out.println(ds.getKey());
                     // System.out.println(ds.getValue());
-                    String namefriend =  String.valueOf(ds.getValue()   );
-                   // System.out.println("name"+namefriend);
+                    String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
+                    String lvl =  String.valueOf(dataSnapshot.child("lvl").getValue());
+                    // System.out.println("name"+namefriend);
                     nameofFriends(namefriend);
-                }
+
 
             }
 
@@ -274,6 +277,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
     }
     public void nameofFriends(String namefriend)
     {
+        System.out.println("fa"+namefriend);
         final String user_id = mAuth.getCurrentUser().getUid();
         listofkey.clear();
         reff = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users");
@@ -302,5 +306,3 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         reff.addListenerForSingleValueEvent(valueEventListener);
     }
 }
-
-

@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // imie po id
 
                 }
-                navUsername.setText(listofName.get(0));
+         navUsername.setText(listofName.get(0));
 
             }
 

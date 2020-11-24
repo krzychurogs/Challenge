@@ -52,7 +52,7 @@ android:orientation="vertical">
             android:id="@+id/czas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="90dp"
+            android:layout_marginLeft="95dp"
             android:layout_marginTop="20dp"
             android:textColor="#000000"
             android:textSize="70dp"
@@ -81,7 +81,7 @@ android:orientation="vertical">
             android:id="@+id/kalorie"
             android:layout_width="match_parent"
             android:layout_height="102dp"
-            android:layout_marginLeft="292dp"
+            android:layout_marginLeft="300dp"
             android:layout_marginTop="180dp"
             android:hint="0"
             android:textSize="28dp"
@@ -94,7 +94,7 @@ android:orientation="vertical">
             android:id="@+id/kalorielabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="280dp"
+            android:layout_marginLeft="295dp"
             android:layout_marginTop="230dp"
             android:hint="Kalorie"
             android:textColor="#000000"
@@ -183,30 +183,16 @@ android:orientation="vertical">
             android:layout_height="match_parent"
             tools:context=".MainActivity">
 
-            <TextView
-                android:id="@+id/textViewFriendTitl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Friend"
-                android:textSize="18sp"
-                map:layout_constraintLeft_toLeftOf="parent"
-                map:layout_constraintRight_toRightOf="parent"
-                map:layout_constraintTop_toTopOf="parent" />
-
             <!-- Table View-->
             <HorizontalScrollView
                 android:layout_width="245dp"
                 android:layout_height="151dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
                 map:layout_constraintHorizontal_bias="0.433"
-                map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toBottomOf="@+id/textViewFriendTitl"
-                map:layout_constraintVertical_bias="0.748">
+                map:layout_constraintStart_toStartOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewFriend"
@@ -267,7 +253,7 @@ android:orientation="vertical">
             android:id="@+id/dystanscheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="75dp"
             android:layout_marginTop="52dp"
             android:hint="Dystans"
             android:textColor="#000000"
@@ -280,7 +266,7 @@ android:orientation="vertical">
             android:id="@+id/friendInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="75dp"
             android:layout_marginTop="115dp"
             android:hint="Wyniki Znajomych"
             android:textColor="#000000"
@@ -291,13 +277,14 @@ android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/changetabletostats"
-            android:layout_width="67dp"
-            android:layout_height="43dp"
-            android:layout_marginLeft="77dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="55dp"
+            android:layout_height="33dp"
+            android:layout_marginLeft="81dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/btn_backgroundred"
             android:src="@drawable/ic_sort_black_48dp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            map:layout_constraintTop_toTopOf="parent" />
     </FrameLayout>
 
     <FrameLayout

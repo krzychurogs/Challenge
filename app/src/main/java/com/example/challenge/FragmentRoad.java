@@ -312,6 +312,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         }
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17 ));
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.RED);
         polylineOptions.width(4);
@@ -325,6 +326,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         mLocationRequest.setInterval(3000);
         mLocationRequest.setFastestInterval(3000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -347,7 +349,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         boolean isInside = PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true);
-        System.out.println("inside"+isInside);
+       // System.out.println("inside"+isInside);
 
 
         if(rusz==true ) {
@@ -500,8 +502,11 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
         secs= elapsedMillis/1000;
         final double avgspeed= (suma/secs)* km ;
+        final double calory= (suma*65)/1000;
         DecimalFormat df = new DecimalFormat("#.##");
         MSpeed.setText(""+df.format(avgspeed)+"km/h");
+        DecimalFormat dfcalory = new DecimalFormat("#");
+        kalorie.setText(dfcalory.format(calory));
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
 
@@ -514,18 +519,18 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             //  road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
             road.child("name").setValue(listofname.get(0));
             road.child("dystans").setValue(100);
-            DecimalFormat dfs = new DecimalFormat("#.##");
+            DecimalFormat dfs = new DecimalFormat("#,##");
             road.child("srednia").setValue(dfs.format(avgspeed));
             firstchecklock=true;
             road.child("checkLock").setValue(firstchecklock);
 
             String pierwszycheck="pierwszycheck";
-            MDistCheck.setText("Pierwszy CheckPoint "+150 +"m");
+            MDistCheck.setText("Pierwszy CheckPoint ");
             dodaneDoBazy=true;
             showTable(pierwszycheck,dfs.format(avgspeed));
 
         }
-        DecimalFormat dfs = new DecimalFormat("#.##");
+        DecimalFormat dfs = new DecimalFormat("#,##");
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListSecond, true) && dodaneDoBazy1==false)
         {
             //  showTable();
@@ -540,7 +545,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             String drugicheck="drugicheck";
             secondchecklock=true;
             road.child("secondcheckLock").setValue(secondchecklock);
-            MDistCheck.setText("Drugi CheckPoint "+300 +"m");
+            MDistCheck.setText("Drugi CheckPoint ");
             dodaneDoBazy1=true;
             showTable(drugicheck,dfs.format(avgspeed));
 
@@ -563,7 +568,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 lastchecklock=true;
                 road.child("lastchecklock").setValue(lastchecklock);
                 String meta="meta";
-                MDistCheck.setText("Meta "+500 +"m");
+                MDistCheck.setText("Meta ");
                 dodaneDoBazy2=true;
                 stopChronometer();
                 rusz=false;
@@ -581,11 +586,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                                 MEnd.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
-                                        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-                                        FragmentChoiceRoad fragmentHistory=new FragmentChoiceRoad();
-                                        fragmentTransaction.replace(R.id.drawer_layout,fragmentHistory);
-                                        fragmentTransaction.commit();
+                                        Intent myIntent = new Intent(getContext(), MainActivity.class);
+                                        startActivity(myIntent);
                                     }
                                 });
 
@@ -639,6 +641,19 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     }
     public void showTable(final String check, final String avgcheck)
     {
+        counter=1;
+        counterfriend=1;
+        exampleList.clear();
+        listofavgefrienddup.clear();
+        listofFriendnameDuplicates.clear();
+        listofnamefrienddup.clear();
+        listofnameDuplicates.clear();
+
+        reverselistofnamedup.clear(); reverselistofavgdup.clear();
+        reverseList.clear();
+        listofavgdup.clear();
+        listofnamedup.clear();
+        friendList.clear();
         exampleList.clear();
         yourScore.setText("Twoja aktualna średnia "+avgcheck+" km/h");
         String user_id = mAuth.getCurrentUser().getUid();
@@ -684,7 +699,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             }
 
                         }
-                        if(check.equals("meta")&& count==1)
+                        if(check.equals("meta")&& counter   ==1)
                         {
                             DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                                     ("Customers").child("Road").child(bundle.getString("name"));

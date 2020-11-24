@@ -550,12 +550,12 @@ public void stats()
             });
 
 
-            DecimalFormat dfsuma = new DecimalFormat("#.##");
+            DecimalFormat dfsuma = new DecimalFormat("#.#");
 
             checkdistance.setLayoutParams(layoutParamscheck);
-            checkdistance.setText(dfsuma.format(finaldist)+"m.");
+            checkdistance.setText(dfsuma.format(finaldist)+"m");
             checkdistance.setTextSize(16);
-            checkdistance.setPadding(20,20,20,20);
+
 
             checkavg.setLayoutParams(layoutParamscheck);
             checkavg.setText(dfsuma.format(finalavgofdistance)+"km/h");
@@ -576,7 +576,7 @@ public void stats()
                     if (dataSnapshot.exists()) {
                         final int numberofQuestDay = dataSnapshot.getValue(Integer.class);
                         int pktinfo = dataSnapshot.getValue(Integer.class);
-                        System.out.println("dayquest"+pktinfo);
+                        //System.out.println("dayquest"+pktinfo);
                         if(finaldistanceday>Double.valueOf(listofdistancequestday.get(pktinfo)))
                         {
                             if(pktinfo!=2) {
@@ -639,6 +639,7 @@ public void stats()
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         final int numberofQuestDay = dataSnapshot.getValue(Integer.class);
+                        System.out.println("inf"+pktinfo);
                         int pktinfoAvg = dataSnapshot.getValue(Integer.class);
                         System.out.println("poziom"+pktinfoAvg);
 
@@ -883,6 +884,14 @@ public void setTextPkt(String value)
 {
     String user_id = mAuth.getCurrentUser().getUid();
     pktinfo.setText("Twoje punkty: "+value);
+
+    if(Integer.valueOf(value)<2000)
+    {
+        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                (user_id).child("lvl");
+        pkt.setValue("Easy");
+    }
+
     if(Integer.valueOf(value)>2000)
     {
         DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child

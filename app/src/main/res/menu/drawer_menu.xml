@@ -25,11 +25,11 @@
         <menu>
             <item
                 android:id="@+id/nav_Friends"
-                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:icon="@drawable/ic_account_box_black_24dp"
                 android:title="Dodaj Znajomego" />
             <item
                 android:id="@+id/nav_myFriends"
-                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:icon="@drawable/ic_account_box_black_24dp"
                 android:title="Moi Znajomi" />
 
             <item

@@ -3,6 +3,7 @@ package com.example.challenge;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -317,24 +318,24 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         //   System.out.println(i+"dystans to"+distance[0]);
         // System.out.println(i+"suma to"+suma);
         DecimalFormat dfsuma = new DecimalFormat("#.##");
-        DecimalFormat dfsumam = new DecimalFormat("#.#");
+        final DecimalFormat dfsumam = new DecimalFormat("#.#");
         MDistance.setText(""+dfsumam.format(suma)+"m");
         double km= 3.6;
 
         int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
         secs= elapsedMillis/1000;
         final double avgspeed= (suma/secs)* km ;
-        final double calory= (suma*0.70)/1000;
+        final double calory= (suma*65)/1000;
         highstedaverage.add(avgspeed);
         DecimalFormat df = new DecimalFormat("#.##");
-        DecimalFormat dfcalory = new DecimalFormat("#.#");
+        DecimalFormat dfcalory = new DecimalFormat("#");
         SpannableStringBuilder text = new SpannableStringBuilder();
         text.append(df.format(avgspeed));
         text.append(Html.fromHtml("<sup>km</sup>/<sub>h</sub>"));
         MSpeed.setText(text);
        // System.out.println(calory);
         MCalory.setText(dfcalory.format(calory));
-        if(suma>100)
+        if(suma>100 && suma<108)
         {
             textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
                 @Override
@@ -343,13 +344,14 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                     {
                         textToSpeech.setLanguage(new Locale("pl", "PL"));
                         DecimalFormat df = new DecimalFormat("0") ;
-                        String text=String.valueOf(df.format(avgspeed)+"kilometrów na godzine");
+                        String text=String.valueOf(""+dfsumam.format(suma)+"metrów");
                         textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 
                     }
                 }
             });
         }
+
 
 
 
@@ -417,7 +419,8 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 List nameList = new ArrayList<String>(Arrays.asList(table));
 
                 historia.child("waypointy").setValue(nameList);
-
+                Intent myIntent = new Intent(getContext(), MainActivity.class);
+                startActivity(myIntent);
             }
         });
 

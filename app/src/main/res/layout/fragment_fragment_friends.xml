@@ -14,7 +14,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="15dp"
         android:layout_toStartOf="@+id/editsearch"
-        android:text="Twoi Znajomi"
+        android:text="Wszyscy Użytkownicy"
         android:textColor="@android:color/black"
         android:textSize="28sp"
         android:textStyle="bold" />
