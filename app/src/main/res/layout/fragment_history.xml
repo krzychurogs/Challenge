@@ -11,13 +11,13 @@
         android:id="@+id/map2"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="226dp"
+        android:layout_height="294dp"
         tools:context=".FragmentHistory" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="148dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <ImageButton
@@ -38,7 +38,7 @@
             android:layout_marginTop="30dp"
             android:clickable="false"
             android:text="data"
-            android:textSize="15dp"
+            android:textSize="25dp"
             android:textStyle="bold" />
 
 

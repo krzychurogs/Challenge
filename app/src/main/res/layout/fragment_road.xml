@@ -18,7 +18,7 @@ android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="338dp"
+        android:layout_height="265dp"
         android:background="@drawable/dotted_border"
         android:orientation="horizontal">
 
@@ -26,7 +26,7 @@ android:orientation="vertical">
             android:id="@+id/speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="150dp"
+            android:layout_marginLeft="175dp"
             android:layout_marginTop="180dp"
             android:hint="0:00"
             android:textSize="28dp"
@@ -39,8 +39,8 @@ android:orientation="vertical">
             android:id="@+id/speedlabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="150dp"
-            android:layout_marginTop="231dp"
+            android:layout_marginLeft="172dp"
+            android:layout_marginTop="220dp"
             android:hint="Predkość"
             android:textColor="#000000"
             android:textSize="15dp"
@@ -58,7 +58,30 @@ android:orientation="vertical">
             android:textSize="70dp"
             android:textStyle="bold"
 
-            />
+            /><![CDATA[
+
+
+        />
+
+
+
+
+
+
+
+        />
+
+
+
+
+
+
+
+
+
+
+
+        ]]>
 
         <TextView
             android:id="@+id/czaslabel"
@@ -71,43 +94,13 @@ android:orientation="vertical">
             android:textSize="20dp"
 
 
-            /><![CDATA[
-        />
-
-
-        ]]>
-
-        <TextView
-            android:id="@+id/kalorie"
-            android:layout_width="match_parent"
-            android:layout_height="102dp"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="180dp"
-            android:hint="0"
-            android:textSize="28dp"
-            android:textStyle="bold"
-
-
-            />
-
-        <TextView
-            android:id="@+id/kalorielabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="295dp"
-            android:layout_marginTop="230dp"
-            android:hint="Kalorie"
-            android:textColor="#000000"
-            android:textSize="15dp"
-
-
             />
 
         <TextView
             android:id="@+id/distance"
-            android:layout_width="match_parent"
-            android:layout_height="102dp"
-            android:layout_marginLeft="20dp"
+            android:layout_width="131dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
             android:layout_marginTop="180dp"
             android:hint="0:00"
             android:textColor="#000000"
@@ -115,11 +108,22 @@ android:orientation="vertical">
             android:textStyle="bold"
 
 
-            /><![CDATA[
-        />
+            />
+
+        <TextView
+            android:id="@+id/textViewYourScore"
+            android:layout_width="267dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="230dp"
+            android:layout_marginBottom="16dp"
+            android:text="Twoj wynik"
+            android:textColor="#000000"
+            android:textSize="18dp"
 
 
-        ]]>
+            android:textStyle="bold"
+            map:layout_constraintBottom_toBottomOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_table"
@@ -127,43 +131,18 @@ android:orientation="vertical">
             android:layout_height="match_parent"
             tools:context=".MainActivity">
 
-            <TextView
-                android:id="@+id/textViewTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text=""
-                android:textSize="18sp"
-                map:layout_constraintLeft_toLeftOf="parent"
-                map:layout_constraintRight_toRightOf="parent"
-                map:layout_constraintTop_toTopOf="parent" />
-
             <!-- Table View-->
 
-            <TextView
-                android:id="@+id/textViewYourScore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="307dp"
-                android:text="Twoj wynik"
-                android:textSize="18sp"
-                map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintLeft_toLeftOf="parent"
-                map:layout_constraintRight_toRightOf="parent"
-                map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toTopOf="parent" />
-
             <HorizontalScrollView
-                android:layout_width="275dp"
-                android:layout_height="202dp"
+                android:layout_width="273dp"
+                android:layout_height="159dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="44dp"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toBottomOf="@+id/textViewTitle"
-                map:layout_constraintVertical_bias="0.647">
+                map:layout_constraintHorizontal_bias="0.139"
+                map:layout_constraintStart_toStartOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewMovieList"
@@ -176,22 +155,26 @@ android:orientation="vertical">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/friend_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent"
             tools:context=".MainActivity">
 
             <!-- Table View-->
             <HorizontalScrollView
-                android:layout_width="245dp"
-                android:layout_height="151dp"
+                android:layout_width="273dp"
+                android:layout_height="148dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="36dp"
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintHorizontal_bias="0.433"
+                map:layout_constraintHorizontal_bias="0.172"
                 map:layout_constraintStart_toStartOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -210,8 +193,8 @@ android:orientation="vertical">
             android:id="@+id/dystanslabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="230dp"
+            android:layout_marginLeft="42dp"
+            android:layout_marginTop="220dp"
             android:hint="Dystans"
             android:textColor="#000000"
             android:textSize="15dp"
@@ -223,7 +206,7 @@ android:orientation="vertical">
             android:id="@+id/refreshbutton"
             android:layout_width="69dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="150dp"
+            android:layout_marginLeft="330dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/btn_backgroundred"
             android:src="@drawable/ic_refresh_black_48dp"
@@ -233,8 +216,8 @@ android:orientation="vertical">
             android:id="@+id/refsortbutton"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:layout_marginLeft="140dp"
-            android:layout_marginTop="270dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="136dp"
             android:background="@drawable/btn_backgroundred"
             android:src="@drawable/ic_sort_black_48dp"
             android:visibility="invisible" />
@@ -243,8 +226,8 @@ android:orientation="vertical">
             android:id="@+id/changetable"
             android:layout_width="67dp"
             android:layout_height="43dp"
-            android:layout_marginLeft="77dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginLeft="330dp"
+            android:layout_marginTop="60dp"
             android:background="@drawable/btn_background"
             android:src="@drawable/ic_account_box_black_24dp"
             android:text="Button" />
@@ -254,7 +237,7 @@ android:orientation="vertical">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="75dp"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="25dp"
             android:hint="Dystans"
             android:textColor="#000000"
             android:textSize="22dp"
@@ -267,7 +250,7 @@ android:orientation="vertical">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="75dp"
-            android:layout_marginTop="115dp"
+            android:layout_marginTop="50dp"
             android:hint="Wyniki Znajomych"
             android:textColor="#000000"
             android:textSize="22dp"
@@ -276,10 +259,37 @@ android:orientation="vertical">
             />
 
         <ImageButton
+            android:id="@+id/stoptime"
+            android:layout_width="60dp"
+            android:layout_height="49dp"
+            android:layout_marginLeft="330dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_pause_circle_outline_black_50dp" />
+
+        <ImageButton
+            android:id="@+id/end"
+            android:layout_width="60dp"
+            android:layout_height="49dp"
+            android:layout_marginLeft="330dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_stop_black_50dp" />
+        <ImageButton
+            android:id="@+id/start"
+            android:layout_width="60dp"
+            android:layout_height="49dp"
+            android:layout_marginLeft="330dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/btn_background"
+            android:src="@drawable/ic_play_arrow_black_50dp" />
+
+
+        <ImageButton
             android:id="@+id/changetabletostats"
             android:layout_width="55dp"
             android:layout_height="33dp"
-            android:layout_marginLeft="81dp"
+            android:layout_marginLeft="330dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/btn_backgroundred"
             android:src="@drawable/ic_sort_black_48dp"
@@ -299,34 +309,6 @@ android:orientation="vertical">
             android:layout_width="match_parent"
             android:layout_height="409dp"
             tools:context=".MainActivity" />
-
-
-        <ImageButton
-            android:id="@+id/stoptime"
-            android:layout_width="60dp"
-            android:layout_height="49dp"
-            android:layout_marginLeft="150dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/btn_backgroundred"
-            android:src="@drawable/ic_pause_circle_outline_black_50dp" />
-
-        <ImageButton
-            android:id="@+id/start"
-            android:layout_width="60dp"
-            android:layout_height="49dp"
-            android:layout_marginLeft="150dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/btn_background"
-            android:src="@drawable/ic_play_arrow_black_50dp" />
-
-        <ImageButton
-            android:id="@+id/end"
-            android:layout_width="60dp"
-            android:layout_height="49dp"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/btn_backgroundred"
-            android:src="@drawable/ic_stop_black_50dp" />
 
     </FrameLayout>
 

@@ -190,11 +190,15 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         PolylineOptions options = new PolylineOptions()
                 .color(Color.BLUE)
                 .geodesic(true)
-                .width(5)
+                .width(15)
                 .addAll(coordList);
 
         Polyline pfad = mMap.addPolyline(options);
-
+        LatLng latLng = new LatLng(coordList.get(0).latitude,coordList.get(0).longitude);
+        System.out.println(coordList.get(0).latitude);
+        System.out.println(coordList.get(0).longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
     }
 
@@ -233,6 +237,8 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        dataFromDatabase();
+
     }
 
     @Override
@@ -248,13 +254,6 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
-
-
-
 
     }
 
@@ -275,5 +274,55 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         super.onDetach();
         listener=null;
     }
+    public void dataFromDatabase()
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        Bundle bundle=getArguments();
+        String fullhour=bundle.getString("hour");
+        final String[] partshour = fullhour.split("/");
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String dystans =  String.valueOf(ds.child("dystans").getValue());
+                    String predkosc = String.valueOf(ds.child("predkosc").getValue());
+                    String highspeed =String.valueOf(ds.child("highspeed").getValue());
+                    String kalorie = String.valueOf(ds.child("kalorie").getValue());
+                    String day = String.valueOf(ds.child("data").child("date").getValue());
+                    String month = String.valueOf(ds.child("data").child("month").getValue());
+                    String years = String.valueOf(ds.child("data").child("year").getValue());
+                    String minutes= String.valueOf(ds.child("data").child("minutes").getValue());
+                    String hours= String.valueOf(ds.child("data").child("hours").getValue());
+                    String seconds= String.valueOf(ds.child("data").child("seconds").getValue());
+                    int yearinint=Integer.parseInt(years);
+                    int yean=yearinint+1900;
+                    if(partshour[0].equals(hours)&&partshour[1].equals(minutes)&&partshour[2].equals(seconds)&&
+                            partshour[3].equals(day)&&partshour[4].equals(month)&&partshour[5].equals(years))
+                    {
+                        DecimalFormat dfsuma = new DecimalFormat("#.##");
+                        textdistance.setText(dystans+"m");
+                        textspeed.setText(predkosc+ "km/h") ;
+                        texthighspeed.setText(highspeed+"km/h");
+                        textkalorie.setText(kalorie);
+                        datahisttext.setText(day+"/"+month+"/"+yean+" "+hours+":"+minutes);
+                        String data=ds.child("waypointy").getValue().toString();
 
+                        listofeachtrainingwaypoint.add(data);
+                    }
+                }
+
+                pointsfromtrain();
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reff.addListenerForSingleValueEvent(valueEventListener);
+    }
 }

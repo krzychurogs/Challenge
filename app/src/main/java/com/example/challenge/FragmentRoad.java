@@ -162,7 +162,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MSort=(ImageButton)root.findViewById(R.id.refsortbutton) ;
         MSpeed=(TextView)root.findViewById(R.id.speed);
         MRefreshButton=(ImageButton)root.findViewById(R.id.refreshbutton);
-        kalorie=(TextView)root.findViewById(R.id.kalorie);
+
         tl = (ConstraintLayout) root.findViewById(R.id.main_table);
         tfriend = (ConstraintLayout) root.findViewById(R.id.friend_table);
         mRecyclerView = root.findViewById(R.id.recyclerViewMovieList);
@@ -175,7 +175,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         labelspeed=(TextView)root.findViewById(R.id.speedlabel);
         MDistCheck=(TextView)root.findViewById(R.id.dystanscheck);
         MFriendInfo=(TextView)root.findViewById(R.id.friendInfo);
-        labelkalorie=(TextView)root.findViewById(R.id.kalorielabel);
+
         labelczas=(TextView)root.findViewById(R.id.czaslabel);
         chronometer = root.findViewById(R.id.czas);
         chronometer.setFormat("%s");
@@ -273,6 +273,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 tfriend.setVisibility(View.VISIBLE);
                 changetable.setVisibility(View.INVISIBLE);
                 changeToStats.setVisibility(View.VISIBLE);
+                MDistCheck.setVisibility(View.VISIBLE);
                 MFriendInfo.setVisibility(View.VISIBLE);
             }
         });
@@ -284,6 +285,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 mRecyclerViewFriend.setVisibility(View.INVISIBLE);
                 tfriend.setVisibility(View.INVISIBLE);
                 MFriendInfo.setVisibility(View.INVISIBLE);
+                MDistCheck.setVisibility(View.VISIBLE);
                 changetable.setVisibility(View.VISIBLE);
                 changeToStats.setVisibility(View.INVISIBLE);
             }
@@ -332,6 +334,14 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+
+            LatLng loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17 ));
+        }
     }
 
     @Override
@@ -458,6 +468,11 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         .addHole(coordListLast).fillColor(Color.GREEN).addHole(coordListStart).fillColor(Color.GREEN);;
 
                 mMap.addPolygon(options);
+                LatLng latLng = new LatLng(coordList.get(0).latitude,coordList.get(0).longitude);
+                System.out.println(coordList.get(0).latitude);
+                System.out.println(coordList.get(0).longitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
 
 
@@ -505,8 +520,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         final double calory= (suma*65)/1000;
         DecimalFormat df = new DecimalFormat("#.##");
         MSpeed.setText(""+df.format(avgspeed)+"km/h");
-        DecimalFormat dfcalory = new DecimalFormat("#");
-        kalorie.setText(dfcalory.format(calory));
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
 
@@ -519,8 +532,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             //  road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
             road.child("name").setValue(listofname.get(0));
             road.child("dystans").setValue(100);
-            DecimalFormat dfs = new DecimalFormat("#,##");
-            road.child("srednia").setValue(dfs.format(avgspeed));
+            DecimalFormat dfs = new DecimalFormat("#.##");
+            Double twodecil=Double.valueOf(df.format(avgspeed));
+            road.child("srednia").setValue(twodecil);
             firstchecklock=true;
             road.child("checkLock").setValue(firstchecklock);
 
@@ -530,7 +544,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             showTable(pierwszycheck,dfs.format(avgspeed));
 
         }
-        DecimalFormat dfs = new DecimalFormat("#,##");
+        DecimalFormat dfs = new DecimalFormat("#.##");
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListSecond, true) && dodaneDoBazy1==false)
         {
             //  showTable();
@@ -539,8 +553,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     ("Customers").child("Road").child(bundle.getString("name")).child("drugicheck").push();
             road.child("name").setValue(listofname.get(0));
             //road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
-
-            road.child("srednia").setValue(dfs.format(avgspeed));
+            Double twodecil=Double.valueOf(df.format(avgspeed));
+            road.child("srednia").setValue(twodecil);
             road.child("dystans").setValue(200);
             String drugicheck="drugicheck";
             secondchecklock=true;
@@ -563,7 +577,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         ("Customers").child("Road").child(bundle.getString("name")).child("meta").push();
                 road.child("name").setValue(listofname.get(0));
                 //road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
-                road.child("srednia").setValue(dfs.format(avgspeed));
+                Double twodecil=Double.valueOf(df.format(avgspeed));
+                road.child("srednia").setValue(twodecil);
                 road.child("dystans").setValue(500);
                 lastchecklock=true;
                 road.child("lastchecklock").setValue(lastchecklock);
@@ -902,10 +917,10 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MDistance.setVisibility(View.INVISIBLE);
         MSpeed.setVisibility(View.INVISIBLE);
         chronometer.setVisibility(View.INVISIBLE);
-        labelkalorie.setVisibility(View.INVISIBLE);
+
         labelspeed.setVisibility(View.INVISIBLE);
         labeldistance.setVisibility(View.INVISIBLE);
-        kalorie.setVisibility(View.INVISIBLE);
+
         labelczas.setVisibility(View.INVISIBLE);
         tl.setVisibility(View.VISIBLE);
         mRecyclerViewFriend.setVisibility(View.INVISIBLE);
@@ -920,10 +935,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MDistance.setVisibility(View.VISIBLE);
         MSpeed.setVisibility(View.VISIBLE);
         chronometer.setVisibility(View.VISIBLE);
-        labelkalorie.setVisibility(View.VISIBLE);
         labelspeed.setVisibility(View.VISIBLE);
         labeldistance.setVisibility(View.VISIBLE);
-        kalorie.setVisibility(View.VISIBLE);
         labelczas.setVisibility(View.VISIBLE);
         MDistCheck.setVisibility(View.VISIBLE);
         tl.setVisibility(View.INVISIBLE);

@@ -1,11 +1,13 @@
 package com.example.challenge;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Table;
@@ -59,6 +61,27 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
         TableItem currentItem = mExampleList.get(position);
         holder.mTextView1.setText(currentItem.getmText1());
+        if(position==0)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_gol);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_gol);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_gol);
+        }
+        if(position==1)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_silver);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_silver);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_silver);
+        }
+        if(position==2)
+        {
+
+            holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_bg);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_bg);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_bg);
+
+        }
+
         holder.mTextView3.setText(currentItem.getmText3());
         holder.mTextView2.setText(currentItem.getmText2());
 

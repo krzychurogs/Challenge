@@ -190,21 +190,35 @@ public class FragmentAllTraining extends Fragment {
             String avg ="";
             String counter ="";
             int year = 2020;
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY);
-            calendar.set(Calendar.WEEK_OF_YEAR, newList.get(i));
-            start = dt.format(calendar.getTime());
-            System.out.println(start);
-            calendar.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
-            end = dt.format(calendar.getTime());
+
+            Calendar c = Calendar.getInstance();
+
+            // Set the calendar to monday of the current week
+                        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                        c.set(Calendar.WEEK_OF_YEAR, newList.get(i));
+            // Print dates of the current week starting on Monday
+                        DateFormat dfsw = new SimpleDateFormat("dd/MM/yyyy");
+                        for (int j = 0; j < 7; j++) {
+                            if(j==0)
+                            {
+                                start=dfsw.format(c.getTime());
+
+                            }
+                            if(j==6)
+                            {
+                                end=dfsw.format(c.getTime());
+
+                            }
+
+                            c.add(Calendar.DATE, 1);
+                        }
             String fork=start +"-" +end;
             Set<Map.Entry<Integer,Double>> entrySet = distanceinweek.entrySet();
             DecimalFormat df = new DecimalFormat("#");
             for(Map.Entry<Integer, Double> entry: entrySet) {
                 if(entry.getKey() == newList.get(i))
                 {
-                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                //    System.out.println(entry.getKey() + " : " + entry.getValue());
                     dist=df.format(entry.getValue());
                 }
             }
@@ -212,7 +226,7 @@ public class FragmentAllTraining extends Fragment {
             for(Map.Entry<Integer, Double> entry: entrySetavg) {
                 if(entry.getKey() == newList.get(i))
                 {
-                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                 //   System.out.println(entry.getKey() + " : " + entry.getValue());
                     avg=String.valueOf(entry.getValue());
 
                 }
@@ -221,7 +235,7 @@ public class FragmentAllTraining extends Fragment {
             for(Map.Entry<Integer, Integer> entry: entrySetCounter) {
                 if(entry.getKey() == newList.get(i))
                 {
-                    System.out.println(entry.getKey() + " : " + entry.getValue());
+                  //  System.out.println(entry.getKey() + " : " + entry.getValue());
                     counter=String.valueOf(entry.getValue());
                 }
             }
@@ -254,12 +268,8 @@ public class FragmentAllTraining extends Fragment {
                 FragmentTransaction transaction=getFragmentManager().beginTransaction();
                 transaction.replace(R.id.drawer_layout,trainweek);
                 transaction.commit();
-
-
             }
         });
-
-
     }
 
     public int calendar(String fulldate)

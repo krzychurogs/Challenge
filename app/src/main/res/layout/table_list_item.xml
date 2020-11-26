@@ -9,16 +9,16 @@
         android:layout_width="56dp"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:background="@drawable/table_content_cell_bg"
+        android:background="@drawable/table_content_default"
         android:text="Rank"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/txtAvg"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:background="@drawable/table_content_cell_bg"
+        android:background="@drawable/table_content_default"
         android:text="Krzysztof "
         android:textSize="18sp" />
 
@@ -27,7 +27,7 @@
         android:layout_width="124dp"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:background="@drawable/table_content_cell_bg"
+        android:background="@drawable/table_content_default"
         android:text="Year"
         android:textSize="18sp" />
 

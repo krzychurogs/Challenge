@@ -37,7 +37,7 @@
     <ListView
         android:id="@+id/sampleListView"
         android:layout_width="match_parent"
-        android:layout_height="201dp"
+        android:layout_height="181dp"
         android:layout_below="@id/editsearch"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="0dp"
@@ -76,18 +76,30 @@
         android:background="@drawable/et_custom"
         android:textSize="15sp" />
 
-    <ListView
-        android:id="@+id/sampleListViewRequest"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="186dp"
-        android:layout_below="@id/editsearch"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="10dp"
-        android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="#CCCCCC"
-        android:dividerHeight="1dp"
-        android:paddingLeft="2dp"></ListView>
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ListView
+                android:id="@+id/sampleListViewRequest"
+                android:layout_width="match_parent"
+                android:layout_height="177dp"
+                android:layout_below="@id/editsearch"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="#CCCCCC"
+                android:dividerHeight="1dp"
+                android:nestedScrollingEnabled="true"
+                android:paddingLeft="2dp"></ListView>
+        </LinearLayout>
+    </ScrollView>
 
 
 
