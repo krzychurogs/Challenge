@@ -39,53 +39,170 @@
         android:layout_height="wrap_content"
         android:hint="Tygodniowe:" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:id="@+id/linearforcheck"
-        android:orientation="horizontal"
+        android:layout_width="386dp"
+        android:layout_height="181dp"
+        android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
+        android:paddingRight="16dp">
+
+
+        <LinearLayout
+            android:id="@+id/linearforhorizonweek"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <TextView
+                android:id="@+id/textViewDist"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/checkweekDist"
+                android:layout_width="169dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearforhorizonweek1"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <TextView
+                android:id="@+id/textViewAvg"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/checkweekavg"
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearforhorizonweek2"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <TextView
+                android:id="@+id/textViewCount"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/checkweekCount"
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+        </LinearLayout>
+
     </LinearLayout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearforavg"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
-    </LinearLayout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearforcount"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
-    </LinearLayout>
+
     <TextView
-        android:id="@+id/day"
+        android:id="@+id/dayweek"
         android:layout_width="match_parent"
-        android:textSize="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:gravity="left"
-        android:layout_marginTop="70dp"
-        android:layout_height="wrap_content"
-        android:hint="Dzienne:" />
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearfordayavg"
-        android:orientation="horizontal"
+        android:hint="Dzienne:"
+        android:textSize="30dp" />
+
+    <LinearLayout
+        android:id="@+id/linearforavg"
+        android:layout_width="398dp"
+        android:layout_height="166dp"
+        android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
-    </LinearLayout>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearfordaydist"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
+        android:paddingRight="16dp">
+
+        <LinearLayout
+            android:id="@+id/linearforhorizonday1"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <TextView
+                android:id="@+id/textViewDayDist"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+            <TextView
+                android:id="@+id/checkdayDist"
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearforhorizonday2"
+            android:layout_width="370dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <TextView
+                android:id="@+id/textViewDayAvg"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+            <TextView
+                android:id="@+id/checkdayAvg"
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:text="Twoje punkty:"
+                android:textSize="24dp" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

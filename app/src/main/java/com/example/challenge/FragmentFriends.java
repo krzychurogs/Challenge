@@ -204,9 +204,9 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
                 }
 
-                for(int i=2;i<listofkey.size();i++)
+                for(int i=1;i<listofkey.size();i++)
                 {
-                    if(!listofkeyrequest.contains(listofkey.get(i)))
+                    if(!listofkeyrequest.contains(listofkey.get(i)) && !listofkey.get(i).equals("Customers"))
                     {
                         // System.out.println("ka"+listofkey.get(i));
                         stats(listofkey.get(i));
