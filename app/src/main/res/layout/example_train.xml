@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="103dp"
+            android:layout_width="109dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView"
             android:layout_marginStart="153dp"

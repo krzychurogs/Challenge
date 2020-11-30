@@ -92,6 +92,10 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
     ImageButton MStart;
     static boolean rusz=false;
     private boolean running;
+    boolean firstspeech=false;
+    boolean secondspeech=false;
+    boolean thirdspeech=false;
+
     boolean start=false;
     private long pauseOffset;
     List<Double>highstedaverage=new ArrayList<Double>();
@@ -327,9 +331,9 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
 
         //   System.out.println(i+"dystans to"+distance[0]);
         // System.out.println(i+"suma to"+suma);
-        DecimalFormat dfsuma = new DecimalFormat("#.##");
+        DecimalFormat dfsuma = new DecimalFormat("#");
         final DecimalFormat dfsumam = new DecimalFormat("#.#");
-        MDistance.setText(""+dfsumam.format(suma)+"m");
+        MDistance.setText(""+dfsuma.format(suma)+"m");
         double km= 3.6;
 
         int elapsedMillis = (int) (SystemClock.elapsedRealtime() - chronometer.getBase());
@@ -340,27 +344,28 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         DecimalFormat df = new DecimalFormat("#.##");
         DecimalFormat dfcalory = new DecimalFormat("#");
         SpannableStringBuilder text = new SpannableStringBuilder();
-        text.append(df.format(avgspeed));
-        text.append(Html.fromHtml("<sup>km</sup>/<sub>h</sub>"));
+        text.append(df.format(avgspeed)+"km/h");
+
         MSpeed.setText(text);
        // System.out.println(calory);
         MCalory.setText(dfcalory.format(calory));
-        if(suma>100 && suma<108)
-        {
-            textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    if(status!= TextToSpeech.ERROR)
-                    {
-                        textToSpeech.setLanguage(new Locale("pl", "PL"));
-                        DecimalFormat df = new DecimalFormat("0") ;
-                        String text=String.valueOf(""+dfsumam.format(suma)+"metrów");
-                        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 
-                    }
-                }
-            });
+        if(suma>500  && firstspeech==false)
+        {
+           speech();
+            firstspeech=true;
         }
+        if(suma>1000  && secondspeech==false)
+        {
+            speech();
+            secondspeech=true;
+        }
+        if(suma>1500  && thirdspeech==false)
+        {
+            speech();
+            thirdspeech=true;
+        }
+
 
 
 
@@ -481,5 +486,23 @@ public void addpoints(int pktinfo)
             ("Customers").child("Historia").child(user_id).child("punkty");
     pkt.setValue(score);
 }
+public void speech()
+
+{     final DecimalFormat dfsumam = new DecimalFormat("#");
+    textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+        @Override
+        public void onInit(int status) {
+            if(status!= TextToSpeech.ERROR)
+            {
+                textToSpeech.setLanguage(new Locale("pl", "PL"));
+                DecimalFormat df = new DecimalFormat("0") ;
+                String text=String.valueOf(""+dfsumam.format(suma)+"metrów");
+                textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
+
+            }
+        }
+    });
+}
+
 
 }

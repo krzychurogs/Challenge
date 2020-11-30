@@ -302,11 +302,16 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                             partshour[3].equals(day)&&partshour[4].equals(month)&&partshour[5].equals(years))
                     {
                         DecimalFormat dfsuma = new DecimalFormat("#.##");
-                        textdistance.setText(dystans+"m");
+                        Double finaldist=Double.valueOf(dystans);
+
+                        DecimalFormat dfs = new DecimalFormat("#");
+                        String exampledist=dfs.format(finaldist);
+                        textdistance.setText(exampledist+"m");
                         textspeed.setText(predkosc+ "km/h") ;
                         texthighspeed.setText(highspeed+"km/h");
                         textkalorie.setText(kalorie);
-                        datahisttext.setText(day+"/"+month+"/"+yean+" "+hours+":"+minutes);
+                        String mmonth=String.valueOf(Integer.valueOf(month)+1);
+                        datahisttext.setText(day+"/"+mmonth+"/"+yean+" "+hours+":"+minutes);
                         String data=ds.child("waypointy").getValue().toString();
 
                         listofeachtrainingwaypoint.add(data);

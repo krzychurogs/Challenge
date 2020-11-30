@@ -240,8 +240,11 @@ public class FragmentAllTraining extends Fragment {
                 }
             }
 
+            Double finalavg=Double.valueOf(avg);
 
-            exampleList.add(new ExampleItem(R.drawable.ic_circle_50dp,R.drawable.ic_location_on_black_52dp,R.drawable.ic_timer_black_52dp,fork,dist+"m",avg+"km/h",counter    ));
+            DecimalFormat dfs = new DecimalFormat("#.##");
+            String exampleavg=dfs.format(finalavg);
+            exampleList.add(new ExampleItem(R.drawable.ic_circle_50dp,R.drawable.ic_location_on_black_52dp,R.drawable.ic_timer_black_52dp,fork,dist+"m",exampleavg+" km/h",counter    ));
             listOfForks.add(posi);
 
             posi++;

@@ -74,7 +74,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class FragmentQuest extends Fragment {
-    DatabaseReference reff,reffname,refquest,reffpkt,refflvl,reffpointsto,refquestday,reffquestdaynumber,reffweekdistnumber,reffweekavgnumber,reffcount;
+    DatabaseReference reff,reffname,refquest,reffpkt,refflvl,reffpointsto,refquestday
+            ,reffquestdaynumber,reffweekdistnumber,reffweekavgnumber,reffcount,refcheckavg,reffcheckcount;
     private FirebaseAuth mAuth;
     private FragmentQuestListener listener;
     TableLayout tl;
@@ -104,6 +105,14 @@ public class FragmentQuest extends Fragment {
 
     Map<Integer, Double> avginweek = new TreeMap<>();
     boolean onceT=false;
+    boolean onceAvg=false;
+    boolean onceDistWeek=false;
+    boolean onceCountWeek=false;
+    boolean checktask=false;
+    boolean checktaskAvg=false;
+    boolean checkWeekTaskAvg=false;
+    boolean checkWeekTaskDist=false;
+    boolean checkWeekTaskCount=false;
     double sumaofdistanceday=0.0;
     double sumaofdistancefir=0.0;
     double sumaofdistancedw=0.0;
@@ -132,6 +141,8 @@ public class FragmentQuest extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_fragment_quest, container, false);
         LinearLayout layout=new LinearLayout(getActivity());
 
+
+
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
 
         pktinfoT= (TextView)   root.findViewById(R.id.textViewPkt);
@@ -153,7 +164,7 @@ public class FragmentQuest extends Fragment {
         /*DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
         pkt.setValue("niski lvl");
 */
-
+        maxTask();
         refflvl = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
 
         refflvl.addValueEventListener(new ValueEventListener() {
@@ -179,7 +190,8 @@ public class FragmentQuest extends Fragment {
     public void stats()
 
     {
-
+        finalavgofdistance=0.0;
+        finalavgday=0.0;
         finaldistanceday=0.0;
         String user_id = mAuth.getCurrentUser().getUid();
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
@@ -226,25 +238,35 @@ public class FragmentQuest extends Fragment {
                  * count avg from each day
                  * */
                 Set<String> keys1 = m.keySet();
-                for (String keyprint : keys1) {
-                    // System.out.println("Key = " + keyprint);
-                    Collection<Double> values = multimapavgday.get(keyprint);
-                    double simplydayavg=0.0;
-                    int counter=0;
-                    for(Double value : values){
-                        simplydayavg+=value;
-                        counter+=1;
-                        // System.out.println("Value= "+ value);
+                if(onceAvg==false)
+                {
+                    for (String keyprint : keys1) {
+                        // System.out.println("Key = " + keyprint);
+                        Collection<Double> values = multimapavgday.get(keyprint);
+                        double simplydayavg=0.0;
+                        int counter=0;
+                        for(Double value : values){
+                            simplydayavg+=value;
+                            counter+=1;
+                            // System.out.println("Value= "+ value);
+                        }
+                        listofmaxavgfromday.add(simplydayavg/counter);
+                        simplydayavg=0.0;
+                        counter=0;
                     }
-                    listofmaxavgfromday.add(simplydayavg/counter);
-                    simplydayavg=0.0;
-                    counter=0;
+                    onceAvg=true;
                 }
+                for(int i=0;i<listofmaxavgfromday.size();i++)
+                {
+                    System.out.println("list "+ i+" "+listofmaxavgfromday.get(i));
+                }
+
+
 
                 /*
                  * count distance from each day
                  * */
-                listofmaxdistancefromday.clear();
+
                 Set<String> keys = m.keySet();
                 if(onceT==false)
                 {
@@ -262,30 +284,34 @@ public class FragmentQuest extends Fragment {
                     onceT=true;
                 }
 
+                if(onceCountWeek==false)
+                {
+                    for (int i = 0; i < licznik.size(); i++) {
 
-                for (int i = 0; i < licznik.size(); i++) {
+                        for(int j=0;j<distancelist.size();j++)
+                        {
+                            if(calendar(listofdates.get(j))== licznik.get(i))
+                            {
+                                sumaofdistancefir+=Double.valueOf(distancelist.get(j).replace(",","."));
+                                avgofdistancefir+=Double.valueOf(averagelist.get(j).replace(",","."));
+                                counteroffirweek+=1;
+                                distanceinweek.put(licznik.get(i),sumaofdistancefir);
+                                listofnumberofromweek.add(counteroffirweek);
+                            }
+                            if(counteroffirweek !=0 && counteroffirweek >1)
+                            {
+                                double maxavg=avgofdistancefir/counteroffirweek;
+                                listofmaxavgfromweek.add(maxavg);
+                            }
+                        }
 
-                    for(int j=0;j<distancelist.size();j++)
-                    {
-                        if(calendar(listofdates.get(j))== licznik.get(i))
-                        {
-                            sumaofdistancefir+=Double.valueOf(distancelist.get(j).replace(",","."));
-                            avgofdistancefir+=Double.valueOf(averagelist.get(j).replace(",","."));
-                            counteroffirweek+=1;
-                            distanceinweek.put(licznik.get(i),sumaofdistancefir);
-                            listofnumberofromweek.add(counteroffirweek);
-                        }
-                        if(counteroffirweek !=0)
-                        {
-                            double maxavg=avgofdistancefir/counteroffirweek;
-                            listofmaxavgfromweek.add(maxavg);
-                        }
+                        counteroffirweek=0;
+                        avgofdistancefir=0;
+                        sumaofdistancefir=0;
                     }
-
-                    counteroffirweek=0;
-                    avgofdistancefir=0;
-                    sumaofdistancefir=0;
+                    onceCountWeek=true;
                 }
+
 
                 Set<Integer> keySet = distanceinweek.keySet();
                 //  System.out.println("Klucze:\n" + keySet);
@@ -301,29 +327,26 @@ public class FragmentQuest extends Fragment {
                 }
 
                 double finaldist=0; //maksymalny dystans w tygodniu
-                Set<Map.Entry<Integer,Double>> entrySet = distanceinweek.entrySet();
-                for(Map.Entry<Integer, Double> entry: entrySet) {
-                    if (entry.getValue()==max) {
-                        finaldist=entry.getValue();
+                if(onceDistWeek==false)
+                {
+                    Set<Map.Entry<Integer,Double>> entrySet = distanceinweek.entrySet();
+                    for(Map.Entry<Integer, Double> entry: entrySet) {
+                        if (entry.getValue()==max) {
+                            finaldist=entry.getValue();
+                        }
+                        //  System.out.println(entry.getKey() + " : " + entry.getValue());
                     }
-                    //  System.out.println(entry.getKey() + " : " + entry.getValue());
+                    onceDistWeek=true;
                 }
+
                 //  System.out.println("Wynik:\n" + finaldist);
                 final double finaldistweek=finaldist;
-                int counter=0;
                 try {
                     finalavgofdistance=Collections.max(listofmaxavgfromweek);//maksymalna srednia tygodniowa z listy
                     finalnumberoftrain=Collections.max(listofnumberofromweek);// maksymalna liczba treningow w tygodniu
-
                     finaldistanceday=Collections.max(listofmaxdistancefromday);
-                    for(int i=0;i<listofmaxdistancefromday.size();i++)
-                    {
-                        System.out.println("dsyday"+listofmaxdistancefromday.get(i));
-                    }
-                    counter++;
-                    System.out.println("dejdistcol"+Collections.max(listofmaxdistancefromday));
-                    System.out.println("dejdist"+finaldistanceday);
-                    System.out.println("counter"+counter);
+
+
                     finalavgday=Collections.max(listofmaxavgfromday);
                     DecimalFormat dfsuma = new DecimalFormat("#.#");
                     listofmaxdistancefromday.clear();
@@ -345,7 +368,7 @@ public class FragmentQuest extends Fragment {
             */
 
                 reffweekdistnumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowegoDist");
-                reffweekdistnumber.addListenerForSingleValueEvent(new ValueEventListener() {
+                reffweekdistnumber.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -353,53 +376,66 @@ public class FragmentQuest extends Fragment {
 
                             final int numberofQuestDay = dataSnapshot.getValue(Integer.class);
                             int pktinfo = dataSnapshot.getValue(Integer.class);
-                            if(finaldistweek>Double.valueOf(listofdistancequest.get(pktinfo)))
+                            if(finaldistweek>Double.valueOf(listofdistancequest.get(pktinfo))&& pktinfo!=2 && checkWeekTaskDist!=true)
                             {
                                 if(pktinfo!=2)
                                 {
                                     pktinfo++;
                                 }
 
+
                                 DatabaseReference nrweek= FirebaseDatabase.getInstance().getReference().child("Users").child
                                         ("Customers").child("Historia").child(user_id).child("nrTygodniowegoDist");
                                 nrweek.setValue(pktinfo);
 
+
                                 reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
 
-                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    boolean processDone = false;
-
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists() && !processDone) {
-                                            int pktinfo = dataSnapshot.getValue(Integer.class);
-                                            System.out.println(pktinfo);
-                                            addpoints(pktinfo,numberofQuestDay);
-
-                                        } else {
-                                            // do process 2
-                                            processDone = true;
-                                        }
-                                    }
-
-                                    @Override public void onCancelled(DatabaseError databaseError) {}
-                                });
-
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                                 alertDialog.setTitle("Alert");
                                 alertDialog.setMessage("Punkty zostały dodane za pokonany najlepszy dystans w tygodniu, następny quest poniżej");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
 
+                                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    boolean processDone = false;
+
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists() && !processDone) {
+                                                            int pktinfo = dataSnapshot.getValue(Integer.class);
+                                                            System.out.println(pktinfo);
+                                                            addpoints(pktinfo,numberofQuestDay);
+
+                                                        } else {
+                                                            // do process 2
+                                                            processDone = true;
+                                                        }
+                                                    }
+
+                                                    @Override public void onCancelled(DatabaseError databaseError) {}
+                                                });
+
+                                            }
+                                        });
                                 alertDialog.show();
+                                if(numberofQuestDay==2)
+                                {
+                                    DatabaseReference nrweekch= FirebaseDatabase.getInstance().getReference().child("Users").child
+                                            ("Customers").child("Historia").child(user_id).child("checknrTygodniowegoDist");
+                                    nrweekch.setValue(true);
+                                }
                             }
 
-                            distancequest.setText(numberofQuestDay+"- Dystans w tygodniu: "+listofdistancequest.get(numberofQuestDay));
-                            distancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            distancequest.setText("Dystans w tygodniu: "+listofdistancequest.get(numberofQuestDay));
+
 
                         }
                         else
                         {
-                            distancequest.setText(0+"- Dystans w tygodniu: "+listofdistancequest.get(0));
-                            distancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            distancequest.setText("Dystans w tygodniu: "+listofdistancequest.get(0));
+
                         }
 
                     }
@@ -408,7 +444,7 @@ public class FragmentQuest extends Fragment {
                 });
 
                 reffweekavgnumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowegoAvg");
-                reffweekavgnumber.addListenerForSingleValueEvent(new ValueEventListener() {
+                reffweekavgnumber.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -417,7 +453,7 @@ public class FragmentQuest extends Fragment {
                             int pktinfo = dataSnapshot.getValue(Integer.class);
                             //System.out.println("weekquest"+finalavgofdistance);
                             // System.out.println("weeklist"+Double.valueOf(listofaveragequest.get(pktinfo)));
-                            if(finalavgofdistance>Double.valueOf(listofaveragequest.get(pktinfo)))
+                            if(finalavgofdistance>Double.valueOf(listofaveragequest.get(pktinfo))&& pktinfo!=2 && checkWeekTaskAvg!=true)
                             {
                                 if(pktinfo!=2)
                                 {
@@ -428,60 +464,65 @@ public class FragmentQuest extends Fragment {
                                         ("Customers").child("Historia").child(user_id).child("nrTygodniowegoAvg");
                                 nrweek.setValue(pktinfo);
 
+
                                 reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
 
-                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    boolean processDone = false;
-
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists() && !processDone) {
-                                            int pktinfo = dataSnapshot.getValue(Integer.class);
-                                            System.out.println(pktinfo);
-                                            addpoints(pktinfo,numberofQuestDay);
-                                        } else {
-                                            // do process 2
-                                            processDone = true;
-                                        }
-                                    }
-
-                                    @Override public void onCancelled(DatabaseError databaseError) {}
-                                });
-
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                                 alertDialog.setTitle("Alert");
                                 alertDialog.setMessage("Punkty zostały dodane za uzyskana najlepsza srednia w tygodniu, następny quest poniżej");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+
+                                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    boolean processDone = false;
+
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists() && !processDone) {
+                                                            int pktinfo = dataSnapshot.getValue(Integer.class);
+                                                            System.out.println(pktinfo);
+                                                            addpoints(pktinfo,numberofQuestDay);
+                                                        } else {
+                                                            // do process 2
+                                                            processDone = true;
+                                                        }
+                                                    }
+                                                    @Override public void onCancelled(DatabaseError databaseError) {}
+                                                });
+
+                                            }
+                                        });
                                 alertDialog.show();
+                                if(numberofQuestDay==2)
+                                {
+                                    DatabaseReference nrweekch= FirebaseDatabase.getInstance().getReference().child("Users").child
+                                            ("Customers").child("Historia").child(user_id).child("checknrTygodniowegoAvg");
+                                    nrweekch.setValue(true);
+                                }
                             }
-                            avgquest.setText(numberofQuestDay+"- Srednia w tygodniu: "+listofaveragequest.get(numberofQuestDay));
-                            avgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-
-
-
+                            avgquest.setText("Srednia w tygodniu: "+listofaveragequest.get(numberofQuestDay)+"km/h");
 
                         }
                         else {
-                            avgquest.setText(0+"- Srednia w tygodniu: "+listofaveragequest.get(0));
-                            avgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            avgquest.setText("Srednia w tygodniu: "+listofaveragequest.get(0)+"km/h");
+
                         }
 
                     }
-
                     @Override public void onCancelled(DatabaseError databaseError) {}
                 });
 
-
-                // hex color 0xAARRGGBB
-
                 reffcount = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowyCount");
-                reffcount.addListenerForSingleValueEvent(new ValueEventListener() {
+                reffcount.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
 
                             final int numberofQuestDay = dataSnapshot.getValue(Integer.class);
                             int pktinfo = dataSnapshot.getValue(Integer.class);
-                            if(finalnumberoftrain>Double.valueOf(listofcounttrainquest.get(pktinfo)))
+                            if(finalnumberoftrain>Double.valueOf(listofcounttrainquest.get(pktinfo))&& pktinfo!=2 && checkWeekTaskCount!=true)
                             {
                                 if(pktinfo!=2)
                                 {
@@ -494,37 +535,51 @@ public class FragmentQuest extends Fragment {
 
                                 reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
 
-                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    boolean processDone = false;
 
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists() && !processDone) {
-                                            int pktinfo = dataSnapshot.getValue(Integer.class);
-                                            System.out.println(pktinfo);
-                                            addpointsCount(pktinfo,numberofQuestDay);
-                                        } else {
-                                            // do process 2
-                                            processDone = true;
-                                        }
-                                    }
-
-                                    @Override public void onCancelled(DatabaseError databaseError) {}
-                                });
-
-
-                              /*  AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                                 alertDialog.setTitle("Alert");
                                 alertDialog.setMessage("Punkty został dodane za liczbe treningow, następny quest ponizej");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    boolean processDone = false;
+
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists() && !processDone) {
+                                                            int pktinfo = dataSnapshot.getValue(Integer.class);
+                                                            System.out.println(pktinfo);
+                                                            addpointsCount(pktinfo,numberofQuestDay);
+                                                        } else {
+                                                            // do process 2
+                                                            processDone = true;
+                                                        }
+                                                    }
+
+                                                    @Override public void onCancelled(DatabaseError databaseError) {}
+                                                });
+
+                                                dialog.dismiss();
+
+                                            }
+                                        });
                                 alertDialog.show();
-                                */
+
+                                if(numberofQuestDay==2)
+                                {
+                                    DatabaseReference nrweekch= FirebaseDatabase.getInstance().getReference().child("Users").child
+                                            ("Customers").child("Historia").child(user_id).child("checknrTydziennegoCount");
+                                    nrweekch.setValue(true);
+                                }
                             }
-                            counttrainquest.setText(numberofQuestDay+"- Liczba treningów w tygodniu: "+listofcounttrainquest.get(numberofQuestDay));
+                            counttrainquest.setText("Liczba treningów w tygodniu: "+listofcounttrainquest.get(numberofQuestDay));
 
                         }
                         else
                         {
-                            counttrainquest.setText(0+"- Liczba treningów w tygodniu: "+listofcounttrainquest.get(0));
+                            counttrainquest.setText("Liczba treningów w tygodniu: "+listofcounttrainquest.get(0));
 
                         }
 
@@ -546,12 +601,11 @@ public class FragmentQuest extends Fragment {
                         if (dataSnapshot.exists()) {
                             final int numberofQuestDay = dataSnapshot.getValue(Integer.class);
                             int pktinfo = dataSnapshot.getValue(Integer.class);
+
                             int countquest= dataSnapshot.getValue(Integer.class);
                             System.out.println("dayquest"+pktinfo);
-                            if(finaldistanceday>Double.valueOf(listofdistancequestday.get(pktinfo))&& pktinfo!=2)
+                            if(finaldistanceday>Double.valueOf(listofdistancequestday.get(pktinfo) )&& pktinfo!=3 && checktask!=true)
                             {
-
-
 
                                 if(pktinfo!=2) {
                                     pktinfo++;
@@ -601,12 +655,19 @@ public class FragmentQuest extends Fragment {
                                         });
                                 alertDialog.show();
 
+                                if(numberofQuestDay==2)
+                                {
+                                    DatabaseReference nrweekch= FirebaseDatabase.getInstance().getReference().child("Users").child
+                                            ("Customers").child("Historia").child(user_id).child("checknrDziennego");
+                                    nrweekch.setValue(true);
+                                }
                             }
-                            daydistancequest.setText(numberofQuestDay+"- Dystans w dniu: "+listofdistancequestday.get(numberofQuestDay));
-                            daydistancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
+                            daydistancequest.setText("Dystans w dniu: "+listofdistancequestday.get(numberofQuestDay));
+
                         } else {
-                            daydistancequest.setText(0+"- Dystans w dniu: "+listofdistancequestday.get(0));
-                            daydistancequest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            daydistancequest.setText("Dystans w dniu: "+listofdistancequestday.get(0));
+
                         }
 
                     }
@@ -617,17 +678,16 @@ public class FragmentQuest extends Fragment {
 
 
                 reffquestdaynumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrDziennegoAvg");
-                reffquestdaynumber.addListenerForSingleValueEvent(new ValueEventListener() {
+                reffquestdaynumber.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             final int numberofQuestDay = dataSnapshot.getValue(Integer.class);
                             int pktinfoAvg = dataSnapshot.getValue(Integer.class);
-                            System.out.println("poziom"+pktinfoAvg);
 
 
 
-                            if(finalavgday>Double.valueOf(listofavgquestday.get(pktinfoAvg))&& pktinfoAvg!=2)
+                            if(finalavgday>Double.valueOf(listofavgquestday.get(pktinfoAvg))&& pktinfoAvg!=2 && checktaskAvg!=true)
                             {
 
                                 if(pktinfoAvg!=2)
@@ -639,25 +699,10 @@ public class FragmentQuest extends Fragment {
                                         ("Customers").child("Historia").child(user_id).child("nrDziennegoAvg");
                                 nravgday.setValue(pktinfoAvg);
 
+
                                 reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
 
-                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    boolean processDone = false;
 
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists() && !processDone) {
-                                            int pktinfo = dataSnapshot.getValue(Integer.class);
-                                            System.out.println(pktinfo);
-                                            addpoints(pktinfo,numberofQuestDay);
-                                        } else {
-                                            // do process 2
-                                            processDone = true;
-                                        }
-                                    }
-
-                                    @Override public void onCancelled(DatabaseError databaseError) {}
-                                });
 
                                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                                 alertDialog.setTitle("Alert");
@@ -666,28 +711,42 @@ public class FragmentQuest extends Fragment {
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
 
+                                                reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    boolean processDone = false;
+
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists() && !processDone) {
+                                                            int pktinfo = dataSnapshot.getValue(Integer.class);
+                                                            System.out.println(pktinfo);
+                                                            addpoints(pktinfo,numberofQuestDay);
+                                                        } else {
+                                                            // do process 2
+                                                            processDone = true;
+                                                        }
+                                                    }
+
+                                                    @Override public void onCancelled(DatabaseError databaseError) {}
+                                                });
                                                 dialog.dismiss();
                                             }
                                         });
                                 alertDialog.show();
+                                if(numberofQuestDay==2)
+                                {
+                                    DatabaseReference nrweekch= FirebaseDatabase.getInstance().getReference().child("Users").child
+                                            ("Customers").child("Historia").child(user_id).child("checknrDziennegoAvg");
+                                    nrweekch.setValue(true);
+                                }
                             }
-
-                            dayavgquest.setText(numberofQuestDay+"- Srednia w dniu: "+listofavgquestday.get(numberofQuestDay));
-                            dayavgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            dayavgquest.setText("Srednia w dniu: "+listofavgquestday.get(numberofQuestDay)+"km/h");
+                            listofmaxavgfromday.clear();
                         } else {
-
-                            dayavgquest.setText(0+"- Srednia w dniu: "+listofavgquestday.get(0));
-                            dayavgquest.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                            dayavgquest.setText("Srednia w dniu: "+listofavgquestday.get(0)+"km/h");
                         }
-
                     }
-
                     @Override public void onCancelled(DatabaseError databaseError) {}
                 });
-
-
-
-
 
             }
 
@@ -697,12 +756,7 @@ public class FragmentQuest extends Fragment {
             }
         };
         reff.addListenerForSingleValueEvent(valueEventListener);
-
-
-
-
     }
-
     public int calendar(String fulldate)
     {
         String format = "yyyyMMdd";
@@ -933,6 +987,93 @@ public class FragmentQuest extends Fragment {
         {
             add=500;
         }
+
+        final int score=pktinfo+add;
+        String pktint=String.valueOf(score);
+        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("punkty");
+        pkt.setValue(score);
+        pktinfoT.setText("Twoje punkty: "+score);
+        int max=0;
+        if(score>2000 && score<3999)
+        {
+            int diff=4000-Integer.valueOf(score);
+            pkttoLvl.setText("Punkty do nastepnęgo lvl:"+String.valueOf(diff));
+        }
+        if(score<1999)
+        {
+            int diff=2000-Integer.valueOf(score);
+            pkttoLvl.setText("Punkty do nastepnęgo lvl:"+String.valueOf(diff));
+        }
+
+
+        if(pktinfo>1700 && pktinfo<1999)
+        {
+
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+            alertDialog.setTitle("Alert");
+            alertDialog.setMessage("Awansowałes na wyższy lvl");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            resetTask();
+                            DatabaseReference pkt2 = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id)
+                                    .child("lvl");
+                            pkt2.setValue("Medium");
+
+
+
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
+        if(pktinfo>3700 && pktinfo<3999)
+        {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+            alertDialog.setTitle("Alert");
+            alertDialog.setMessage("Awansowałes na wyższy lvl");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            DatabaseReference pkt2 = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id)
+                                    .child("lvl");
+                            pkt2.setValue("High");
+                            resetTask();
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
+        listofmaxdistancefromday.clear();
+        finalavgday=0.0;
+        finalavgofdistance=0.0;
+        listofmaxavgfromday.clear();
+        listofmaxavgfromweek.clear();
+        finaldistanceday=0.0;
+
+    }
+
+
+    public void addpointsCount(int pktinfo,int number)
+    {
+        final  String user_id = mAuth.getCurrentUser().getUid();
+        int add=0;
+        if(number == 0 )
+        {
+            add=20;
+        }
+        if(number ==1 )
+        {
+            add=30;
+        }
+        if(number ==2 )
+        {
+            add=35;
+        }
+
         final int score=pktinfo+add;
         String pktint=String.valueOf(score);
         DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
@@ -996,34 +1137,6 @@ public class FragmentQuest extends Fragment {
         finaldistanceday=0.0;
 
 
-
-    }
-
-
-    public void addpointsCount(int pktinfo,int number)
-    {
-        final  String user_id = mAuth.getCurrentUser().getUid();
-        int add=0;
-        if(number == 0 )
-        {
-            add=20;
-        }
-        if(number ==1 )
-        {
-            add=30;
-        }
-        if(number ==2 )
-        {
-            add=35;
-        }
-
-        final int score=pktinfo+add;
-        String pktint=String.valueOf(score);
-        System.out.println(score);
-        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
-                ("Customers").child("Historia").child(user_id).child("punkty");
-        pkt.setValue(score);
-
     }
 
     public static FragmentQuest newInstance() {
@@ -1048,6 +1161,82 @@ public class FragmentQuest extends Fragment {
                 ("Customers").child("Historia").child(user_id).child("nrTygodniowyCount");
         nrweekcount.setValue(0);
     }
+    public void maxTask()
+    {
+        final  String user_id = mAuth.getCurrentUser().getUid();
+        reffquestdaynumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("checknrDziennego");
+        reffquestdaynumber.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    checktask = dataSnapshot.getValue(Boolean.class);
 
+                    System.out.println("checktask "+checktask);
+                }
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
+        reffquestdaynumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("checknrDziennegoAvg");
+        reffquestdaynumber.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    checktaskAvg = dataSnapshot.getValue(Boolean.class);
+
+                    System.out.println("checktaskAvg "+checktaskAvg);
+                }
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
+        reffquestdaynumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia")
+                .child(user_id).child("checknrTygodniowegoDist");
+        reffquestdaynumber.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    checkWeekTaskDist = dataSnapshot.getValue(Boolean.class);
+
+                    System.out.println("checkWeekTaskDist "+checkWeekTaskDist);
+                }
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
+
+
+        reffquestdaynumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia")
+                .child(user_id).child("checknrTygodniowegoAvg");
+        reffquestdaynumber.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    checkWeekTaskAvg = dataSnapshot.getValue(Boolean.class);
+
+                    System.out.println("checkWeekTaskAvg "+checkWeekTaskAvg);
+                }
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
+
+
+        reffquestdaynumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia")
+                .child(user_id).child("checknrTydziennegoCount");
+        reffquestdaynumber.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    checkWeekTaskCount = dataSnapshot.getValue(Boolean.class);
+
+                    System.out.println("checkWeekTaskCount "+checkWeekTaskCount);
+                }
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
+
+    }
 
 }

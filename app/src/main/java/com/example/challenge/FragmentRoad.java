@@ -60,7 +60,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
-    DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend,reffcheckstart;
+    DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend,reffcheckstart,reffpkt;
     Query reffname;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
@@ -132,10 +132,12 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     List<String>reverselistofFriendnamedup=new ArrayList<String>();
     List<String>reverselistofFriendavgdup=new ArrayList<String>();
     List<String>listofavgDuplicates=new ArrayList<String>();
+    List<String>myname=new ArrayList<String>();
     List<String>listofavgdup=new ArrayList<String>();
     List<String>listofnameDuplicates=new ArrayList<String>();
     List<String>listofName=new ArrayList<String>();
     List<String>listofFriendnameDuplicates=new ArrayList<String>();
+    List<Boolean>checkWin=new ArrayList<Boolean>();
     boolean secondchecklock=false;
     boolean firstchecklock=false;
     boolean lastchecklock=false;
@@ -153,8 +155,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
         System.out.println("bund"+bundle.getString("name"));
-        dodawanietrasy();
-
+        //dodawanietrasy();
+        setWinRoad();
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
         MStart=(ImageButton)root.findViewById(R.id.start);
         MDistance=(TextView)root.findViewById(R.id.distance);
@@ -245,7 +247,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     // imie po id
 
                 }
-
+                showNameAfterKey();
+                setWinRoad();
                 setStartdCheckPoint();
                 setFirstCheckPoint();
                 setSecondCheckPoint();
@@ -371,7 +374,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             {
                 AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Alert");
-                alertDialog.setMessage("Musisz wystartować z tej pozycji");
+                alertDialog.setMessage("Musisz wystartować z pozycji startowej");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -526,6 +529,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
      //   if(PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true)&& dodaneDoBazy==false)
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true)&& dodaneDoBazy==false)
         {
+
+
             MSort.setVisibility(View.VISIBLE);
             DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                     ("Customers").child("Road").child(bundle.getString("name")).child("pierwszycheck").push();
@@ -548,6 +553,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListSecond, true) && dodaneDoBazy1==false)
         {
             //  showTable();
+
             MSort.setVisibility(View.VISIBLE);
             DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                     ("Customers").child("Road").child(bundle.getString("name")).child("drugicheck").push();
@@ -567,11 +573,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListLast, true) && dodaneDoBazy2==false)
         {
             //  showTable();
-
-
-
             if(firstchecklock == true && secondchecklock==true)
             {
+
                 MSort.setVisibility(View.VISIBLE);
                 DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Road").child(bundle.getString("name")).child("meta").push();
@@ -674,7 +678,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         String user_id = mAuth.getCurrentUser().getUid();
         final int limit=20;
         final Bundle bundle=getArguments();
-
+        System.out.println("checkwin"+checkWin.get(0));
         reffname= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name"))
                 .child(check).orderByChild("srednia").limitToLast(limit);
 
@@ -691,6 +695,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     if(max>size)
                     { String name =    String.valueOf(ds.child("name").getValue() );
+
                         String srednia =  String.valueOf(ds.child("srednia").getValue());
                         String dystans =  String.valueOf(ds.child("dystans").getValue());
                         String checkLock=  String.valueOf(ds.child("checkLock").getValue());
@@ -714,13 +719,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             }
 
                         }
-                        if(check.equals("meta")&& counter   ==1)
-                        {
-                            DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                                    ("Customers").child("Road").child(bundle.getString("name"));
-                            road.child("avgmax").setValue(srednia);
-                            System.out.println(check);
-                        }
+
+
 
                     }
                     size++;
@@ -748,6 +748,14 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                     }
 
+                }
+                if(check.equals("meta")&& counter == 1 && reverselistofnamedup.get(0).equals(myname.get(0)) && checkWin.get(0)!=true)
+                {
+                    DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Road").child(bundle.getString("name"));
+                    road.child("avgmax").setValue(reverselistofavgdup.get(0));
+                    showPoints();
+                    System.out.println(check);
                 }
 
 
@@ -1164,9 +1172,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                     coordListSecond.add(lastKnownLatLngFirst);
                 }
-
-
-
             }
 
             @Override
@@ -1188,7 +1193,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 for(DataSnapshot snapshot : dataSnapshot.child("checkwaypointy").getChildren()) {
                     String data = snapshot.getValue(String.class);
                     listofeachlastpoint.add(data);
-
                 }
                 String marker="";
                 for(DataSnapshot snapshot : dataSnapshot.child("marker").getChildren()) {
@@ -1209,7 +1213,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 LatLng first = new LatLng(longtideMark, latMark);
                 mMap.addMarker(new MarkerOptions()
                         .position(first)
-                        .title("Start"));
+                        .title("Meta"));
 
 
 
@@ -1350,6 +1354,98 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         } ;
         reffcheckstart.addListenerForSingleValueEvent(valueEventListener);
     }
+    public void showPoints()
+    {
+        final String user_id = mAuth.getCurrentUser().getUid();
+        reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
+
+        reffpkt.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    int pktinfo = dataSnapshot.getValue(Integer.class);
+                    String pktint=String.valueOf(pktinfo);
+                    // System.out.println("poin"+pointstolvl);
+                    //  System.out.println(pktint);
+                    int max=600;
+                    int diff=max+pktinfo;
+                    DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Historia").child(user_id).child("punkty");
+                    pkt.setValue(diff);
+                    Bundle bundle=getArguments();
+                    DatabaseReference infoadd = FirebaseDatabase.getInstance().getReference().child("Users").child
+                            ("Customers").child("Historia").child(user_id).child(bundle.getString("name"));
+                    infoadd.setValue(true);
+                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.setMessage("Zdobyłes punkty za najlepszy czas na trasie");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+            }
+        });
+
+    }
+    public void showNameAfterKey()
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffs= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        reffs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
+                System.out.println("nf"+namefriend);
+                myname.add(namefriend);
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void setWinRoad()
+    {
+        final Bundle bundle=getArguments();
+        String user_id = mAuth.getCurrentUser().getUid();
+
+        reffs= FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child(bundle.getString("name"));
+        reffs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                String checkwin =  String.valueOf(dataSnapshot.getValue());
+                System.out.println("check"+checkwin);
+                checkWin.add(Boolean.valueOf(checkwin));
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 
 
 }
