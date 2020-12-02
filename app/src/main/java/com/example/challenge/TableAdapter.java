@@ -25,12 +25,13 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder {
 
+        public ImageView mImageView;
         public TextView mTextView1;
         public TextView mTextView2;
         public TextView mTextView3;
         public ExampleViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
-
+            mImageView=  itemView.findViewById(R.id.imagemedal);
             mTextView1 = itemView.findViewById(R.id.txtRank);
             mTextView3 = itemView.findViewById(R.id.txtAvg);
             mTextView2 = itemView.findViewById(R.id.txtLvl);
@@ -61,17 +62,21 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
         TableItem currentItem = mExampleList.get(position);
         holder.mTextView1.setText(currentItem.getmText1());
+        holder.mImageView.setImageResource(R.drawable.medal7);
+
         if(position==0)
         {
             holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_gol);
             holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_gol);
             holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_gol);
+            holder.mImageView.setImageResource(R.drawable.gol);
         }
         if(position==1)
         {
             holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_silver);
             holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_silver);
             holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_silver);
+            holder.mImageView.setImageResource(R.drawable.sil);
         }
         if(position==2)
         {
@@ -79,6 +84,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
             holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_bg);
+            holder.mImageView.setImageResource(R.drawable.medalsilver);
 
         }
 

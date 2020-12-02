@@ -4,6 +4,7 @@ package com.example.challenge;
         import android.content.pm.PackageManager;
         import android.graphics.Color;
         import android.location.Location;
+        import android.media.Image;
         import android.os.Bundle;
         import android.util.Log;
         import android.view.LayoutInflater;
@@ -80,6 +81,7 @@ public class FragmentStatsMap extends Fragment {
     ArrayList<TableItem>reverseListFriend=new ArrayList<>();
     List<String>listoffriendkey=new ArrayList<String>();
     ImageButton changetable;
+    ImageView imageuser;
     ImageButton changetableAllUsers;
     int counter=1;
     int counterfriend=1;
@@ -97,12 +99,14 @@ public class FragmentStatsMap extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_fragment_stats_map, container, false);
         showFriend();
         mRecyclerView = root.findViewById(R.id.recyclerViewMovieList);
+        imageuser=(ImageView) root.findViewById(R.id.imagemedal);
+
         mRecyclerViewFriend= root.findViewById(R.id.recyclerViewFriend);
         changetable=(ImageButton) root.findViewById(R.id.changetable);
         MScore=(TextView) root.findViewById(R.id.textViewYourScore);
         MFriendInfo=(TextView) root.findViewById(R.id.textViewFriendTitl);
         MInfo=(TextView) root.findViewById(R.id.textViewTitle);
-
+        imageuser.setImageResource(R.drawable.profile);
         mRecyclerViewFriend.setVisibility(View.INVISIBLE);
         MInfo.setVisibility(View.VISIBLE);
         MFriendInfo.setVisibility(View.INVISIBLE);

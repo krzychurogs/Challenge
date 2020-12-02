@@ -21,8 +21,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:textStyle="bold"
             android:text="Najlepsze Wyniki Znajomych"
-            android:textSize="18sp"
+            android:textSize="20dp"
             map:layout_constraintHorizontal_bias="0.654"
             map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toRightOf="parent"
@@ -69,22 +70,36 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Najlepsze wyniki"
-            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textSize="20dp"
             map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toRightOf="parent"
             map:layout_constraintTop_toTopOf="parent" />
 
         <!-- Table View-->
+        <ImageView
+            android:id="@+id/imagemedal"
+            android:layout_width="100dp"
+            android:layout_height="92dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintHorizontal_bias="0.019"
+            map:layout_constraintLeft_toLeftOf="parent"
+            map:layout_constraintRight_toRightOf="@+id/textViewYourScore"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
         <TextView
             android:id="@+id/textViewYourScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="44dp"
             android:text="Twoj wynik"
-            android:textSize="18sp"
+            android:textSize="25dp"
+            android:textStyle="bold"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="0.432"
+            map:layout_constraintHorizontal_bias="0.757"
             map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toRightOf="parent"
             map:layout_constraintStart_toStartOf="parent"
@@ -92,8 +107,8 @@
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
-            android:layout_width="272dp"
-            android:layout_height="403dp"
+            android:layout_width="349dp"
+            android:layout_height="418dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"

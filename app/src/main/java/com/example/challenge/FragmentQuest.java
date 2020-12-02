@@ -366,7 +366,7 @@ public class FragmentQuest extends Fragment {
                     ("Customers").child("Historia").child(user_id).child("nrTygodniowyCount");
             nrweek.setValue(0);
             */
-
+                final DecimalFormat dff = new DecimalFormat("#");
                 reffweekdistnumber = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("nrTygodniowegoDist");
                 reffweekdistnumber.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -428,13 +428,20 @@ public class FragmentQuest extends Fragment {
                                 }
                             }
 
-                            distancequest.setText("Dystans w tygodniu: "+listofdistancequest.get(numberofQuestDay));
+                            distancequest.setText("Dodatkowo musisz pokonać dystans: "+listofdistancequest.get(numberofQuestDay));
+
+                                Integer val=Integer.valueOf(listofdistancequest.get(numberofQuestDay));
+                                String dist=dff.format(finaldistweek);
+                                Integer finaldistweekInt=Integer.valueOf(dist);
+                                Integer finaldiffbeetweenquestandyou=val-finaldistweekInt;
+                                distancequest.setText("Dodatkowo musisz pokonać dystans: "+finaldiffbeetweenquestandyou);
+
 
 
                         }
                         else
                         {
-                            distancequest.setText("Dystans w tygodniu: "+listofdistancequest.get(0));
+                            distancequest.setText("Dodatkowo musisz pokonać dystans:: "+listofdistancequest.get(0));
 
                         }
 
@@ -502,11 +509,15 @@ public class FragmentQuest extends Fragment {
                                     nrweekch.setValue(true);
                                 }
                             }
-                            avgquest.setText("Srednia w tygodniu: "+listofaveragequest.get(numberofQuestDay)+"km/h");
-
+                            Double val=Double.valueOf(listofaveragequest.get(numberofQuestDay));
+                            final DecimalFormat dffs = new DecimalFormat("#.#");
+                            String dist=dffs.format(finalavgofdistance);
+                            Double finaldistweekDouble=Double.valueOf(dist);
+                            Double finaldiffbeetweenquestandyou=val-finaldistweekDouble;
+                            avgquest.setText("Musisz uzyskać srednią lepszą       o: "+finaldiffbeetweenquestandyou+"km/h");
                         }
                         else {
-                            avgquest.setText("Srednia w tygodniu: "+listofaveragequest.get(0)+"km/h");
+                            avgquest.setText("Musisz uzyskać srednią lepszą       o: "+listofaveragequest.get(0)+"km/h");
 
                         }
 
@@ -574,12 +585,16 @@ public class FragmentQuest extends Fragment {
                                     nrweekch.setValue(true);
                                 }
                             }
-                            counttrainquest.setText("Liczba treningów w tygodniu: "+listofcounttrainquest.get(numberofQuestDay));
+                            Integer val=Integer.valueOf(listofcounttrainquest.get(numberofQuestDay));
+                            String counttrain=dff.format(finalnumberoftrain);
+                            Integer finalcounttweekInt=Integer.valueOf(counttrain);
+                            Integer finaldiffbeetweenquestandyou=val-finalcounttweekInt;
+                            counttrainquest.setText("Wykonaj więcej treningów: "+finaldiffbeetweenquestandyou);
 
                         }
                         else
                         {
-                            counttrainquest.setText("Liczba treningów w tygodniu: "+listofcounttrainquest.get(0));
+                            counttrainquest.setText("Wykonaj więcej treningów: "+listofcounttrainquest.get(0));
 
                         }
 
@@ -663,10 +678,14 @@ public class FragmentQuest extends Fragment {
                                 }
                             }
 
-                            daydistancequest.setText("Dystans w dniu: "+listofdistancequestday.get(numberofQuestDay));
+                            Integer val=Integer.valueOf(listofdistancequestday.get(numberofQuestDay));
+                            String dist=dff.format(finaldistweek);
+                            Integer finaldistweekInt=Integer.valueOf(dist);
+                            Integer finaldiffbeetweenquestandyou=val-finaldistweekInt;
+                            daydistancequest.setText("Dodatkowo musisz pokonać dystans: "+finaldiffbeetweenquestandyou);
 
                         } else {
-                            daydistancequest.setText("Dystans w dniu: "+listofdistancequestday.get(0));
+                            daydistancequest.setText("Dodatkowo musisz pokonać dystans:  "+listofdistancequestday.get(0));
 
                         }
 
@@ -739,10 +758,16 @@ public class FragmentQuest extends Fragment {
                                     nrweekch.setValue(true);
                                 }
                             }
-                            dayavgquest.setText("Srednia w dniu: "+listofavgquestday.get(numberofQuestDay)+"km/h");
+                            Double val=Double.valueOf(listofavgquestday.get(numberofQuestDay));
+                            final DecimalFormat dffs = new DecimalFormat("#.#");
+                            String dist=dffs.format(finalavgday);
+                            Double finaldistweekDouble=Double.valueOf(dist);
+                            Double finaldiffbeetweenquestandyou=val-finaldistweekDouble;
+                            dayavgquest.setText("Musisz uzyskać srednią lepszą       o: "+finaldiffbeetweenquestandyou+"km/h");
+
                             listofmaxavgfromday.clear();
                         } else {
-                            dayavgquest.setText("Srednia w dniu: "+listofavgquestday.get(0)+"km/h");
+                            dayavgquest.setText("Musisz uzyskać srednią lepszą       o: "+listofavgquestday.get(0)+"km/h");
                         }
                     }
                     @Override public void onCancelled(DatabaseError databaseError) {}
