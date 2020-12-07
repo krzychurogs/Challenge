@@ -155,7 +155,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
         System.out.println("bund"+bundle.getString("name"));
-        //dodawanietrasy();
+       //dodawanietrasy();
         setWinRoad();
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
         MStart=(ImageButton)root.findViewById(R.id.start);
@@ -411,7 +411,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     }
     public void takeWaypoints()
     {
-        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child("pierwsza trasa");
+        Bundle bundle=getArguments();
+
+        reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name"));
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -462,13 +464,20 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     coordList.add(lastKnownLatLng);
                 }
 
+              /*  PolygonOptions options = new PolygonOptions()
+                        .strokeColor(Color.RED)
+                        .fillColor(Color.WHITE)
+                        .geodesic(true)
+                        .addAll(coordList).addHole(coordListFirst).fillColor(Color.CYAN)
+                        .addHole(coordListSecond).fillColor(Color.CYAN   )
+                        .addHole(coordListLast).fillColor(Color.CYAN).addHole(coordListStart).fillColor(Color.CYAN);
+                        */
                 PolygonOptions options = new PolygonOptions()
                         .strokeColor(Color.RED)
                         .fillColor(Color.WHITE)
                         .geodesic(true)
-                        .addAll(coordList).addHole(coordListFirst).fillColor(Color.GREEN)
-                        .addHole(coordListSecond).fillColor(Color.GREEN)
-                        .addHole(coordListLast).fillColor(Color.GREEN).addHole(coordListStart).fillColor(Color.GREEN);;
+                        .addAll(coordList).addHole(coordListFirst).fillColor(Color.CYAN).addHole(coordListStart).fillColor(Color.CYAN).
+                                addHole(coordListLast).fillColor(Color.CYAN).addHole(coordListSecond).fillColor(Color.CYAN   );
 
                 mMap.addPolygon(options);
                 LatLng latLng = new LatLng(coordList.get(0).latitude,coordList.get(0).longitude);
@@ -876,17 +885,30 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     {
         final List<LatLng> latLngPolygon = new ArrayList<>();
         {
-                latLngPolygon.add(new LatLng(50.023934, 21.992447));
-            /*latLngPolygon.add(new LatLng(50.023989, 21.992326));//delhi
-            latLngPolygon.add(new LatLng(50.023983, 21.992561));//gujarat
-            latLngPolygon.add(new LatLng(50.023902, 21.992531));//pune
-            latLngPolygon.add(new LatLng(50.023909, 21.992364));
-            */
+          latLngPolygon.add(new LatLng(50.025486, 21.998958));
+
+            /*latLngPolygon.add(new LatLng(50.030518,  22.004406));//delhi
+            latLngPolygon.add(new LatLng(50.027030,  22.001616));//gujarat
+            latLngPolygon.add(new LatLng(50.025762,  21.998054));//pune
+            latLngPolygon.add(new LatLng(50.023763,  22.000575));
+            latLngPolygon.add(new LatLng(50.026093,  22.002335));
+            latLngPolygon.add(new LatLng(50.029078,  22.003568));
+            latLngPolygon.add(new LatLng(50.029588,  22.004019));
+            latLngPolygon.add(new LatLng(50.030132,  22.004470));
+
+
+
+            latLngPolygon.add(new LatLng(50.025508, 21.998928));//delhi
+            latLngPolygon.add(new LatLng(50.025516, 21.999046));//gujarat
+            latLngPolygon.add(new LatLng(50.025455, 21.999045));//pune
+            latLngPolygon.add(new LatLng(50.025457, 21.998916));
+*/
+
 
         }
         // System.out.println("w srodku"+isPointInPolygon(lastKnownLatLng, (ArrayList<LatLng>) latLngPolygon));
         DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                ("Customers").child("Road").child("pierwsza trasa").child("start");
+                ("Customers").child("Road").child("druga trasa").child("drugicheck");
         String [] table;  //Referencja do tablicy
         int nElems=0;
         table=new String[5];
@@ -903,7 +925,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             nElems++;
         }
         List nameList = new ArrayList<String>(Arrays.asList(table));
-
+      // road.child("checkwaypointy").setValue(nameList);
         road.child("marker").setValue(nameList);
     }
     public void startChronometer() {

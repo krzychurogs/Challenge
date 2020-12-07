@@ -682,7 +682,15 @@ public class FragmentQuest extends Fragment {
                             String dist=dff.format(finaldistweek);
                             Integer finaldistweekInt=Integer.valueOf(dist);
                             Integer finaldiffbeetweenquestandyou=val-finaldistweekInt;
-                            daydistancequest.setText("Dodatkowo musisz pokonać dystans: "+finaldiffbeetweenquestandyou);
+                            if(finaldiffbeetweenquestandyou>0)
+                            {
+                                daydistancequest.setText("Dodatkowo musisz pokonać dystans: "+finaldiffbeetweenquestandyou);
+                            }
+                            else
+                            {
+                                daydistancequest.setText("Questy dzienne zrobione");
+                            }
+
 
                         } else {
                             daydistancequest.setText("Dodatkowo musisz pokonać dystans:  "+listofdistancequestday.get(0));
