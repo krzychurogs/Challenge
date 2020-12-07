@@ -260,8 +260,7 @@ public class FragmentAllTrainInWeek extends Fragment {
                             FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
                             FragmentHistory fragmentHistory=new FragmentHistory();
                             fragmentHistory.setArguments(bundle);
-                            fragmentTransaction.replace(R.id.drawer_layout,fragmentHistory);
-                            fragmentTransaction.commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragmentHistory).commit();
 
                         }
                     });

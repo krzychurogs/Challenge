@@ -198,7 +198,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
         System.out.println(coordList.get(0).latitude);
         System.out.println(coordList.get(0).longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
     }
 

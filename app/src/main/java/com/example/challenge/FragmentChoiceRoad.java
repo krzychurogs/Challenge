@@ -133,9 +133,7 @@ public class FragmentChoiceRoad extends Fragment {
                         bundle.putString("name",roadlists.get(position));
                         FragmentStatsMap statsFragment=new FragmentStatsMap();
                         statsFragment.setArguments(bundle);
-                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.drawer_layout,statsFragment);
-                        transaction.commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,statsFragment).commit();
 
 
                     }
@@ -149,9 +147,8 @@ public class FragmentChoiceRoad extends Fragment {
                         bundle.putString("name",roadlists.get(position));
                         FragmentRoad roadfragment=new FragmentRoad();
                         roadfragment.setArguments(bundle);
-                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.drawer_layout,roadfragment);
-                        transaction.commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,roadfragment).commit();
+
 
                     }
                 });

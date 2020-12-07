@@ -268,9 +268,7 @@ public class FragmentAllTraining extends Fragment {
                 bundle.putInt("number",listOfForksReverse.get(position));
                 FragmentAllTrainInWeek trainweek=new FragmentAllTrainInWeek();
                 trainweek.setArguments(bundle);
-                FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                transaction.replace(R.id.drawer_layout,trainweek);
-                transaction.commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,trainweek).commit();
             }
         });
     }
