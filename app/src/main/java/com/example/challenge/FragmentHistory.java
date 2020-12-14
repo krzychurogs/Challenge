@@ -109,7 +109,20 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                     String seconds= String.valueOf(ds.child("data").child("seconds").getValue());
                     int yearinint=Integer.parseInt(years);
                     int yean=yearinint+1900;
-                    if(partshour[0].equals(hours)&&partshour[1].equals(minutes)&&partshour[2].equals(seconds)&&
+                    int lengthmin=minutes.length();
+                    String finalminutes="";
+                    if(lengthmin==1)
+                    {
+                        char ch = '0';
+                        finalminutes=ch+minutes;
+
+                    }
+                    else
+                    {
+                        finalminutes=minutes;
+                    }
+
+                    if(partshour[0].equals(hours)&&partshour[1].equals(finalminutes)&&partshour[2].equals(seconds)&&
                             partshour[3].equals(day)&&partshour[4].equals(month)&&partshour[5].equals(years))
                     {
                         DecimalFormat dfsuma = new DecimalFormat("#.##");
@@ -117,7 +130,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
                         textspeed.setText(predkosc+ "km/h") ;
                         texthighspeed.setText(highspeed+"km/h");
                         textkalorie.setText(kalorie);
-                        datahisttext.setText(day+"/"+month+"/"+yean+" "+hours+":"+minutes);
+                        datahisttext.setText(day+"/"+month+"/"+yean+" "+hours+":"+finalminutes);
                         String data=ds.child("waypointy").getValue().toString();
 
                         listofeachtrainingwaypoint.add(data);

@@ -98,7 +98,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     private Chronometer chronometer;
     TextView MDistance,MSpeed,MDistCheck;
     TextView MFriendInfo;
-    TextToSpeech textToSpeech;
     ImageButton MEnd;
     ImageButton changeToStats;
     ImageButton mStopTime;
@@ -144,6 +143,11 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     int counter=1;
     int counterfriend=1;
     int textlength = 0;
+    public AlertDialog alertDialog;
+    boolean checkfriend=true;
+    TextToSpeech textToSpeech;
+    boolean checknofriend=false;
+    int finaluserposition;
 
     public interface FragmentRoadListener{
         void onInputSent(CharSequence input);
@@ -164,7 +168,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MSort=(ImageButton)root.findViewById(R.id.refsortbutton) ;
         MSpeed=(TextView)root.findViewById(R.id.speed);
         MRefreshButton=(ImageButton)root.findViewById(R.id.refreshbutton);
-
+        showLoggedName();
         tl = (ConstraintLayout) root.findViewById(R.id.main_table);
         tfriend = (ConstraintLayout) root.findViewById(R.id.friend_table);
         mRecyclerView = root.findViewById(R.id.recyclerViewMovieList);
@@ -213,7 +217,21 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
             }
         });
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerViewFriend.setHasFixedSize(true);
         showFriend();
+        textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status!= TextToSpeech.ERROR)
+                {
+                    textToSpeech.setLanguage(new Locale("pl", "PL"));
+                    DecimalFormat df = new DecimalFormat("0") ;
+
+
+                }
+            }
+        });
         MStart.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -266,7 +284,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
-
+        alertDialog = new AlertDialog.Builder(getContext()).create();
 
         changetable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,7 +390,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             }
             else if(PolyUtil.containsLocation(lastKnownLatLng, coordListStart, true) == false && startcheck ==false)
             {
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Alert");
                 alertDialog.setMessage("Musisz wystartować z pozycji startowej");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -387,7 +404,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)==true && startcheck==true)  {
                     updateTrack();
                 } else if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)== false) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                     alertDialog.setTitle("Alert");
                     alertDialog.setMessage("Jesteś poza obszarem");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -554,6 +570,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
             String pierwszycheck="pierwszycheck";
             MDistCheck.setText("Pierwszy CheckPoint ");
+            String text=String.valueOf("Pierwszy punkt kontrolny");
+
+            textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
             dodaneDoBazy=true;
             showTable(pierwszycheck,dfs.format(avgspeed));
 
@@ -562,6 +581,10 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListSecond, true) && dodaneDoBazy1==false)
         {
             //  showTable();
+
+            String text=String.valueOf("Drugi punkt kontrolny");
+
+            textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 
             MSort.setVisibility(View.VISIBLE);
             DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
@@ -584,7 +607,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             //  showTable();
             if(firstchecklock == true && secondchecklock==true)
             {
-
                 MSort.setVisibility(View.VISIBLE);
                 DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Road").child(bundle.getString("name")).child("meta").push();
@@ -597,6 +619,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 road.child("lastchecklock").setValue(lastchecklock);
                 String meta="meta";
                 MDistCheck.setText("Meta ");
+                String text=String.valueOf("Gratuluje,meta");
+                textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
                 dodaneDoBazy2=true;
                 stopChronometer();
                 rusz=false;
@@ -604,8 +628,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 mStopTime.setVisibility(View.INVISIBLE);
                 MEnd.setVisibility(View.VISIBLE);
                 showTable(meta,dfs.format(avgspeed));
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                alertDialog.setTitle("Alert");
+                alertDialog.setTitle("Udało się !");
                 alertDialog.setMessage("Koniec Treningu, aby zakonczyć i minąć statystyki nacisnij przycisk poniżej");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
@@ -626,7 +649,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             }
 
             else {
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 alertDialog.setTitle("Alert");
                 alertDialog.setMessage("Którys z checkpointów pominięty");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -737,7 +759,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
 
                 }
-
+                int position=0;
 
                 reverselistofnamedup=reverseList(listofnamedup);
                 reverselistofavgdup=reverseList(listofavgdup);
@@ -754,7 +776,14 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             exampleList.add(new TableItem(String.valueOf(counter),reverselistofnamedup.get(i),reverselistofavgdup.get(i)+" km/h"));
                             counter++;
                         }
+                        if(reverselistofnamedup.get(i).equals(listofName.get(0)))
+                        {
 
+                            finaluserposition=position;
+                            System.out.println("userpost"+finaluserposition);
+
+                        }
+                        position++;
                     }
 
                 }
@@ -766,8 +795,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     showPoints();
                     System.out.println(check);
                 }
-
-
 
                 Set<String> hashSet = new LinkedHashSet(listofnamefrienddup);
                 ArrayList<String> removedDuplicatesName = new ArrayList(hashSet);
@@ -781,9 +808,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                 Set<String> hashSet3 = new LinkedHashSet(reverselistofFriendavgdup);
                 ArrayList<String> finalremovedDuplicatesAvg= new ArrayList(hashSet3);
-
-
-
 
                 for(int i=0;i<finalremovedDuplicatesName.size();i++)
                 {
@@ -808,14 +832,15 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 mRecyclerViewFriend.setHasFixedSize(true);
                 reverseListFriend = reverseList(friendList);
                 mLayoutFriendManager = new LinearLayoutManager(getActivity());
-                friendAdapter= new TableAdapter(friendList);
+
+                friendAdapter= new TableAdapter(friendList,finaluserposition,checkfriend);
                 mRecyclerViewFriend.setLayoutManager(mLayoutFriendManager);
                 mRecyclerViewFriend.setAdapter(friendAdapter);
 
                 reverseList = reverseList(exampleList);
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mAdapter = new TableAdapter(exampleList);
+                mAdapter = new TableAdapter(exampleList,finaluserposition,checknofriend);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 
@@ -1237,8 +1262,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         .position(first)
                         .title("Meta"));
 
-
-
                 for(int i=0;i<listofeachlastpoint.size();i++)
                 {
                     String word[] = listofeachlastpoint.get(i).split(" ");
@@ -1246,8 +1269,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         newlist.add(w);
                     }
                 }
-
-
                 for (int i = 0; i < newlist.size(); i++) {
                     if (i % 3 == 0) {
                     }
@@ -1260,7 +1281,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             listofplacemetaheck.add(strnew);
                         }
                     }
-
                 }
                 Double latide= Double.valueOf(listofplacemetaheck.get(1));
                 Double longtide=  Double.valueOf(listofplacemetaheck.get(0));
@@ -1277,8 +1297,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                     coordListLast.add(lastKnownLatLngFirst);
                 }
-
-
 
             }
 
@@ -1333,8 +1351,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         newlist.add(w);
                     }
                 }
-
-
                 for (int i = 0; i < newlist.size(); i++) {
                     if (i % 3 == 0) {
                     }
@@ -1364,8 +1380,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                     coordListStart.add(lastKnownLatLngFirst);
                 }
-
-
 
             }
 
@@ -1399,7 +1413,6 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     DatabaseReference infoadd = FirebaseDatabase.getInstance().getReference().child("Users").child
                             ("Customers").child("Historia").child(user_id).child(bundle.getString("name"));
                     infoadd.setValue(true);
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                     alertDialog.setTitle("Alert");
                     alertDialog.setMessage("Zdobyłes punkty za najlepszy czas na trasie");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -1458,16 +1471,34 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 checkWin.add(Boolean.valueOf(checkwin));
 
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
     }
+    public void showLoggedName()
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffname= FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        ValueEventListener valueEventListener1 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = dataSnapshot.child("name").getValue(String.class);
+                    listofName.add(name);
+                    // imie po id
+                }
+
+            }
 
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
+            }
+        } ;
+        reffname.addListenerForSingleValueEvent(valueEventListener1);
+    }
 }

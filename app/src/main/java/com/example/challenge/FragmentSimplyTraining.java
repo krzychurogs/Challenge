@@ -86,7 +86,7 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
     private Chronometer chronometer;
     TextView MDistance,MSpeed;
     TextView MCalory;
-    TextToSpeech textToSpeech;
+    int counterSpeech=0;
     ImageButton MEnd;
     ImageButton mStopTime;
     ImageButton MStart;
@@ -95,11 +95,13 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
     boolean firstspeech=false;
     boolean secondspeech=false;
     boolean thirdspeech=false;
-
+    TextToSpeech textToSpeech;
     boolean start=false;
     private long pauseOffset;
     List<Double>highstedaverage=new ArrayList<Double>();
-
+    List<Integer>diffspeech=new ArrayList<Integer>();
+    List<Boolean>diffspeechB=new ArrayList<Boolean>();
+    int diffspeechi=500;
     public interface FragmentSimplyTrainingListener{
         void onInputSent(CharSequence input);
     }
@@ -122,6 +124,19 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         chronometer.setBase(SystemClock.elapsedRealtime());
         mStopTime.setVisibility(View.GONE);
         MEnd.setVisibility(View.GONE);
+
+        for(int i=0;i<100;i++)
+        {
+            diffspeech.add(diffspeechi);
+            diffspeechi+=500;
+            diffspeechB.add(false);
+        }
+        for(int i=0;i<diffspeech.size();i++)
+        {
+            System.out.println("w"+diffspeech.get(i));
+        }
+
+
         mStopTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,7 +203,18 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 }
             }
         });
+        textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status!= TextToSpeech.ERROR)
+                {
+                    textToSpeech.setLanguage(new Locale("pl", "PL"));
+                    DecimalFormat df = new DecimalFormat("0") ;
 
+
+                }
+            }
+        });
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
@@ -344,30 +370,25 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         DecimalFormat df = new DecimalFormat("#.##");
         DecimalFormat dfcalory = new DecimalFormat("#");
         SpannableStringBuilder text = new SpannableStringBuilder();
+        if(km==0)
+        {
+            text.append(0+"km/h");
+            MSpeed.setText(text);
+        }
         text.append(df.format(avgspeed)+"km/h");
 
         MSpeed.setText(text);
        // System.out.println(calory);
         MCalory.setText(dfcalory.format(calory));
 
-        if(suma>500  && firstspeech==false)
+        int con=0;
+        if(suma>diffspeech.get(counterSpeech) && diffspeechB.get(counterSpeech)==false)
         {
-           speech();
-            firstspeech=true;
-        }
-        if(suma>1000  && secondspeech==false)
-        {
+            System.out.println("con"+con);
             speech();
-            secondspeech=true;
+            diffspeechB.set(counterSpeech,true);
+            counterSpeech++;
         }
-        if(suma>1500  && thirdspeech==false)
-        {
-            speech();
-            thirdspeech=true;
-        }
-
-
-
 
 
 
@@ -380,9 +401,6 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
             public void onClick(View view) {
 
                 final  String user_id = mAuth.getCurrentUser().getUid();
-
-
-
 
                 DecimalFormat df = new DecimalFormat("#.##");
 
@@ -489,19 +507,8 @@ public void addpoints(int pktinfo)
 public void speech()
 
 {     final DecimalFormat dfsumam = new DecimalFormat("#");
-    textToSpeech=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-        @Override
-        public void onInit(int status) {
-            if(status!= TextToSpeech.ERROR)
-            {
-                textToSpeech.setLanguage(new Locale("pl", "PL"));
-                DecimalFormat df = new DecimalFormat("0") ;
-                String text=String.valueOf(""+dfsumam.format(suma)+"metrów");
-                textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
-
-            }
-        }
-    });
+    String text=String.valueOf(""+dfsumam.format(suma)+"metrów");
+        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 }
 
 

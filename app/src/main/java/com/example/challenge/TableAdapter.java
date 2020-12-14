@@ -15,6 +15,8 @@ import com.google.common.collect.Table;
 import java.util.ArrayList;
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewHolder> {
     private ArrayList<TableItem> mExampleList;
+    private int finalpositionuser;
+    private  boolean mcheckfriend;
     private OnItemClickListener mListener;
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -49,7 +51,9 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
             });
         }
     }
-    public TableAdapter(ArrayList<TableItem> exampleList) {
+    public TableAdapter(ArrayList<TableItem> exampleList,int finalposition,boolean checkfriend) {
+        mcheckfriend=checkfriend;
+        finalpositionuser=finalposition;
         mExampleList = exampleList;
     }
     @Override
@@ -61,32 +65,95 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
     @Override
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
         TableItem currentItem = mExampleList.get(position);
+
         holder.mTextView1.setText(currentItem.getmText1());
         holder.mImageView.setImageResource(R.drawable.medal7);
+        if(mcheckfriend==true)
+        {
+            if(position==0)
+            {
+                holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_gol);
+                holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_gol);
+                holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_gol);
+                holder.mImageView.setImageResource(R.drawable.gol);
+            }
 
-        if(position==0)
+            if(position==1)
+            {
+                holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_silver);
+                holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_silver);
+                holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_silver);
+                holder.mImageView.setImageResource(R.drawable.sil);
+            }
+            if(position==2)
+            {
+                holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_bg);
+                holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_bg);
+                holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_bg);
+                holder.mImageView.setImageResource(R.drawable.medalsilver);
+            }
+            if(position>3)
+            {
+                holder.mTextView1.setBackgroundResource(R.drawable.table_content_default);
+                holder.mTextView2.setBackgroundResource(R.drawable.table_content_default);
+                holder.mTextView3.setBackgroundResource(R.drawable.table_content_default);
+
+            }
+        }
+
+        if(position==0 && mcheckfriend==false)
         {
             holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_gol);
             holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_gol);
             holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_gol);
             holder.mImageView.setImageResource(R.drawable.gol);
         }
-        if(position==1)
+
+        if(position==1 && mcheckfriend==false)
         {
             holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_silver);
             holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_silver);
             holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_silver);
             holder.mImageView.setImageResource(R.drawable.sil);
         }
-        if(position==2)
+        if(position==2&& mcheckfriend==false)
         {
 
             holder.mTextView1.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.mTextView2.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.mTextView3.setBackgroundResource(R.drawable.table_content_cell_bg);
             holder.mImageView.setImageResource(R.drawable.medalsilver);
+        }
+
+        if(finalpositionuser==0 && position==0 && mcheckfriend==false)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_user_gold);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_user_gold);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_user_gold);
+            holder.mImageView.setImageResource(R.drawable.gol);
+        }
+        if(finalpositionuser==1 && position==1 && mcheckfriend==false)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_user_silver);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_user_silver);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_user_silver);
+            holder.mImageView.setImageResource(R.drawable.sil);
+        }
+        if(finalpositionuser==2 && position==2 && mcheckfriend==false)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_user_bg);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_user_bg);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_user_bg);
+            holder.mImageView.setImageResource(R.drawable.medalsilver);
+        }
+        if(position>3 && finalpositionuser==position && mcheckfriend==false)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_user_content);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_user_content);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_user_content);
 
         }
+
 
         holder.mTextView3.setText(currentItem.getmText3());
         holder.mTextView2.setText(currentItem.getmText2());

@@ -434,9 +434,15 @@ public class FragmentQuest extends Fragment {
                                 String dist=dff.format(finaldistweek);
                                 Integer finaldistweekInt=Integer.valueOf(dist);
                                 Integer finaldiffbeetweenquestandyou=val-finaldistweekInt;
+
+                            if(finaldiffbeetweenquestandyou>0)
+                            {
                                 distancequest.setText("Dodatkowo musisz pokonać dystans: "+finaldiffbeetweenquestandyou);
-
-
+                            }
+                            else
+                            {
+                                distancequest.setText("Questy dystansowe tygodniowe zrobione");
+                            }
 
                         }
                         else
@@ -514,7 +520,16 @@ public class FragmentQuest extends Fragment {
                             String dist=dffs.format(finalavgofdistance);
                             Double finaldistweekDouble=Double.valueOf(dist);
                             Double finaldiffbeetweenquestandyou=val-finaldistweekDouble;
-                            avgquest.setText("Musisz uzyskać srednią lepszą       o: "+finaldiffbeetweenquestandyou+"km/h");
+                            String dffinaldiffbeetweenquestandyou=dffs.format(finaldiffbeetweenquestandyou);
+                            if(finaldiffbeetweenquestandyou>0)
+                            {
+                                avgquest.setText("Musisz uzyskać srednią lepszą       o: "+dffinaldiffbeetweenquestandyou+"km/h");
+                            }
+                            else
+                            {
+                                avgquest.setText("Questy tygodniowę na średnią zrobione");
+                            }
+
                         }
                         else {
                             avgquest.setText("Musisz uzyskać srednią lepszą       o: "+listofaveragequest.get(0)+"km/h");
@@ -589,8 +604,15 @@ public class FragmentQuest extends Fragment {
                             String counttrain=dff.format(finalnumberoftrain);
                             Integer finalcounttweekInt=Integer.valueOf(counttrain);
                             Integer finaldiffbeetweenquestandyou=val-finalcounttweekInt;
-                            counttrainquest.setText("Wykonaj więcej treningów: "+finaldiffbeetweenquestandyou);
 
+                            if(finaldiffbeetweenquestandyou>0)
+                            {
+                                counttrainquest.setText("Wykonaj więcej treningów: "+finaldiffbeetweenquestandyou);
+                            }
+                            else
+                            {
+                                counttrainquest.setText("Questy tygodniowę na liczbę treningów zrobione");
+                            }
                         }
                         else
                         {
@@ -602,8 +624,6 @@ public class FragmentQuest extends Fragment {
 
                     @Override public void onCancelled(DatabaseError databaseError) {}
                 });
-
-
 
                 DecimalFormat dfsuma = new DecimalFormat("#.#");
                 checkdistanceweek.setText(dfsuma.format(finaldist)+"m");
@@ -688,7 +708,7 @@ public class FragmentQuest extends Fragment {
                             }
                             else
                             {
-                                daydistancequest.setText("Questy dzienne zrobione");
+                                daydistancequest.setText("Questy dystansowe dzienne zrobione");
                             }
 
 
@@ -771,7 +791,15 @@ public class FragmentQuest extends Fragment {
                             String dist=dffs.format(finalavgday);
                             Double finaldistweekDouble=Double.valueOf(dist);
                             Double finaldiffbeetweenquestandyou=val-finaldistweekDouble;
-                            dayavgquest.setText("Musisz uzyskać srednią lepszą       o: "+finaldiffbeetweenquestandyou+"km/h");
+                            String dffinaldiffbeetweenquestandyou=dffs.format(finaldiffbeetweenquestandyou);
+                            if(finaldiffbeetweenquestandyou>0)
+                            {
+                                dayavgquest.setText("Musisz uzyskać srednią lepszą       o: "+dffinaldiffbeetweenquestandyou+"km/h");
+                            }
+                            else {
+                                dayavgquest.setText("Questy na średnią predkość dzienna zrobione");
+                            }
+
 
                             listofmaxavgfromday.clear();
                         } else {
@@ -1010,15 +1038,15 @@ public class FragmentQuest extends Fragment {
         int add=0;
         if(number == 0 )
         {
-            add=300;
+            add=100;
         }
         if(number ==1 )
         {
-            add=400;
+            add=200;
         }
         if(number ==2 )
         {
-            add=500;
+            add=250;
         }
 
         final int score=pktinfo+add;
@@ -1040,7 +1068,7 @@ public class FragmentQuest extends Fragment {
         }
 
 
-        if(pktinfo>1700 && pktinfo<1999)
+        if(pktinfo>1751&& pktinfo<1999 && score >2000)
         {
 
 
@@ -1050,19 +1078,17 @@ public class FragmentQuest extends Fragment {
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            resetTask();
                             DatabaseReference pkt2 = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id)
                                     .child("lvl");
                             pkt2.setValue("Medium");
-
-
-
+                            resetTask();
+                            resetchecks();
                             dialog.dismiss();
                         }
                     });
             alertDialog.show();
         }
-        if(pktinfo>3700 && pktinfo<3999)
+        if(pktinfo>3800 && pktinfo<3999)
         {
 
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
@@ -1074,6 +1100,7 @@ public class FragmentQuest extends Fragment {
                             DatabaseReference pkt2 = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id)
                                     .child("lvl");
                             pkt2.setValue("High");
+                            resetchecks();
                             resetTask();
                             dialog.dismiss();
                         }
@@ -1126,7 +1153,7 @@ public class FragmentQuest extends Fragment {
         }
 
 
-        if(pktinfo>1700 && pktinfo<1999)
+        if(pktinfo>2000)
         {
 
 
@@ -1148,7 +1175,7 @@ public class FragmentQuest extends Fragment {
                     });
             alertDialog.show();
         }
-        if(pktinfo>3700 && pktinfo<3999)
+        if(pktinfo>4000)
         {
 
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
@@ -1270,6 +1297,28 @@ public class FragmentQuest extends Fragment {
             @Override public void onCancelled(DatabaseError databaseError) {}
         });
 
+    }
+    public void resetchecks()
+    {
+        String user_id = mAuth.getCurrentUser().getUid();
+        DatabaseReference nravgday = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("checknrDziennego");
+        nravgday.removeValue();
+        DatabaseReference countsda = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("checkWeekTaskCount");
+        countsda.removeValue();
+        DatabaseReference nrweekavg = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("checkWeekTaskAvg");
+        nrweekavg.removeValue();
+        DatabaseReference nrweekdist = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("checkWeekTaskDist");
+        nrweekdist.removeValue();
+        DatabaseReference nrcountweek = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("checkWeekTaskCount");
+        nrcountweek.removeValue();
+
+        FragmentQuest questfragment=new FragmentQuest();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,questfragment).commit();
     }
 
 }

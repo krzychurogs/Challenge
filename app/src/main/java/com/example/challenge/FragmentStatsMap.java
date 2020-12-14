@@ -86,6 +86,9 @@ public class FragmentStatsMap extends Fragment {
     int counter=1;
     int counterfriend=1;
     TextView MScore,MFriendInfo,MInfo;
+    int finaluserposition;
+    boolean checkfriend=true;
+    boolean checknofriend=false;
 
 
     public interface FragmentStatsListener{
@@ -210,6 +213,7 @@ public class FragmentStatsMap extends Fragment {
 
 
                 }
+                int position=0;
 
                 reverselistofnamedup=reverseList(listofnamedup);
                 reverselistofavgdup=reverseList(listofavgdup);
@@ -226,10 +230,14 @@ public class FragmentStatsMap extends Fragment {
                             exampleList.add(new TableItem(String.valueOf(counter),reverselistofnamedup.get(i),reverselistofavgdup.get(i)+" km/h"));
                             counter++;
                         }
-                        if(reverselistofnamedup.get(i).equals(listofName.get(0)))
+                            if(reverselistofnamedup.get(i).equals(listofName.get(0)))
                         {
                             MScore.setText("Twój wynik to "+reverselistofavgdup.get(i)+"km/h");
+                            finaluserposition=position;
+                            System.out.println("userpost"+finaluserposition);
+
                         }
+                            position++;
                     }
 
                 }
@@ -275,14 +283,14 @@ public class FragmentStatsMap extends Fragment {
                 mRecyclerViewFriend.setHasFixedSize(true);
                 reverseListFriend = reverseList(friendList);
                 mLayoutFriendManager = new LinearLayoutManager(getActivity());
-                friendAdapter= new TableAdapter(friendList);
+                friendAdapter= new TableAdapter(friendList,finaluserposition,checkfriend);
                 mRecyclerViewFriend.setLayoutManager(mLayoutFriendManager);
                 mRecyclerViewFriend.setAdapter(friendAdapter);
 
                 reverseList = reverseList(exampleList);
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
-                mAdapter = new TableAdapter(exampleList);
+                mAdapter = new TableAdapter(exampleList,finaluserposition,checknofriend);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 

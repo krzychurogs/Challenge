@@ -9,7 +9,7 @@
             android:title="Zwykły Trening" />
         <item
             android:id="@+id/nav_all_training"
-            android:icon="@drawable/ic_account_box_black_24dp"
+            android:icon="@drawable/ic_history_black_24dp"
             android:title="Wszystkie Treningi" />
         <item
             android:id="@+id/nav_choice_road"
@@ -17,7 +17,7 @@
             android:title="Wszystkie trasy" />
         <item
             android:id="@+id/nav_Quest"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:icon="@drawable/ic_assignment_black_24dp"
             android:title="Questy" />
 
     </group>
@@ -29,7 +29,7 @@
                 android:title="Dodaj Znajomego" />
             <item
                 android:id="@+id/nav_myFriends"
-                android:icon="@drawable/ic_account_box_black_24dp"
+                android:icon="@drawable/ic_wc_black_24dp"
                 android:title="Moi Znajomi" />
 
             <item

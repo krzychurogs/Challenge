@@ -218,13 +218,26 @@ public class FragmentAllTrainInWeek extends Fragment {
                     int monthinint=Integer.parseInt(month);
                     int mon=monthinint+1;//iteruje od 0 trzeba dodac 1 aby uzyskac dobry miesiac
                     String fulldate=day+"/"+mon+"/"+yean;
-                    String elementofday=hours+"/"+minutes+"/"+seconds+"/"+day+"/"+month+"/"+years;
-                    listofdates.add(fulldate);
-                    elementofdates.add(elementofday);
-                    String dystanswithoutdot=dystans.replace(",",".");
-                    sumaofdistance+=Double.parseDouble(dystanswithoutdot);
-
-
+                    int lengthmin=minutes.length();
+                    String finalminutes="";
+                    if(lengthmin==1)
+                    {
+                        char ch = '0';
+                         finalminutes=ch+minutes;
+                        System.out.println("mind"+finalminutes);
+                        String elementofday=hours+"/"+finalminutes+"/"+seconds+"/"+day+"/"+month+"/"+years;
+                        listofdates.add(fulldate);
+                        elementofdates.add(elementofday);
+                        String dystanswithoutdot=dystans.replace(",",".");
+                        sumaofdistance+=Double.parseDouble(dystanswithoutdot);
+                    }
+                    else {
+                        String elementofday=hours+"/"+minutes+"/"+seconds+"/"+day+"/"+month+"/"+years;
+                        listofdates.add(fulldate);
+                        elementofdates.add(elementofday);
+                        String dystanswithoutdot=dystans.replace(",",".");
+                        sumaofdistance+=Double.parseDouble(dystanswithoutdot);
+                    }
                 }
                 int ctr=0;
                 TextView mTextView;

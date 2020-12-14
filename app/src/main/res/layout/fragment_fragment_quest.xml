@@ -11,10 +11,11 @@
     <TextView
         android:id="@+id/lvl"
         android:layout_width="match_parent"
-        android:textSize="50dp"
-        android:gravity="center"
         android:layout_height="wrap_content"
-        android:hint="Level" />
+        android:gravity="center"
+        android:hint="Level"
+        android:textColor="#DC143C"
+        android:textSize="52dp" />
 
     <TextView
         android:id="@+id/textViewPkt"
@@ -50,12 +51,12 @@
 
         <TextView
             android:id="@+id/weekInfo"
-            android:layout_width="wrap_content"
+            android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
             android:gravity="left"
-            android:hint="Twoje"
-            android:textSize="30dp"
+            android:hint="Twoje wyniki"
+            android:textSize="20dp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -64,7 +65,7 @@
     <LinearLayout
         android:id="@+id/linearforcheck"
         android:layout_width="386dp"
-        android:layout_height="152dp"
+        android:layout_height="182dp"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
@@ -156,15 +157,35 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/dayweek"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:gravity="left"
-        android:hint="Dzienne:"
-        android:textStyle="bold"
-        android:textSize="30dp" />
+    <LinearLayout
+        android:id="@+id/linearforhorizonweek1s"
+        android:layout_width="398dp"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp">
+
+        <TextView
+            android:id="@+id/dayweek"
+            android:layout_width="255dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:gravity="left"
+            android:hint="Dzienne:"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/weekInfoD"
+            android:layout_width="141dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:hint="Twoje wyniki"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/linearforavg"
