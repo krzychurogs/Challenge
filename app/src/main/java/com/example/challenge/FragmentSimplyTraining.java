@@ -370,14 +370,16 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         DecimalFormat df = new DecimalFormat("#.##");
         DecimalFormat dfcalory = new DecimalFormat("#");
         SpannableStringBuilder text = new SpannableStringBuilder();
-        if(km==0)
+        if(suma==0)
         {
-            text.append(0+"km/h");
-            MSpeed.setText(text);
+            MSpeed.setText(""+0+"km/h");
         }
-        text.append(df.format(avgspeed)+"km/h");
+        else if(suma!=0)
+        {
+            MSpeed.setText(""+df.format(avgspeed)+"km/h");
+        }
 
-        MSpeed.setText(text);
+
        // System.out.println(calory);
         MCalory.setText(dfcalory.format(calory));
 

@@ -176,9 +176,16 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
     public void keyfriendname(String key) {
         String user_id = mAuth.getCurrentUser().getUid();
+
         DatabaseReference requestfriend = FirebaseDatabase.getInstance().getReference().child("Users").child
-                ("Customers").child("Historia").child(user_id).child("FriendsRequest").child(key);
+                ("Customers").child("Historia").child(key).child("FriendsRequest").child(user_id);
         requestfriend.setValue("pended");
+        DatabaseReference requestfriendpend = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("FriendsRequestInv").child(key);
+        requestfriendpend.setValue("pended");
+
+
+
         myAdapter.notifyDataSetChanged();
 
     }
@@ -188,7 +195,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
         String user_id = mAuth.getCurrentUser().getUid();
         reffforpending = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Users").child("Customers")
-                .child("Historia").child(user_id).child("FriendsRequest");
+                .child("Historia").child(user_id).child("FriendsRequestInv");
         listofkeyrequest.clear();
 
         Query query = reff.orderByChild(key).equalTo("pended");
@@ -200,6 +207,8 @@ public class FragmentFriends extends Fragment implements TextWatcher {
 
                     String key = String.valueOf(ds.getKey());
                     String name = String.valueOf(ds.getValue());
+                    System.out.println("keyreq"+key);
+                    System.out.println("keyreqinv"+name);
                     listofkeyrequest.add(key);
 
                 }

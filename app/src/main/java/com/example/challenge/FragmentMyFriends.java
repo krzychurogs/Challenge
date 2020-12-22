@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class FragmentMyFriends extends Fragment  {
+public class    FragmentMyFriends extends Fragment  {
     DatabaseReference reff,reffs,reffsrequest,reffsktoname,reffsdelete;
     private FirebaseAuth mAuth;
     private FragmentMyFriendsListener listener;
@@ -136,8 +136,9 @@ public class FragmentMyFriends extends Fragment  {
                 }
                 for(int i=0;i<listofkeyfriend.size();i++)
                 {
-                    keytoname(listofkeyfriend.get(i));
+                    keytopoints(listofkeyfriend.get(i));
                 }
+
             }
 
             @Override
@@ -313,7 +314,7 @@ public class FragmentMyFriends extends Fragment  {
         reff.addListenerForSingleValueEvent(valueEventListener);
     }
 
-    public void keytoname(final String key)
+    public void keytoname(final String key,final String points)
     {
         l1.invalidateViews();
         mylist.clear();
@@ -325,6 +326,7 @@ public class FragmentMyFriends extends Fragment  {
                 List<String>newlist=new ArrayList<String>();
                     String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
                     String lvl =  String.valueOf(dataSnapshot.child("lvl").getValue());
+                    lvl+=" ("+points+" pkt)";
                     SingleRow singleRow = new SingleRow(namefriend,lvl);
                     mylist.add(singleRow);
                     myAdapter = new AdapterDelete(getActivity(), mylist);
@@ -365,7 +367,27 @@ public class FragmentMyFriends extends Fragment  {
         };
         reffsktoname.addListenerForSingleValueEvent(valueEventListener);
     }
+    public void keytopoints(final String key)
+    {
 
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffsktoname= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(key);
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String>newlist=new ArrayList<String>();
+                String points =  String.valueOf(dataSnapshot.child("punkty").getValue());
+                System.out.println("punkty"+points);
+                keytoname(key,points);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffsktoname.addListenerForSingleValueEvent(valueEventListener);
+    }
     public void deletefriend(String key)
     {
         final String user_id = mAuth.getCurrentUser().getUid();

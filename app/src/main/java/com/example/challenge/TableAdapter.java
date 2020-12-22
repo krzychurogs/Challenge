@@ -146,6 +146,13 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
             holder.mTextView3.setBackgroundResource(R.drawable.table_user_bg);
             holder.mImageView.setImageResource(R.drawable.medalsilver);
         }
+        if(position>3)
+        {
+            holder.mTextView1.setBackgroundResource(R.drawable.table_content_default);
+            holder.mTextView2.setBackgroundResource(R.drawable.table_content_default);
+            holder.mTextView3.setBackgroundResource(R.drawable.table_content_default);
+
+        }
         if(position>3 && finalpositionuser==position && mcheckfriend==false)
         {
             holder.mTextView1.setBackgroundResource(R.drawable.table_user_content);
@@ -153,6 +160,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ExampleViewH
             holder.mTextView3.setBackgroundResource(R.drawable.table_user_content);
 
         }
+
 
 
         holder.mTextView3.setText(currentItem.getmText3());

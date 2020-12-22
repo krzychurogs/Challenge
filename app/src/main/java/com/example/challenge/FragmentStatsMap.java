@@ -60,33 +60,49 @@ public class FragmentStatsMap extends Fragment {
     private FirebaseAuth mAuth;
     private FragmentStatsListener listener;
     List<String>listofnamedup=new ArrayList<String>();
+    List<String>listOfYourLvlNameDup=new ArrayList<String>();
+    List<String>listOfYourLvlAvgDup=new ArrayList<String>();
     List<String>listofnamefrienddup=new ArrayList<String>();
     List<String>listofavgdup=new ArrayList<String>();
     List<String>listofavgefrienddup=new ArrayList<String>();
+
     List<String>reverselistofnamedup=new ArrayList<String>();
     List<String>reverselistofavgdup=new ArrayList<String>();
+    List<String>reverseListOfYourLvlNameDup=new ArrayList<String>();
+    List<String>reverseeListOFYourLvlAvgDup=new ArrayList<String>();
+
     List<String>reverselistofFriendnamedup=new ArrayList<String>();
     List<String>reverselistofFriendavgdup=new ArrayList<String>();
     List<String>listofnameDuplicates=new ArrayList<String>();
+    List<String>listofnameYourLvlDuplicates=new ArrayList<String>();
     List<String>listofFriendnameDuplicates=new ArrayList<String>();
     List<String>listofName=new ArrayList<String>();
     List<String>listofavgDuplicates=new ArrayList<String>();
-    ArrayList<TableItem>exampleList=new ArrayList<>();
-    ArrayList<TableItem>friendList=new ArrayList<>();
+    ArrayList<TableItem>exampleList=new ArrayList<TableItem>();
+    ArrayList<TableItem>yourLvlList=new ArrayList<TableItem>();
+    ArrayList<TableItem>friendList=new ArrayList<TableItem>();
+    List<String>listofNameLvl=new ArrayList<String>();
+
     List<String>listoffriendname=new ArrayList<String>();
-    private RecyclerView mRecyclerView,mRecyclerViewFriend;
-    private RecyclerView.LayoutManager mLayoutManager,mLayoutFriendManager;
-    private TableAdapter mAdapter,friendAdapter;
+    private RecyclerView mRecyclerView,mRecyclerViewFriend,mRecyclerYourLvl;
+    private RecyclerView.LayoutManager mLayoutManager,mLayoutFriendManager,mLayoutYourLvlManager;
+    private TableAdapter mAdapter,yourLvlAdapter,friendAdapter;
+
     ArrayList<TableItem>reverseList=new ArrayList<>();
+    ArrayList<TableItem>reverseListYourLvl=new ArrayList<>();
     ArrayList<TableItem>reverseListFriend=new ArrayList<>();
     List<String>listoffriendkey=new ArrayList<String>();
-    ImageButton changetable;
+    ImageButton changetable,changetableyourlvl;
     ImageView imageuser;
     ImageButton changetableAllUsers;
+    ImageButton changetableAllUsersInMain;
     int counter=1;
+    int counterYourLvl=1;
     int counterfriend=1;
-    TextView MScore,MFriendInfo,MInfo;
+    String lvlOfUser;
+    TextView MScore,MFriendInfo,MInfo,MYourLvlInfo;
     int finaluserposition;
+    int finallvluserposition;
     boolean checkfriend=true;
     boolean checknofriend=false;
 
@@ -103,14 +119,18 @@ public class FragmentStatsMap extends Fragment {
         showFriend();
         mRecyclerView = root.findViewById(R.id.recyclerViewMovieList);
         imageuser=(ImageView) root.findViewById(R.id.imagemedal);
-
+        mRecyclerYourLvl= root.findViewById(R.id.recyclerYourLvl);
         mRecyclerViewFriend= root.findViewById(R.id.recyclerViewFriend);
+        changetableyourlvl=(ImageButton) root.findViewById(R.id.changetableToYourLvl);
         changetable=(ImageButton) root.findViewById(R.id.changetable);
+        changetableAllUsersInMain=(ImageButton) root.findViewById(R.id.changetable1);
         MScore=(TextView) root.findViewById(R.id.textViewYourScore);
+        MYourLvlInfo=(TextView) root.findViewById(R.id.textViewYourLvl);
         MFriendInfo=(TextView) root.findViewById(R.id.textViewFriendTitl);
         MInfo=(TextView) root.findViewById(R.id.textViewTitle);
         imageuser.setImageResource(R.drawable.profile);
         mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+        mRecyclerYourLvl.setVisibility(View.INVISIBLE);
         MInfo.setVisibility(View.VISIBLE);
         MFriendInfo.setVisibility(View.INVISIBLE);
         changetableAllUsers=(ImageButton) root.findViewById(R.id.changetableToAll);
@@ -118,11 +138,33 @@ public class FragmentStatsMap extends Fragment {
             @Override
             public void onClick(View view) {
                 mRecyclerView.setVisibility(View.INVISIBLE);
+                mRecyclerYourLvl.setVisibility(View.INVISIBLE);
                 mRecyclerViewFriend.setVisibility(View.VISIBLE);
                 changetableAllUsers.setVisibility(View.VISIBLE);
+                changetableAllUsersInMain.setVisibility(View.INVISIBLE);
+                changetableyourlvl.setVisibility(View.INVISIBLE);
                 changetable.setVisibility(View.INVISIBLE);
+                MYourLvlInfo.setVisibility(View.INVISIBLE);
                 MInfo.setVisibility(View.INVISIBLE);
                 MFriendInfo.setVisibility(View.VISIBLE);
+
+
+            }
+        });
+
+        changetableyourlvl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                mRecyclerYourLvl.setVisibility(View.VISIBLE);
+                mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+                changetableAllUsers.setVisibility(View.VISIBLE);
+                changetableyourlvl.setVisibility(View.INVISIBLE);
+                changetable.setVisibility(View.INVISIBLE);
+                changetableAllUsersInMain.setVisibility(View.INVISIBLE);
+                MYourLvlInfo.setVisibility(View.VISIBLE);
+                MInfo.setVisibility(View.INVISIBLE);
+                MFriendInfo.setVisibility(View.INVISIBLE);
 
 
             }
@@ -132,9 +174,12 @@ public class FragmentStatsMap extends Fragment {
             public void onClick(View view) {
                 mRecyclerView.setVisibility(View.VISIBLE);
                 mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+                mRecyclerYourLvl.setVisibility(View.INVISIBLE);
                 changetableAllUsers.setVisibility(View.INVISIBLE);
                 changetable.setVisibility(View.VISIBLE);
+                changetableyourlvl.setVisibility(View.VISIBLE);
                 MInfo.setVisibility(View.VISIBLE);
+                MYourLvlInfo.setVisibility(View.INVISIBLE);
                 MFriendInfo.setVisibility(View.INVISIBLE);
 
             }
@@ -168,9 +213,10 @@ public class FragmentStatsMap extends Fragment {
 
 
         exampleList.clear();
+        yourLvlList.clear();
         friendList.clear();
         String user_id = mAuth.getCurrentUser().getUid();
-        final int limit=20;
+        final int limit=40;
         final Bundle bundle=getArguments();
 
         reffname= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Road").child(bundle.getString("name"))
@@ -182,7 +228,7 @@ public class FragmentStatsMap extends Fragment {
 
                 List<String>newlist=new ArrayList<String>();
                 int count=10;
-                int max=20 ;
+                int max=40 ;
                 int maxfr=5;
                 int size=0;
                 int sizefr=0;
@@ -191,8 +237,15 @@ public class FragmentStatsMap extends Fragment {
                     if(max>size)
                     {   String name =    String.valueOf(ds.child("name").getValue() );
                         String srednia =  String.valueOf(ds.child("srednia").getValue());
+                        lvlOfUser=String.valueOf(ds.child("lvl").getValue());
 
-                        if(name!=null && srednia!=null)
+                        if(name!=null && srednia!=null && lvlOfUser.equals(listofNameLvl.get(0)))
+                        {
+                            //System.out.println("nams"+name);
+                            listOfYourLvlNameDup.add(name);
+                            listOfYourLvlAvgDup.add(srednia);
+                        }
+                        if(name!=null && srednia!=null )
                         {
                             listofnamedup.add(name);
                             listofavgdup.add(srednia);
@@ -203,23 +256,47 @@ public class FragmentStatsMap extends Fragment {
                             if(name.contains(listoffriendname.get(i)))
                             {
                                 listofnamefrienddup.add(name);
+
+                              //  System.out.println("namefr"+name);
                                 listofavgefrienddup.add(srednia);
                             }
-
                         }
                     }
                     size++;
                     count--;
 
-
                 }
                 int position=0;
+                int yourlvlposition=0;
 
+
+                reverseListOfYourLvlNameDup=reverseList(listOfYourLvlNameDup);
+                reverseeListOFYourLvlAvgDup=reverseList(listOfYourLvlAvgDup);
+                for(int i=0;i<reverseListOfYourLvlNameDup.size();i++)
+                {
+                    if(!listofnameYourLvlDuplicates.contains(reverseListOfYourLvlNameDup.get(i)))
+                    {
+                        listofnameYourLvlDuplicates.add(reverseListOfYourLvlNameDup.get(i));
+                        if(!reverseListOfYourLvlNameDup.get(i).equals("null"))
+                        {
+                            // System.out.println("reve"+reverseListOfYourLvlNameDup.get(i));
+                            yourLvlList.add(new TableItem(String.valueOf(counterYourLvl),reverseListOfYourLvlNameDup.get(i),reverseeListOFYourLvlAvgDup.get(i)+" km/h"));
+                            counterYourLvl++;
+                        }
+                        System.out.println("lvlposition"+reverseListOfYourLvlNameDup.get(i));
+                        if(reverseListOfYourLvlNameDup.get(i).equals(listofName.get(0)))
+                        {
+
+                            finallvluserposition=yourlvlposition;
+                        }
+                        yourlvlposition++;
+                    }
+
+                }
                 reverselistofnamedup=reverseList(listofnamedup);
                 reverselistofavgdup=reverseList(listofavgdup);
                 for(int i=0;i<reverselistofnamedup.size();i++)
                 {
-
                     if(!listofnameDuplicates.contains(reverselistofnamedup.get(i)))
                     {
 
@@ -227,22 +304,22 @@ public class FragmentStatsMap extends Fragment {
 
                         if(!reverselistofnamedup.get(i).equals("null"))
                         {
+
+                            System.out.println("lvlps"+reverselistofnamedup);
                             exampleList.add(new TableItem(String.valueOf(counter),reverselistofnamedup.get(i),reverselistofavgdup.get(i)+" km/h"));
                             counter++;
                         }
-                            if(reverselistofnamedup.get(i).equals(listofName.get(0)))
+                        if(reverselistofnamedup.get(i).equals(listofName.get(0)))
                         {
                             MScore.setText("Twój wynik to "+reverselistofavgdup.get(i)+"km/h");
                             finaluserposition=position;
-                            System.out.println("userpost"+finaluserposition);
+                          //  System.out.println("userpost"+finaluserposition);
 
                         }
-                            position++;
+                        position++;
                     }
 
                 }
-
-
 
                 Set<String> hashSet = new LinkedHashSet(listofnamefrienddup);
                 ArrayList<String> removedDuplicatesName = new ArrayList(hashSet);
@@ -256,19 +333,11 @@ public class FragmentStatsMap extends Fragment {
 
                 Set<String> hashSet3 = new LinkedHashSet(reverselistofFriendavgdup);
                 ArrayList<String> finalremovedDuplicatesAvg= new ArrayList(hashSet3);
-
-
-
-
                 for(int i=0;i<finalremovedDuplicatesName.size();i++)
                 {
-
-
                     if(!listofFriendnameDuplicates.contains(finalremovedDuplicatesName.get(i)))
                     {
-
                         listofFriendnameDuplicates.add(finalremovedDuplicatesName.get(i));
-
                         if(!finalremovedDuplicatesName.get(i).equals("null"))
                         {
 
@@ -278,21 +347,29 @@ public class FragmentStatsMap extends Fragment {
 
                     }
 
-                }
+            }
 
-                mRecyclerViewFriend.setHasFixedSize(true);
+
+
+                mRecyclerView.setHasFixedSize(true);
+                mLayoutManager = new LinearLayoutManager(getActivity());
+                mAdapter = new TableAdapter(exampleList,finaluserposition,checknofriend);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setAdapter(mAdapter);
+
                 reverseListFriend = reverseList(friendList);
                 mLayoutFriendManager = new LinearLayoutManager(getActivity());
                 friendAdapter= new TableAdapter(friendList,finaluserposition,checkfriend);
                 mRecyclerViewFriend.setLayoutManager(mLayoutFriendManager);
                 mRecyclerViewFriend.setAdapter(friendAdapter);
 
-                reverseList = reverseList(exampleList);
-                mRecyclerView.setHasFixedSize(true);
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mAdapter = new TableAdapter(exampleList,finaluserposition,checknofriend);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                mRecyclerView.setAdapter(mAdapter);
+
+                mRecyclerYourLvl.setHasFixedSize(true);
+                reverseListFriend = reverseList(yourLvlList);
+                mLayoutFriendManager = new LinearLayoutManager(getActivity());
+                yourLvlAdapter= new TableAdapter(yourLvlList,finallvluserposition,checknofriend);
+                mRecyclerYourLvl.setLayoutManager(mLayoutFriendManager);
+                mRecyclerYourLvl.setAdapter(yourLvlAdapter);
 
             }
 
@@ -376,7 +453,9 @@ public class FragmentStatsMap extends Fragment {
                 List<String>newlist=new ArrayList<String>();
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String name = dataSnapshot.child("name").getValue(String.class);
+                    String lvlname = dataSnapshot.child("lvl").getValue(String.class);
                     listofName.add(name);
+                    listofNameLvl.add(lvlname);
                     // imie po id
 
                 }

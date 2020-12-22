@@ -16,14 +16,11 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,12 +57,12 @@ import java.util.Locale;
 import java.util.Set;
 
 public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,com.google.android.gms.location.LocationListener, GoogleApiClient.OnConnectionFailedListener{
-    DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend,reffcheckstart,reffpkt;
-    Query reffname;
+    private DatabaseReference reff,reffs,reffcheck,reffchecktwo,reffcheckend,reffcheckstart,reffpkt;
+    private Query reffname;
     private FirebaseAuth mAuth;
     private GoogleMap mMap;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
     LocationRequest mLocationRequest;
     Location flocation;
     private FragmentRoadListener listener;
@@ -75,33 +72,34 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     TextView labeldistance,labelspeed,labelkalorie,labelczas;
     private LatLng lastKnownLatLng;
     private LatLng lastKnownLatLngFirst;
-    List<String>listofplace=new ArrayList<String>();
-    List<String>listofplacefirstcheck=new ArrayList<String>();
-    List<String>markerfirst=new ArrayList<String>();
-    List<String>markersecond=new ArrayList<String>();
-    List<String>markerfinal=new ArrayList<String>();
-    List<String>markerstart=new ArrayList<String>();
-    List<String>listofplacesecondcheck=new ArrayList<String>();
-    List<String>listofplacemetaheck=new ArrayList<String>();
-    List<String>listofplacestartheck=new ArrayList<String>();
+    private List<String>listofplace=new ArrayList<String>();
+    private List<String>listofplacefirstcheck=new ArrayList<String>();
+    private List<String>markerfirst=new ArrayList<String>();
+    private List<String>markersecond=new ArrayList<String>();
+    private List<String>markerfinal=new ArrayList<String>();
+    private List<String>markerstart=new ArrayList<String>();
+    private List<String>listofplacesecondcheck=new ArrayList<String>();
+    private int counterYourLvl=1;
+    private List<String>listofplacemetaheck=new ArrayList<String>();
+    private List<String>listofplacestartheck=new ArrayList<String>();
     private Polyline gpsTrack;
-    List<String>listofnamedup=new ArrayList<String>();
-    List<String>listofeachtrainingwaypoint=new ArrayList<>();
-    List<String>listofeachfirstwaypoint=new ArrayList<>();
-    List<String>listofeachsecondwaypoint=new ArrayList<>();
-    List<String>listofeachlastpoint=new ArrayList<>();
-    List<String>listofeachstartpoint=new ArrayList<>();
-    List<String>listofnamefrienddup=new ArrayList<String>();
-    List<String>listofavgefrienddup=new ArrayList<String>();
-    int secs;
+    private List<String>listofnamedup=new ArrayList<String>();
+    private List<String>listofeachtrainingwaypoint=new ArrayList<>();
+    private List<String>listofeachfirstwaypoint=new ArrayList<>();
+    private List<String>listofeachsecondwaypoint=new ArrayList<>();
+    private List<String>listofeachlastpoint=new ArrayList<>();
+    private List<String>listofeachstartpoint=new ArrayList<>();
+    private List<String>listofnamefrienddup=new ArrayList<String>();
+    private List<String>listofavgefrienddup=new ArrayList<String>();
+    List<String>reverseListOfYourLvlNameDup=new ArrayList<String>();
+    List<String>reverseeListOFYourLvlAvgDup=new ArrayList<String>();
+    private int secs;String lvlOfUser;
     public float suma=0;
     private Chronometer chronometer;
+    private List<String>listofnameYourLvlDuplicates=new ArrayList<String>();
     TextView MDistance,MSpeed,MDistCheck;
-    TextView MFriendInfo;
-    ImageButton MEnd;
-    ImageButton changeToStats;
-    ImageButton mStopTime;
-    ImageButton MStart,MRefreshButton,MSort;
+    TextView MFriendInfo,mYourLvlInfo;
+    ImageButton MEnd;ImageButton changeToStats;ImageButton mStopTime;ImageButton MStart,MRefreshButton,MSort;
     static boolean rusz=false;
     private boolean running;
     private long pauseOffset;
@@ -109,23 +107,21 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     List<Boolean>listofCheckLocks=new ArrayList<Boolean>();
     List<String>listoffriendname=new ArrayList<String>();
     List<String>listoffriendkey=new ArrayList<String>();
-    ConstraintLayout tl,tfriend;
-    boolean dodaneDoBazy=false;
-    boolean dodaneDoBazy1=false;
-    boolean dodaneDoBazy2=false;
-    boolean startcheck=false;
-    ArrayList<LatLng> coordList = new ArrayList<LatLng>();
-    ArrayList<LatLng> coordListFirst = new ArrayList<LatLng>();
-    ArrayList<LatLng> coordListSecond = new ArrayList<LatLng>();
-    ArrayList<LatLng> coordListLast = new ArrayList<LatLng>();
-    ArrayList<LatLng> coordListStart = new ArrayList<LatLng>();
-    private RecyclerView mRecyclerView,mRecyclerViewFriend;
-    private TableAdapter mAdapter,friendAdapter;
-    private RecyclerView.LayoutManager mLayoutManager,mLayoutFriendManager;
+    ConstraintLayout tl,tfriend,tyourlvl;
+    boolean dodaneDoBazy=false;boolean dodaneDoBazy1=false;boolean dodaneDoBazy2=false;boolean startcheck=false;
+    private ArrayList<LatLng> coordList = new ArrayList<LatLng>();
+    private ArrayList<LatLng> coordListFirst = new ArrayList<LatLng>();
+    private ArrayList<LatLng> coordListSecond = new ArrayList<LatLng>();
+    private ArrayList<LatLng> coordListLast = new ArrayList<LatLng>();
+    private ArrayList<LatLng> coordListStart = new ArrayList<LatLng>();
+    private RecyclerView mRecyclerView,mRecyclerViewFriend,mRecyclerYourLvl;
+    private TableAdapter mAdapter,friendAdapter,yourLvlAdapter;
+    private RecyclerView.LayoutManager mLayoutManager,mLayoutFriendManager,mLayoutYourlvlManager;
     ArrayList<TableItem>exampleList=new ArrayList<>();
     ArrayList<TableItem>friendList=new ArrayList<>();
     ArrayList<TableItem>reverseList=new ArrayList<>();
     ArrayList<TableItem>reverseListFriend=new ArrayList<>();
+    ArrayList<TableItem>yourLvlList=new ArrayList<TableItem>();
     List<String>reverselistofnamedup=new ArrayList<String>();
     List<String>reverselistofavgdup=new ArrayList<String>();
     List<String>reverselistofFriendnamedup=new ArrayList<String>();
@@ -135,19 +131,21 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     List<String>listofavgdup=new ArrayList<String>();
     List<String>listofnameDuplicates=new ArrayList<String>();
     List<String>listofName=new ArrayList<String>();
+    List<String>listofNameLvl=new ArrayList<String>();
     List<String>listofFriendnameDuplicates=new ArrayList<String>();
     List<Boolean>checkWin=new ArrayList<Boolean>();
-    boolean secondchecklock=false;
-    boolean firstchecklock=false;
-    boolean lastchecklock=false;
-    int counter=1;
-    int counterfriend=1;
-    int textlength = 0;
+    boolean secondchecklock=false;boolean firstchecklock=false;boolean lastchecklock=false;
+    private int counter=1;int finallvluserposition;int counterfriend=1;int textlength = 0;
     public AlertDialog alertDialog;
-    boolean checkfriend=true;
+    private boolean checkfriend=true;
     TextToSpeech textToSpeech;
-    boolean checknofriend=false;
-    int finaluserposition;
+    private boolean checknofriend=false;int finaluserposition;
+
+
+    private RecyclerView.LayoutManager mLayoutYourLvlManager;
+    private List<String>listOfYourLvlNameDup=new ArrayList<String>();
+    private List<String>listOfYourLvlAvgDup=new ArrayList<String>();
+    private ImageButton changetableyourlvl;
 
     public interface FragmentRoadListener{
         void onInputSent(CharSequence input);
@@ -159,7 +157,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
         System.out.println("bund"+bundle.getString("name"));
-       //dodawanietrasy();
+        //dodawanietrasy();
         setWinRoad();
         final View root = inflater.inflate(R.layout.fragment_road, container, false);
         MStart=(ImageButton)root.findViewById(R.id.start);
@@ -169,9 +167,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MSpeed=(TextView)root.findViewById(R.id.speed);
         MRefreshButton=(ImageButton)root.findViewById(R.id.refreshbutton);
         showLoggedName();
-        tl = (ConstraintLayout) root.findViewById(R.id.main_table);
-        tfriend = (ConstraintLayout) root.findViewById(R.id.friend_table);
         mRecyclerView = root.findViewById(R.id.recyclerViewMovieList);
+        mRecyclerYourLvl= root.findViewById(R.id.recyclerYourLvl);
         mRecyclerViewFriend= root.findViewById(R.id.recyclerViewFriend);
         MEnd=(ImageButton)root.findViewById(R.id.end);
         changetable=(ImageButton) root.findViewById(R.id.changetable);
@@ -181,8 +178,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         labelspeed=(TextView)root.findViewById(R.id.speedlabel);
         MDistCheck=(TextView)root.findViewById(R.id.dystanscheck);
         MFriendInfo=(TextView)root.findViewById(R.id.friendInfo);
-
+        mYourLvlInfo=(TextView)root.findViewById(R.id.yourLvlInfo);
         labelczas=(TextView)root.findViewById(R.id.czaslabel);
+        changetableyourlvl=(ImageButton) root.findViewById(R.id.changetabletoLvl);
         chronometer = root.findViewById(R.id.czas);
         chronometer.setFormat("%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
@@ -190,11 +188,17 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MEnd.setVisibility(View.GONE);
         MDistCheck.setVisibility(View.INVISIBLE);
         MFriendInfo.setVisibility(View.INVISIBLE);
+        mYourLvlInfo.setVisibility(View.INVISIBLE);
         MSort.setVisibility(View.INVISIBLE);
+        changetableyourlvl.setVisibility(View.INVISIBLE);
         yourScore.setVisibility(View.INVISIBLE);
-        tl.setVisibility(View.INVISIBLE );
         changetable.setVisibility(View.INVISIBLE);
-        tfriend.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+        mRecyclerYourLvl.setVisibility(View.INVISIBLE);
+        mRecyclerView.setNestedScrollingEnabled(false);
+
+
         mStopTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -261,7 +265,9 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 List<String>newlist=new ArrayList<String>();
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String name = dataSnapshot.child("name").getValue(String.class);
+                    String lvlname = dataSnapshot.child("lvl").getValue(String.class);
                     listofname.add(name);
+                    listofNameLvl.add(lvlname);
                     // imie po id
 
                 }
@@ -289,11 +295,12 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         changetable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tl.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.INVISIBLE);
+               mRecyclerYourLvl.setVisibility(View.INVISIBLE);
                 mRecyclerViewFriend.setVisibility(View.VISIBLE);
-                tfriend.setVisibility(View.VISIBLE);
                 changetable.setVisibility(View.INVISIBLE);
                 changeToStats.setVisibility(View.VISIBLE);
+                mYourLvlInfo.setVisibility(View.INVISIBLE);
                 MDistCheck.setVisibility(View.VISIBLE);
                 MFriendInfo.setVisibility(View.VISIBLE);
             }
@@ -302,15 +309,31 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         changeToStats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tl.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
                 mRecyclerViewFriend.setVisibility(View.INVISIBLE);
-                tfriend.setVisibility(View.INVISIBLE);
+                mRecyclerYourLvl.setVisibility(View.INVISIBLE);
                 MFriendInfo.setVisibility(View.INVISIBLE);
+                mYourLvlInfo.setVisibility(View.INVISIBLE);
                 MDistCheck.setVisibility(View.VISIBLE);
                 changetable.setVisibility(View.VISIBLE);
                 changeToStats.setVisibility(View.INVISIBLE);
             }
         });
+        changetableyourlvl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                mRecyclerYourLvl.setVisibility(View.VISIBLE);
+                mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+                MFriendInfo.setVisibility(View.INVISIBLE);
+                mYourLvlInfo.setVisibility(View.VISIBLE);
+                MDistCheck.setVisibility(View.VISIBLE);
+                changetable.setVisibility(View.VISIBLE);
+                changeToStats.setVisibility(View.INVISIBLE);
+            }
+        });
+
 
 
         return root;
@@ -380,7 +403,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         boolean isInside = PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true);
-       // System.out.println("inside"+isInside);
+        // System.out.println("inside"+isInside);
 
 
         if(rusz==true ) {
@@ -401,25 +424,25 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 alertDialog.show();
             }
 
-                if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)==true && startcheck==true)  {
-                    updateTrack();
-                } else if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)== false) {
-                    alertDialog.setTitle("Alert");
-                    alertDialog.setMessage("Jesteś poza obszarem");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+            if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)==true && startcheck==true)  {
+                updateTrack();
+            } else if (PolyUtil.containsLocation(lastKnownLatLng, coordList, true)== false) {
+                alertDialog.setTitle("Alert");
+                alertDialog.setMessage("Jesteś poza obszarem");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
 
-                }
-
-
+            }
 
 
-           // System.out.println("w srodku" + isPointInPolygon(lastKnownLatLngLoc, (ArrayList<LatLng>) coordList));
+
+
+            // System.out.println("w srodku" + isPointInPolygon(lastKnownLatLngLoc, (ArrayList<LatLng>) coordList));
 
 
         }
@@ -547,11 +570,19 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         final double avgspeed= (suma/secs)* km ;
         final double calory= (suma*65)/1000;
         DecimalFormat df = new DecimalFormat("#.##");
-        MSpeed.setText(""+df.format(avgspeed)+"km/h");
+        if(suma==0)
+        {
+            MSpeed.setText(""+0+"km/h");
+        }
+        else if(suma!=0)
+        {
+            MSpeed.setText(""+df.format(avgspeed)+"km/h");
+        }
+
         String user_id = mAuth.getCurrentUser().getUid();
         Bundle bundle=getArguments();
 
-     //   if(PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true)&& dodaneDoBazy==false)
+        //   if(PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true)&& dodaneDoBazy==false)
         if(PolyUtil.containsLocation(lastKnownLatLng, coordListFirst, true)&& dodaneDoBazy==false)
         {
 
@@ -561,6 +592,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     ("Customers").child("Road").child(bundle.getString("name")).child("pierwszycheck").push();
             //  road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
             road.child("name").setValue(listofname.get(0));
+            road.child("lvl").setValue(listofNameLvl.get(0));
             road.child("dystans").setValue(100);
             DecimalFormat dfs = new DecimalFormat("#.##");
             Double twodecil=Double.valueOf(df.format(avgspeed));
@@ -590,6 +622,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                     ("Customers").child("Road").child(bundle.getString("name")).child("drugicheck").push();
             road.child("name").setValue(listofname.get(0));
+            road.child("lvl").setValue(listofNameLvl.get(0));
             //road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
             Double twodecil=Double.valueOf(df.format(avgspeed));
             road.child("srednia").setValue(twodecil);
@@ -611,6 +644,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
                         ("Customers").child("Road").child(bundle.getString("name")).child("meta").push();
                 road.child("name").setValue(listofname.get(0));
+                road.child("lvl").setValue(listofNameLvl.get(0));
                 //road.child("srednia").child("name").child(listofname.get(0)).setValue(avgspeed);
                 Double twodecil=Double.valueOf(df.format(avgspeed));
                 road.child("srednia").setValue(twodecil);
@@ -663,16 +697,11 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 alertDialog.show();
             }
         }
-
-        final double finalSuma = suma;
-
-
         MRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MSort.setVisibility(View.VISIBLE);
                 MRefreshButton.setVisibility(View.INVISIBLE);
-                tl.setVisibility(View.VISIBLE);
                 showvisibledata();
 
             }
@@ -680,31 +709,51 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         MSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showvisbilityscore();
+
+                MDistance.setVisibility(View.INVISIBLE);
+                MSpeed.setVisibility(View.INVISIBLE);
+                chronometer.setVisibility(View.INVISIBLE);
+                labelspeed.setVisibility(View.INVISIBLE);
+                labeldistance.setVisibility(View.INVISIBLE);
+                labelczas.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+                mRecyclerYourLvl.setVisibility(View.INVISIBLE);
+                changetable.setVisibility(View.VISIBLE);
+                MDistCheck.setVisibility(View.VISIBLE);
+                yourScore.setVisibility(View.VISIBLE);
+                changetableyourlvl.setVisibility(View.VISIBLE);
                 MRefreshButton.setVisibility(View.VISIBLE);
                 MSort.setVisibility(View.INVISIBLE);
                 MRefreshButton.setVisibility(View.VISIBLE);
             }
         });
-
         gpsTrack.setPoints(points);
     }
-    public void showTable(final String check, final String avgcheck)
+        public void showTable(final String check, final String avgcheck)
     {
         counter=1;
         counterfriend=1;
+        counterYourLvl=1;
         exampleList.clear();
+        friendList.clear();
+        reverseListOfYourLvlNameDup.clear();
+        reverseeListOFYourLvlAvgDup.clear();
+        listOfYourLvlNameDup.clear();
+        listofnameYourLvlDuplicates.clear();
+        listOfYourLvlAvgDup.clear();
+        yourLvlList.clear();
         listofavgefrienddup.clear();
         listofFriendnameDuplicates.clear();
         listofnamefrienddup.clear();
         listofnameDuplicates.clear();
-
         reverselistofnamedup.clear(); reverselistofavgdup.clear();
         reverseList.clear();
         listofavgdup.clear();
         listofnamedup.clear();
-        friendList.clear();
-        exampleList.clear();
+
+
+
         yourScore.setText("Twoja aktualna średnia "+avgcheck+" km/h");
         String user_id = mAuth.getCurrentUser().getUid();
         final int limit=20;
@@ -726,7 +775,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     if(max>size)
                     { String name =    String.valueOf(ds.child("name").getValue() );
-
+                        lvlOfUser=String.valueOf(ds.child("lvl").getValue());
                         String srednia =  String.valueOf(ds.child("srednia").getValue());
                         String dystans =  String.valueOf(ds.child("dystans").getValue());
                         String checkLock=  String.valueOf(ds.child("checkLock").getValue());
@@ -735,6 +784,14 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         listofCheckLocks.add(Boolean.valueOf(checkLock));
                         listofCheckLocks.add(Boolean.valueOf(secondcheckLock));
                         listofCheckLocks.add(Boolean.valueOf(lastcheckLock ));
+
+
+                        if(name!=null && srednia!=null && lvlOfUser.equals(listofNameLvl.get(0)))
+                        {
+                            //System.out.println("nams"+name);
+                            listOfYourLvlNameDup.add(name);
+                            listOfYourLvlAvgDup.add(srednia);
+                        }
 
                         if(name!=null && srednia!=null)
                         {
@@ -760,12 +817,36 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                 }
                 int position=0;
+                int yourlvlposition=0;
 
+
+                reverseListOfYourLvlNameDup=reverseList(listOfYourLvlNameDup);
+                reverseeListOFYourLvlAvgDup=reverseList(listOfYourLvlAvgDup);
+                for(int i=0;i<reverseListOfYourLvlNameDup.size();i++)
+                {
+                    if(!listofnameYourLvlDuplicates.contains(reverseListOfYourLvlNameDup.get(i)))
+                    {
+                        listofnameYourLvlDuplicates.add(reverseListOfYourLvlNameDup.get(i));
+                        if(!reverseListOfYourLvlNameDup.get(i).equals("null"))
+                        {
+                            // System.out.println("reve"+reverseListOfYourLvlNameDup.get(i));
+                            yourLvlList.add(new TableItem(String.valueOf(counterYourLvl),reverseListOfYourLvlNameDup.get(i),reverseeListOFYourLvlAvgDup.get(i)+" km/h"));
+                            counterYourLvl++;
+                        }
+                        System.out.println("lvlposition"+reverseListOfYourLvlNameDup.get(i));
+                        if(reverseListOfYourLvlNameDup.get(i).equals(listofName.get(0)))
+                        {
+
+                            finallvluserposition=yourlvlposition;
+                        }
+                        yourlvlposition++;
+                    }
+
+                }
                 reverselistofnamedup=reverseList(listofnamedup);
                 reverselistofavgdup=reverseList(listofavgdup);
                 for(int i=0;i<reverselistofnamedup.size();i++)
                 {
-
                     if(!listofnameDuplicates.contains(reverselistofnamedup.get(i)))
                     {
 
@@ -773,6 +854,8 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                         if(!reverselistofnamedup.get(i).equals("null"))
                         {
+
+                            System.out.println("lvlps"+reverselistofnamedup);
                             exampleList.add(new TableItem(String.valueOf(counter),reverselistofnamedup.get(i),reverselistofavgdup.get(i)+" km/h"));
                             counter++;
                         }
@@ -780,20 +863,12 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                         {
 
                             finaluserposition=position;
-                            System.out.println("userpost"+finaluserposition);
+                            //  System.out.println("userpost"+finaluserposition);
 
                         }
                         position++;
                     }
 
-                }
-                if(check.equals("meta")&& counter == 1 && reverselistofnamedup.get(0).equals(myname.get(0)) && checkWin.get(0)!=true)
-                {
-                    DatabaseReference road = FirebaseDatabase.getInstance().getReference().child("Users").child
-                            ("Customers").child("Road").child(bundle.getString("name"));
-                    road.child("avgmax").setValue(reverselistofavgdup.get(0));
-                    showPoints();
-                    System.out.println(check);
                 }
 
                 Set<String> hashSet = new LinkedHashSet(listofnamefrienddup);
@@ -808,19 +883,13 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                 Set<String> hashSet3 = new LinkedHashSet(reverselistofFriendavgdup);
                 ArrayList<String> finalremovedDuplicatesAvg= new ArrayList(hashSet3);
-
                 for(int i=0;i<finalremovedDuplicatesName.size();i++)
                 {
-
-
                     if(!listofFriendnameDuplicates.contains(finalremovedDuplicatesName.get(i)))
                     {
-
                         listofFriendnameDuplicates.add(finalremovedDuplicatesName.get(i));
-
                         if(!finalremovedDuplicatesName.get(i).equals("null"))
                         {
-
                             friendList.add(new TableItem(String.valueOf(counterfriend),finalremovedDuplicatesName.get(i),finalremovedDuplicatesAvg.get(i)+" km/h"));
                             counterfriend++;
                         }
@@ -829,21 +898,27 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
                 }
 
-                mRecyclerViewFriend.setHasFixedSize(true);
-                reverseListFriend = reverseList(friendList);
-                mLayoutFriendManager = new LinearLayoutManager(getActivity());
-
-                friendAdapter= new TableAdapter(friendList,finaluserposition,checkfriend);
-                mRecyclerViewFriend.setLayoutManager(mLayoutFriendManager);
-                mRecyclerViewFriend.setAdapter(friendAdapter);
-
-                reverseList = reverseList(exampleList);
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
                 mAdapter = new TableAdapter(exampleList,finaluserposition,checknofriend);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 
+                mRecyclerViewFriend.setHasFixedSize(true);
+                reverseListFriend = reverseList(friendList);
+                mLayoutFriendManager = new LinearLayoutManager(getActivity());
+                friendAdapter= new TableAdapter(friendList,finaluserposition,checkfriend);
+                mRecyclerViewFriend.setLayoutManager(mLayoutFriendManager);
+                mRecyclerViewFriend.setAdapter(friendAdapter);
+
+
+                mRecyclerYourLvl.setHasFixedSize(true);
+                reverseListFriend = reverseList(yourLvlList);
+                System.out.println("jor"+yourLvlList.get(0).getmText2());
+                mLayoutYourLvlManager = new LinearLayoutManager(getActivity());
+                yourLvlAdapter= new TableAdapter(yourLvlList,finallvluserposition,checknofriend);
+                mRecyclerYourLvl.setLayoutManager(mLayoutYourLvlManager);
+                mRecyclerYourLvl.setAdapter(yourLvlAdapter);
 
 
             }
@@ -910,7 +985,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
     {
         final List<LatLng> latLngPolygon = new ArrayList<>();
         {
-          latLngPolygon.add(new LatLng(50.025486, 21.998958));
+            latLngPolygon.add(new LatLng(50.025486, 21.998958));
 
             /*latLngPolygon.add(new LatLng(50.030518,  22.004406));//delhi
             latLngPolygon.add(new LatLng(50.027030,  22.001616));//gujarat
@@ -950,7 +1025,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             nElems++;
         }
         List nameList = new ArrayList<String>(Arrays.asList(table));
-      // road.child("checkwaypointy").setValue(nameList);
+        // road.child("checkwaypointy").setValue(nameList);
         road.child("marker").setValue(nameList);
     }
     public void startChronometer() {
@@ -967,24 +1042,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
             running = false;
         }
     }
-    public void showvisbilityscore()
-    {
-        MDistance.setVisibility(View.INVISIBLE);
-        MSpeed.setVisibility(View.INVISIBLE);
-        chronometer.setVisibility(View.INVISIBLE);
 
-        labelspeed.setVisibility(View.INVISIBLE);
-        labeldistance.setVisibility(View.INVISIBLE);
-
-        labelczas.setVisibility(View.INVISIBLE);
-        tl.setVisibility(View.VISIBLE);
-        mRecyclerViewFriend.setVisibility(View.INVISIBLE);
-        tfriend.setVisibility(View.VISIBLE);
-        changetable.setVisibility(View.VISIBLE);
-        MDistCheck.setVisibility(View.VISIBLE);
-        MSort.setVisibility(View.VISIBLE);
-        yourScore.setVisibility(View.VISIBLE);
-    }
     public void showvisibledata()
     {
         MDistance.setVisibility(View.VISIBLE);
@@ -994,11 +1052,13 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         labeldistance.setVisibility(View.VISIBLE);
         labelczas.setVisibility(View.VISIBLE);
         MDistCheck.setVisibility(View.VISIBLE);
-        tl.setVisibility(View.INVISIBLE);
         changetable.setVisibility(View.INVISIBLE);
-        tfriend.setVisibility(View.INVISIBLE);
         yourScore.setVisibility(View.INVISIBLE);
-        mRecyclerViewFriend.setVisibility(View.INVISIBLE);;
+        mRecyclerYourLvl.setVisibility(View.INVISIBLE);
+        mYourLvlInfo.setVisibility(View.INVISIBLE);
+        changetableyourlvl.setVisibility(View.INVISIBLE);
+        mRecyclerViewFriend.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
         changeToStats.setVisibility(View.INVISIBLE);
         MDistCheck.setVisibility(View.INVISIBLE);
         MFriendInfo.setVisibility(View.INVISIBLE);
@@ -1106,7 +1166,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
 
 
 
-                    for (int i = 0; i < newlist.size(); i++) {
+                for (int i = 0; i < newlist.size(); i++) {
                     if (i % 3 == 0) {
                     }
                     else {
@@ -1170,7 +1230,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                 for (String w : marketSplitdot) {
                     String str1 = w.replace("(", "");
                     String strnew = str1.replace(")", "");
-                        markersecond.add(strnew);
+                    markersecond.add(strnew);
                 }
                 Double latMark= Double.valueOf(markersecond.get(1));
                 Double longtideMark=  Double.valueOf(markersecond.get(0));

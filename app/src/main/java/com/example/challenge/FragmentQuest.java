@@ -2,48 +2,22 @@ package com.example.challenge;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.app.AlertDialog;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
+
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -129,6 +103,7 @@ public class FragmentQuest extends Fragment {
     TextView lvlinfo;
     TextView pkttoLvl;
     TextView distancequest,avgquest,counttrainquest,daydistancequest,dayavgquest;
+    public AlertDialog alertDialog;
     TextView checkdistanceweek,checkdistanceavg,checkdistanceCount,checkdaydistanceday,checkavgday;
     public interface FragmentQuestListener{
         void onInputSent(CharSequence input);
@@ -1072,7 +1047,6 @@ public class FragmentQuest extends Fragment {
         {
 
 
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Alert");
             alertDialog.setMessage("Awansowałes na wyższy lvl");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -1091,7 +1065,6 @@ public class FragmentQuest extends Fragment {
         if(pktinfo>3800 && pktinfo<3999)
         {
 
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Alert");
             alertDialog.setMessage("Awansowałes na wyższy lvl");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -1157,7 +1130,6 @@ public class FragmentQuest extends Fragment {
         {
 
 
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Alert");
             alertDialog.setMessage("Awansowałes na wyższy lvl");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -1178,7 +1150,6 @@ public class FragmentQuest extends Fragment {
         if(pktinfo>4000)
         {
 
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
             alertDialog.setTitle("Alert");
             alertDialog.setMessage("Awansowałes na wyższy lvl");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",

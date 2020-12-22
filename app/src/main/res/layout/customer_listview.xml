@@ -5,7 +5,7 @@
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="100dp"
+        android:layout_width="148dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Name" />
@@ -19,7 +19,7 @@
 
     <Button
         android:id="@+id/list_item_btn"
-        android:layout_width="146dp"
+        android:layout_width="100dp"
         android:layout_height="36dp"
         android:text="Dodaj" />
 

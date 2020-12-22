@@ -53,6 +53,54 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/YourLvl_table"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+
+        <!-- Table View-->
+        <TextView
+            android:id="@+id/textViewYourLvl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="45dp"
+            android:text="Rywale na twoim poziomie"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintHorizontal_bias="1.0"
+            map:layout_constraintRight_toRightOf="parent"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent" />
+
+        <HorizontalScrollView
+            android:layout_width="349dp"
+            android:layout_height="418dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toBottomOf="@+id/textViewYourLvl"
+            map:layout_constraintVertical_bias="0.062">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerYourLvl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/table_list_item" />
+
+        </HorizontalScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_table"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,7 +114,7 @@
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="19dp"
             android:text="Najlepsze wyniki"
             android:textSize="26dp"
             android:textStyle="bold"
@@ -94,14 +142,14 @@
 
         <TextView
             android:id="@+id/textViewYourScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_width="317dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="20dp"
             android:text="Twoj wynik"
             android:textSize="25dp"
             android:textStyle="bold"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="0.596"
+            map:layout_constraintHorizontal_bias="1.0"
             map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toRightOf="parent"
             map:layout_constraintStart_toStartOf="parent"
@@ -134,8 +182,8 @@
 
     <ImageButton
         android:id="@+id/changetableToAll"
-        android:layout_width="49dp"
-        android:layout_height="32dp"
+        android:layout_width="43dp"
+        android:layout_height="33dp"
         android:layout_marginLeft="27dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/btn_backgroundred"
@@ -146,13 +194,40 @@
 
     <ImageButton
         android:id="@+id/changetable"
-        android:layout_width="50dp"
-        android:layout_height="36dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="53dp"
+        android:layout_height="37dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/btn_background"
         android:src="@drawable/ic_wc_black_20dp"
         android:text="Button"
+        android:visibility="visible"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/changetable1"
+        android:layout_width="53dp"
+        android:layout_height="37dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_background"
+        android:src="@drawable/ic_wc_black_20dp"
+        android:text="Button"
+        android:visibility="invisible"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/changetableToYourLvl"
+        android:layout_width="50dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="330dp"
+        android:layout_marginTop="19dp"
+        android:background="@drawable/btn_backgroundred"
+        android:src="@drawable/ic_assignment_black_24dp"
+        android:text="Button"
+        android:visibility="visible"
         map:layout_constraintTop_toTopOf="parent" />
 
 </FrameLayout>
