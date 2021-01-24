@@ -53,7 +53,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FragmentFriends extends Fragment implements TextWatcher {
-    DatabaseReference reff, reffs, reffrequest,reffforpending,reffallkey;
+    DatabaseReference reff, reffs, reffrequest,reffforpending,reffallkey,reffsktoname;
     private FirebaseAuth mAuth;
     private FragmentFriendsListener listener;
     EditText e1;
@@ -79,6 +79,11 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         mAuth = FirebaseAuth.getInstance();
         final String user_id = mAuth.getCurrentUser().getUid();
         mylist = new ArrayList<>();
+
+        DatabaseReference requestfriend = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child("Customers").child("Historia").child("XcPlgwSbKqXM5aqHm9YmeG1KzsI3");
+        requestfriend.child("punkty").setValue("1312");
+
         SingleRow singleRow;
         showKeys();
 
@@ -126,7 +131,7 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         listener = null;
     }
 
-    public void stats(String k) {
+    public void stats(final String k) {
         //System.out.println("ka"+k);
         mylist.clear();
         listOfNameFriends.add(k);
@@ -134,38 +139,12 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> newlist = new ArrayList<String>();
 
                     String namefriend =  String.valueOf(dataSnapshot.child("name").getValue());
                     String lvl =  String.valueOf(dataSnapshot.child("lvl").getValue());
+                    keytopoints(namefriend,lvl,k);
                   //  System.out.println("nam"+name);
-                    SingleRow singleRow = new SingleRow(namefriend, lvl);
-                    mylist.add(singleRow);
-                    myAdapter = new MyAdapter(getActivity(), mylist);
-                    l1.setAdapter(myAdapter);
-
-
-
-                myAdapter.setCustomButtonListner(new customButtonListener() {
-                    @Override
-                    public void onButtonClickListner(int position) {
-
-                        System.out.println("wyslij"+listOfNameFriends.get(position));
-                        keyfriendname(listOfNameFriends.get(position));
-                        mylist.remove(position);
-                        myAdapter.notifyDataSetChanged();
-                        listOfNameFriends.clear();
-                        showKeys();
-
-
-                    }
-                });
-
-
-
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -313,5 +292,47 @@ public class FragmentFriends extends Fragment implements TextWatcher {
             }
         };
         reff.addListenerForSingleValueEvent(valueEventListener);
+    }
+    public void keytopoints(final String namefriend,final String lvl,String key)
+    {
+
+        String user_id = mAuth.getCurrentUser().getUid();
+        reffsktoname= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(key);
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String points =  String.valueOf(dataSnapshot.child("punkty").getValue());
+                System.out.println("punkty"+points);
+
+                String poziom=lvl+" ("+points+" pkt)";
+                SingleRow singleRow = new SingleRow(namefriend, poziom);
+                mylist.add(singleRow);
+                myAdapter = new MyAdapter(getActivity(), mylist);
+                l1.setAdapter(myAdapter);
+
+
+
+                myAdapter.setCustomButtonListner(new customButtonListener() {
+                    @Override
+                    public void onButtonClickListner(int position) {
+
+                        System.out.println("wyslij"+listOfNameFriends.get(position));
+                        keyfriendname(listOfNameFriends.get(position));
+                        mylist.remove(position);
+                        myAdapter.notifyDataSetChanged();
+                        listOfNameFriends.clear();
+                        showKeys();
+
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        reffsktoname.addListenerForSingleValueEvent(valueEventListener);
     }
 }

@@ -8,12 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -48,10 +44,7 @@ public class FragmentHistory extends Fragment implements OnMapReadyCallback,Goog
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     LocationRequest mLocationRequest;
-    Location flocation;
     private FragmentHistoryListener listener;
-    Button next,back;
-    Button backtoall;
     TextView textdistance,textspeed,texthighspeed,textkalorie,datahisttext;
     private LatLng lastKnownLatLng;
     List<String>listofplace=new ArrayList<String>();

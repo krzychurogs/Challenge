@@ -1,41 +1,19 @@
 package com.example.challenge;
 
         import android.content.Context;
-        import android.content.pm.PackageManager;
-        import android.graphics.Color;
-        import android.location.Location;
-        import android.media.Image;
         import android.os.Bundle;
-        import android.util.Log;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
-        import android.widget.Button;
         import android.widget.ImageButton;
         import android.widget.ImageView;
         import android.widget.TextView;
 
         import androidx.annotation.NonNull;
         import androidx.annotation.Nullable;
-        import androidx.core.app.ActivityCompat;
         import androidx.fragment.app.Fragment;
-        import androidx.fragment.app.FragmentTransaction;
         import androidx.recyclerview.widget.LinearLayoutManager;
         import androidx.recyclerview.widget.RecyclerView;
-
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.api.GoogleApiClient;
-        import com.google.android.gms.location.LocationRequest;
-        import com.google.android.gms.location.LocationServices;
-        import com.google.android.gms.maps.CameraUpdateFactory;
-        import com.google.android.gms.maps.GoogleMap;
-        import com.google.android.gms.maps.OnMapReadyCallback;
-        import com.google.android.gms.maps.SupportMapFragment;
-        import com.google.android.gms.maps.model.LatLng;
-        import com.google.android.gms.maps.model.Polygon;
-        import com.google.android.gms.maps.model.PolygonOptions;
-        import com.google.android.gms.maps.model.Polyline;
-        import com.google.android.gms.maps.model.PolylineOptions;
         import com.google.firebase.auth.FirebaseAuth;
         import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.DatabaseError;
@@ -43,16 +21,12 @@ package com.example.challenge;
         import com.google.firebase.database.FirebaseDatabase;
         import com.google.firebase.database.Query;
         import com.google.firebase.database.ValueEventListener;
-        import com.google.firebase.firestore.auth.User;
-        import com.squareup.picasso.Picasso;
-
         import java.util.ArrayList;
         import java.util.Collections;
-        import java.util.Iterator;
         import java.util.LinkedHashSet;
         import java.util.List;
         import java.util.Set;
-        import java.util.stream.Collectors;
+
 
 public class FragmentStatsMap extends Fragment {
     DatabaseReference reff,reffs;
@@ -87,24 +61,23 @@ public class FragmentStatsMap extends Fragment {
     private RecyclerView mRecyclerView,mRecyclerViewFriend,mRecyclerYourLvl;
     private RecyclerView.LayoutManager mLayoutManager,mLayoutFriendManager,mLayoutYourLvlManager;
     private TableAdapter mAdapter,yourLvlAdapter,friendAdapter;
-
-    ArrayList<TableItem>reverseList=new ArrayList<>();
-    ArrayList<TableItem>reverseListYourLvl=new ArrayList<>();
-    ArrayList<TableItem>reverseListFriend=new ArrayList<>();
-    List<String>listoffriendkey=new ArrayList<String>();
-    ImageButton changetable,changetableyourlvl;
-    ImageView imageuser;
-    ImageButton changetableAllUsers;
-    ImageButton changetableAllUsersInMain;
-    int counter=1;
-    int counterYourLvl=1;
-    int counterfriend=1;
-    String lvlOfUser;
-    TextView MScore,MFriendInfo,MInfo,MYourLvlInfo;
-    int finaluserposition;
-    int finallvluserposition;
-    boolean checkfriend=true;
-    boolean checknofriend=false;
+    private ArrayList<TableItem>reverseList=new ArrayList<>();
+    private ArrayList<TableItem>reverseListYourLvl=new ArrayList<>();
+    private ArrayList<TableItem>reverseListFriend=new ArrayList<>();
+    private List<String>listoffriendkey=new ArrayList<String>();
+    private ImageButton changetable,changetableyourlvl;
+    private ImageView imageuser;
+    private ImageButton changetableAllUsers;
+    private ImageButton changetableAllUsersInMain;
+    private int counter=1;
+    private int counterYourLvl=1;
+    private int counterfriend=1;
+    private String lvlOfUser;
+    private TextView MScore,MFriendInfo,MInfo,MYourLvlInfo;
+    private int finaluserposition;
+    private  int finallvluserposition;
+    private boolean checkfriend=true;
+    private boolean checknofriend=false;
 
 
     public interface FragmentStatsListener{

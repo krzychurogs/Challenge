@@ -10,13 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,23 +23,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
+
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
+
+
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
+
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,25 +49,11 @@ import java.util.List;
 public class FragmentAllTrainInWeek extends Fragment {
     DatabaseReference reff;
     private FirebaseAuth mAuth;
-    private GoogleMap mMap;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    LocationRequest mLocationRequest;
-    Location flocation;
+
     ArrayList<String> listofdates = new ArrayList<String>();
     ArrayList<String> elementofdates = new ArrayList<String>();
     ArrayList<String> elementofdatesinweek = new ArrayList<String>();
     private FragmentAllTrainInWeekListener listener;
-    Button next,back;
-    TextView textdistance,textspeed;
-    private LatLng lastKnownLatLng;
-    List<String>listofplace=new ArrayList<String>();
-    List<String>distancelist=new ArrayList<String>();
-    private Polyline gpsTrack;
-    List<String>roadlists=new ArrayList<String>();
-    List<String>listofeachtrainingwaypoint=new ArrayList<>();
-    public static int counttrain;
-    List<LatLng> points ;
     private RecyclerView mRecyclerView;
     List<Integer>counter=new ArrayList<>();
     private AdapterTrainInWeek mAdapter;

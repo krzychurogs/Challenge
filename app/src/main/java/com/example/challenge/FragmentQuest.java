@@ -116,7 +116,7 @@ public class FragmentQuest extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_fragment_quest, container, false);
         LinearLayout layout=new LinearLayout(getActivity());
 
-
+        alertDialog = new AlertDialog.Builder(getContext()).create();
 
         reff= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("historia");
 
