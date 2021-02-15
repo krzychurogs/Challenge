@@ -88,23 +88,35 @@ public class CustomerLoginActivity extends AppCompatActivity implements Fragment
                 return;
             }
         });
-        mLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String email = mEmail.getText().toString();
-                final String password = mPassword.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(CustomerLoginActivity.this, "Logowanie sie nie powiodło", Toast.LENGTH_SHORT).show();
-                        }
 
+            mLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String email = mEmail.getText().toString();
+                    final String password = mPassword.getText().toString();
+                    if(!mEmail.getText().toString().isEmpty()&& !mPassword.getText().toString().isEmpty())
+                    {
+                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(!task.isSuccessful()){
+                                    Toast.makeText(CustomerLoginActivity.this, "Logowanie sie nie powiodło", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        });
                     }
-                });
+                    else
+                    {
+                        Toast.makeText(CustomerLoginActivity.this, "Wypełnij dane ", Toast.LENGTH_SHORT).show();
+                    }
 
-            }
-        });
+
+                }
+            });
+
+
+
 
     }
     @Override

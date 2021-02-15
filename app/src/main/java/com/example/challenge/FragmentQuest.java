@@ -498,7 +498,7 @@ public class FragmentQuest extends Fragment {
                             String dffinaldiffbeetweenquestandyou=dffs.format(finaldiffbeetweenquestandyou);
                             if(finaldiffbeetweenquestandyou>0)
                             {
-                                avgquest.setText("Musisz uzyskać srednią lepszą       o: "+dffinaldiffbeetweenquestandyou+"km/h");
+                                avgquest.setText("Musisz uzyskać srednią lepszą o: "+dffinaldiffbeetweenquestandyou+"km/h");
                             }
                             else
                             {

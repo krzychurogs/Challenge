@@ -16,13 +16,27 @@
 
 
         <!-- Table View-->
+
+        <ImageButton
+            android:id="@+id/changetable1"
+            android:layout_width="43dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_background"
+            android:src="@drawable/ic_wc_black_20dp"
+            android:text="Button"
+            android:visibility="invisible"
+            map:layout_constraintEnd_toStartOf="@+id/textViewFriendTitl"
+            map:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/textViewFriendTitl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="4dp"
-            android:text="Najlepsze Wyniki Znajomych"
+            android:layout_marginRight="80dp"
+            android:text="Wyniki Znajomych"
             android:textSize="25dp"
             android:textStyle="bold"
             map:layout_constraintRight_toRightOf="parent"
@@ -60,12 +74,26 @@
 
 
         <!-- Table View-->
+        <ImageButton
+            android:id="@+id/changetableToAll"
+            android:layout_width="43dp"
+            android:layout_height="33dp"
+
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_sort_black_48dp"
+            android:text="Button"
+            android:visibility="invisible"
+            map:layout_constraintEnd_toStartOf="@+id/textViewYourLvl"
+            map:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/textViewYourLvl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="15dp"
             android:text="Rywale na twoim poziomie"
             android:textSize="24dp"
             android:textStyle="bold"
@@ -110,6 +138,32 @@
         map:layout_constraintTop_toTopOf="parent"
         tools:context=".MainActivity">
 
+        <ImageButton
+            android:id="@+id/changetable"
+            android:layout_width="53dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/btn_background"
+            android:src="@drawable/ic_wc_black_20dp"
+            android:text="Button"
+            android:visibility="visible"
+            map:layout_constraintEnd_toStartOf="@+id/textViewTitle"
+            map:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/changetableToYourLvl"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/btn_backgroundred"
+            android:src="@drawable/ic_assignment_black_24dp"
+            android:text="Button"
+            android:visibility="visible"
+            map:layout_constraintStart_toEndOf="@+id/textViewTitle"
+            map:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
@@ -118,6 +172,7 @@
             android:text="Najlepsze wyniki"
             android:textSize="26dp"
             android:textStyle="bold"
+
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintHorizontal_bias="0.55"
             map:layout_constraintLeft_toLeftOf="parent"
@@ -132,11 +187,9 @@
             android:layout_height="48dp"
             android:layout_centerInParent="true"
             android:layout_marginTop="16dp"
+
             android:scaleType="fitXY"
-            map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="0.049"
             map:layout_constraintLeft_toLeftOf="parent"
-            map:layout_constraintRight_toRightOf="@+id/textViewYourScore"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
@@ -144,15 +197,14 @@
             android:id="@+id/textViewYourScore"
             android:layout_width="317dp"
             android:layout_height="34dp"
+            android:layout_marginStart="25dp"
             android:layout_marginTop="20dp"
             android:text="Twoj wynik"
             android:textSize="25dp"
             android:textStyle="bold"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="1.0"
-            map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toRightOf="parent"
-            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintStart_toEndOf="@+id/imagemedal"
             map:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
         <HorizontalScrollView
@@ -179,55 +231,5 @@
         </HorizontalScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageButton
-        android:id="@+id/changetableToAll"
-        android:layout_width="43dp"
-        android:layout_height="33dp"
-        android:layout_marginLeft="27dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_backgroundred"
-        android:src="@drawable/ic_sort_black_48dp"
-        android:text="Button"
-        android:visibility="invisible"
-        map:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/changetable"
-        android:layout_width="53dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_background"
-        android:src="@drawable/ic_wc_black_20dp"
-        android:text="Button"
-        android:visibility="visible"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/changetable1"
-        android:layout_width="53dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_background"
-        android:src="@drawable/ic_wc_black_20dp"
-        android:text="Button"
-        android:visibility="invisible"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/changetableToYourLvl"
-        android:layout_width="50dp"
-        android:layout_height="36dp"
-        android:layout_marginLeft="330dp"
-        android:layout_marginTop="19dp"
-        android:background="@drawable/btn_backgroundred"
-        android:src="@drawable/ic_assignment_black_24dp"
-        android:text="Button"
-        android:visibility="visible"
-        map:layout_constraintTop_toTopOf="parent" />
 
 </FrameLayout>

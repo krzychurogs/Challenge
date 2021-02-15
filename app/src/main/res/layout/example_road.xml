@@ -12,48 +12,58 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp">
 
-
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="106dp"
-            android:layout_height="115dp"
+            android:layout_height="123dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:padding="2dp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="177dp"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageViewStats"
+            android:layout_width="31dp"
+            android:layout_height="30dp"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="90dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginStart="29dp"
+            android:layout_marginTop="13dp"
             android:layout_toEndOf="@+id/imageView"
-            android:text="Line 1"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:background="@drawable/btn_backgroundred"
+            android:padding="2dp"
+            android:src="@drawable/ic_sort_black_48dp" />
+
+        <ImageView
+            android:id="@+id/imageViewDist"
+            android:layout_width="25dp"
+            android:layout_height="29dp"
+
+            android:layout_below="@+id/imageViewStats"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="24dp"
+            android:layout_toEndOf="@+id/imageView" />
 
         <TextView
             android:id="@+id/textDystans"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="25dp"
-
-            android:layout_marginTop="79dp"
-            android:layout_toEndOf="@+id/imageView"
+            android:layout_width="58dp"
+            android:layout_height="29dp"
+            android:layout_alignTop="@+id/imageViewDist"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/imageViewDist"
             android:text="Line 1"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textBestAvg"
-            android:layout_width="114dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="152dp"
-            android:layout_marginTop="79dp"
-            android:layout_toEndOf="@+id/imageView"
+            android:id="@+id/textView"
+            android:layout_width="161dp"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/imageViewStats"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/imageViewStats"
             android:text="Line 1"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -63,38 +73,22 @@
             android:id="@+id/imageViewAvg"
             android:layout_width="25dp"
             android:layout_height="29dp"
-            android:layout_below="@id/textView"
-            android:layout_alignRight="@id/textBestAvg"
-            android:layout_marginLeft="200dp"
-            android:layout_marginTop="39dp"
-            android:layout_marginRight="120dp"
-            android:layout_marginBottom="0dp"
-            android:padding="2dp" />
+            android:layout_alignTop="@+id/textDystans"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/textDystans" />
 
-        <ImageView
-            android:id="@+id/imageViewDist"
-            android:layout_width="25dp"
+        <TextView
+            android:id="@+id/textBestAvg"
+            android:layout_width="118dp"
             android:layout_height="29dp"
-            android:layout_alignBottom="@id/textDystans"
-            android:layout_alignParentRight="false"
-            android:layout_marginLeft="109dp"
-            android:layout_marginRight="183dp"
-            android:layout_marginBottom="-2dp"
-            android:padding="2dp" />
 
-        <ImageView
-            android:id="@+id/imageViewStats"
-            android:layout_width="31dp"
-            android:layout_height="30dp"
-            android:layout_below="@+id/textBestAvg"
-            android:layout_alignRight="@+id/textView"
-            android:layout_alignParentRight="false"
-            android:layout_marginLeft="138dp"
-            android:layout_marginTop="-95dp"
-            android:layout_marginRight="188dp"
-            android:layout_marginBottom="-1dp"
-            android:background="@drawable/btn_backgroundred"
-            android:padding="2dp"
-            android:src="@drawable/ic_sort_black_48dp" />
+            android:layout_alignTop="@+id/imageViewAvg"
+            android:layout_marginStart="3dp"
+            android:layout_toEndOf="@+id/imageViewAvg"
+            android:text="Line 1"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

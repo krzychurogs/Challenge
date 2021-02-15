@@ -12,14 +12,14 @@
 
     <TextView
         android:id="@+id/textViewLvl"
-        android:layout_width="142dp"
+        android:layout_width="138dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Lvl" />
 
     <Button
         android:id="@+id/list_item_btn"
-        android:layout_width="100dp"
+        android:layout_width="65dp"
         android:layout_height="36dp"
         android:text="Usuń" />
 

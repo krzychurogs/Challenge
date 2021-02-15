@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/week"
-            android:layout_width="261dp"
+            android:layout_width="208dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
             android:gravity="left"
@@ -65,7 +65,7 @@
     <LinearLayout
         android:id="@+id/linearforcheck"
         android:layout_width="386dp"
-        android:layout_height="182dp"
+        android:layout_height="147dp"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
@@ -167,7 +167,7 @@
 
         <TextView
             android:id="@+id/dayweek"
-            android:layout_width="255dp"
+            android:layout_width="208dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:gravity="left"
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:text="Twoje punkty:"
+                android:text="0m"
                 android:textSize="16dp" />
 
         </LinearLayout>
@@ -245,7 +245,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:text="Twoje punkty:"
+                android:text="0km/h"
                 android:textSize="16dp" />
 
         </LinearLayout>

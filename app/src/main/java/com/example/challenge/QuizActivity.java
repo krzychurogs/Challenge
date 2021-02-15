@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -166,5 +167,16 @@ public class QuizActivity extends AppCompatActivity {
             builder.show();
         }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        String user_id = mAuth.getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
+        ref.setValue("Easy");
+        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
+                ("Customers").child("Historia").child(user_id).child("punkty");
+        pkt.setValue(300);
     }
 }

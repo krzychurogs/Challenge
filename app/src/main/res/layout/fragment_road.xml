@@ -8,15 +8,14 @@ android:background="@android:color/holo_blue_dark"
 android:orientation="vertical">
 
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        </LinearLayout>
 
-    </LinearLayout>
-
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="265dp"
         android:background="@drawable/dotted_border"
@@ -322,8 +321,11 @@ android:orientation="vertical">
             android:id="@+id/stoptime"
             android:layout_width="55dp"
             android:layout_height="49dp"
+            android:layout_alignTop="@+id/speed"
+            android:layout_marginStart="45dp"
             android:layout_marginLeft="340dp"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/speed"
             android:background="@drawable/btn_backgroundred"
             android:src="@drawable/ic_pause_circle_outline_black_50dp" />
 
@@ -331,8 +333,12 @@ android:orientation="vertical">
             android:id="@+id/end"
             android:layout_width="55dp"
             android:layout_height="49dp"
+            android:layout_alignTop="@+id/speed"
+            android:layout_marginStart="45dp"
             android:layout_marginLeft="340dp"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/speed"
+
             android:background="@drawable/btn_backgroundred"
             android:src="@drawable/ic_stop_black_50dp" />
 
@@ -340,8 +346,11 @@ android:orientation="vertical">
             android:id="@+id/start"
             android:layout_width="55dp"
             android:layout_height="49dp"
+            android:layout_alignTop="@+id/speed"
+            android:layout_marginStart="45dp"
             android:layout_marginLeft="340dp"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/speed"
             android:background="@drawable/btn_background"
             android:src="@drawable/ic_play_arrow_black_50dp" />
 
@@ -356,7 +365,7 @@ android:orientation="vertical">
             android:src="@drawable/ic_sort_black_48dp"
             android:visibility="invisible"
             map:layout_constraintTop_toTopOf="parent" />
-    </FrameLayout>
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

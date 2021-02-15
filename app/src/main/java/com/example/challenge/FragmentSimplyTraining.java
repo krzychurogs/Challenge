@@ -373,8 +373,6 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
         {
             MSpeed.setText(""+df.format(avgspeed)+"km/h");
         }
-
-
        // System.out.println(calory);
         MCalory.setText(dfcalory.format(calory));
 
@@ -387,13 +385,9 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
             counterSpeech++;
         }
 
-
-
-
         final double finalSuma = suma;
         final boolean oneCheck=false;
         MEnd.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
 
@@ -429,7 +423,15 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 historia.child("kalorie").setValue(kalorie);
                 DecimalFormat dfsuma = new DecimalFormat("#.##");
                 historia.child("dystans").setValue(dfsuma.format(suma));
+                if(Collections.max(highstedaverage)>0)
+                {
                     historia.child("highspeed").setValue( dfsuma.format(Collections.max(highstedaverage)));
+                }
+                else
+                {
+                    historia.child("highspeed").setValue("0 km/h");
+                }
+
                 Toast.makeText(getActivity().getApplicationContext(),"Dobry trening",Toast.LENGTH_SHORT).show();
                 String [] table;  //Referencja do tablicy
                 int nElems=0;
@@ -453,8 +455,6 @@ public class FragmentSimplyTraining extends Fragment implements OnMapReadyCallba
                 startActivity(myIntent);
             }
         });
-
-
         gpsTrack.setPoints(points);
     }
 
@@ -503,10 +503,9 @@ public void addpoints(int pktinfo)
 }
 public void speech()
 
-{     final DecimalFormat dfsumam = new DecimalFormat("#");
+{
+    final DecimalFormat dfsumam = new DecimalFormat("#");
     String text=String.valueOf(""+dfsumam.format(suma)+"metrów");
-        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
+    textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
 }
-
-
 }
