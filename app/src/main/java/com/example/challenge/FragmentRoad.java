@@ -859,11 +859,26 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             exampleList.add(new TableItem(String.valueOf(counter),reverselistofnamedup.get(i),reverselistofavgdup.get(i)+" km/h"));
                             counter++;
                         }
+                        System.out.print("kont"+listofname.get(0));
+                        System.out.print("kont"+reverselistofnamedup.get(0));
+                        if(reverselistofnamedup.get(0).equals(listofname.get(0)) && check.equals("meta") )
+                        {
+                            showPoints(1);
+
+                        }
+                        if(reverselistofnamedup.get(1).equals(listofname.get(0)) && check.equals("meta") )
+                        {
+                            showPoints(2);
+                        }
+                        if(reverselistofnamedup.get(2).equals(listofname.get(0)) && check.equals("meta") )
+                        {
+                            showPoints(3);
+                        }
                         if(reverselistofnamedup.get(i).equals(listofName.get(0)))
                         {
 
                             finaluserposition=position;
-                            //  System.out.println("userpost"+finaluserposition);
+                           System.out.println("userpost"+finaluserposition);
 
                         }
                         position++;
@@ -1450,7 +1465,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
         } ;
         reffcheckstart.addListenerForSingleValueEvent(valueEventListener);
     }
-    public void showPoints()
+    public void showPoints(final int score)
     {
         final String user_id = mAuth.getCurrentUser().getUid();
         reffpkt = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child("Historia").child(user_id).child("punkty");
@@ -1464,7 +1479,20 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                     String pktint=String.valueOf(pktinfo);
                     // System.out.println("poin"+pointstolvl);
                     //  System.out.println(pktint);
-                    int max=600;
+                    int max=0;
+                    if(score==1)
+                    {
+                         max=600;
+                    }
+                    if(score==2)
+                    {
+                        max=400;
+                    }
+                    if(score==3)
+                    {
+                        max=300;
+                    }
+
                     int diff=max+pktinfo;
                     DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
                             ("Customers").child("Historia").child(user_id).child("punkty");
@@ -1474,7 +1502,7 @@ public class FragmentRoad extends Fragment implements OnMapReadyCallback,GoogleA
                             ("Customers").child("Historia").child(user_id).child(bundle.getString("name"));
                     infoadd.setValue(true);
                     alertDialog.setTitle("Alert");
-                    alertDialog.setMessage("Zdobyłes punkty za najlepszy czas na trasie");
+                    alertDialog.setMessage("Zdobyłes punkty za wynik na podium");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {

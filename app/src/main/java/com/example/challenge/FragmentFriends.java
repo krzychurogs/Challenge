@@ -80,9 +80,6 @@ public class FragmentFriends extends Fragment implements TextWatcher {
         final String user_id = mAuth.getCurrentUser().getUid();
         mylist = new ArrayList<>();
 
-        DatabaseReference requestfriend = FirebaseDatabase.getInstance().getReference()
-                .child("Users").child("Customers").child("Historia").child("XcPlgwSbKqXM5aqHm9YmeG1KzsI3");
-        requestfriend.child("punkty").setValue("1312");
 
         SingleRow singleRow;
         showKeys();

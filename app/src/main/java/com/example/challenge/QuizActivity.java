@@ -139,21 +139,21 @@ public class QuizActivity extends AppCompatActivity {
                     {
                         DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
                                 ("Customers").child("Historia").child(user_id).child("punkty");
-                        pkt.setValue(100);
+                        pkt.setValue(300);
 
                     }
                     if(finallvl.equals("Medium"))
                     {
                         DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
                                 ("Customers").child("Historia").child(user_id).child("punkty");
-                        pkt.setValue(2001);
+                        pkt.setValue(2301);
 
                     }
                     if(finallvl.equals("High"))
                     {
                         DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
                                 ("Customers").child("Historia").child(user_id).child("punkty");
-                        pkt.setValue(4001);
+                        pkt.setValue(4201);
 
                     }
 
@@ -169,14 +169,5 @@ public class QuizActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        String user_id = mAuth.getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
-        ref.setValue("Easy");
-        DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child
-                ("Customers").child("Historia").child(user_id).child("punkty");
-        pkt.setValue(300);
-    }
+
 }

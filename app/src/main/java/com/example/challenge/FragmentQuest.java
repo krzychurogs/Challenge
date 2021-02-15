@@ -132,9 +132,7 @@ public class FragmentQuest extends Fragment {
         checkdistanceavg= (TextView)   root.findViewById(R.id.checkweekavg);
         checkdistanceCount= (TextView)   root.findViewById(R.id.checkweekCount);
         checkdaydistanceday= (TextView)   root.findViewById(R.id.checkdayDist);
-
         checkavgday= (TextView)   root.findViewById(R.id.checkdayAvg);
-
 
         /*DatabaseReference pkt = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("lvl");
         pkt.setValue("niski lvl");
@@ -492,9 +490,8 @@ public class FragmentQuest extends Fragment {
                             }
                             Double val=Double.valueOf(listofaveragequest.get(numberofQuestDay));
                             final DecimalFormat dffs = new DecimalFormat("#.#");
-                            String dist=dffs.format(finalavgofdistance);
-                            Double finaldistweekDouble=Double.valueOf(dist);
-                            Double finaldiffbeetweenquestandyou=val-finaldistweekDouble;
+
+                            Double finaldiffbeetweenquestandyou=val-finalavgofdistance;
                             String dffinaldiffbeetweenquestandyou=dffs.format(finaldiffbeetweenquestandyou);
                             if(finaldiffbeetweenquestandyou>0)
                             {
@@ -763,9 +760,7 @@ public class FragmentQuest extends Fragment {
                             }
                             Double val=Double.valueOf(listofavgquestday.get(numberofQuestDay));
                             final DecimalFormat dffs = new DecimalFormat("#.#");
-                            String dist=dffs.format(finalavgday);
-                            Double finaldistweekDouble=Double.valueOf(dist);
-                            Double finaldiffbeetweenquestandyou=val-finaldistweekDouble;
+                            Double finaldiffbeetweenquestandyou=val-finalavgday;
                             String dffinaldiffbeetweenquestandyou=dffs.format(finaldiffbeetweenquestandyou);
                             if(finaldiffbeetweenquestandyou>0)
                             {
