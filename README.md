@@ -41,3 +41,22 @@ Chat
   <li>ButterKnifel</li>
   
 </ul>  
+## Screens From App
+A few photos from app
+
+1. Poll
+![](Readme/ank.JPG)
+2.Drawer Layout
+![](Readme/ank2.JPG)
+3.Personal training
+![](Readme/trening.JPG)
+4.History of trainings
+![](Readme/histry.JPG)
+5.List of Friends
+![](Readme/friend.JPG
+6.Choice route
+![](Readme/choiceroad.JPG)
+7.Scoreboard
+![](Readme/tablescore.JPG)
+8.View of route
+![](Readme/show.JPG)
