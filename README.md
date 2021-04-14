@@ -1,7 +1,7 @@
 # Challenge
 
 ## Description
-Mobile application that offers users an opportinity of rivaling on routes with others.Application includes possibility of carrying out training tasks, likewise in other similar apps.Applications includes social media option, which means comparing gained scores with others' progress.
+Mobile application that offers users an opportinity of rivaling on routes with others.Application includes possibility of carrying out training tasks, likewise in other similar apps.Moreover, applications includes social media option, which means comparing gained scores with others' progress.
 ## Functionalities
 
 <ul>
