@@ -52,7 +52,7 @@ A few photos from app
 3.Personal training</br>
 ![](Readme/trening.JPG)</br>
 4.History of trainings</br></br>
-![](Readme/histry.JPG)</br>
+![](Readme/history.JPG)</br>
 5.List of Friends</br>
 ![](Readme/friend.JPG</br>
 6.Choice route</br>
