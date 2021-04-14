@@ -12,7 +12,7 @@ Authentication
     <li>Registration</li>
   </ul>
 </li>
-<li>
+
   <li>
 Make Trainings
   <ul>
