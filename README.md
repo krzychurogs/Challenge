@@ -51,12 +51,12 @@ A few photos from app
 ![](Readme/ank2.JPG)</br>
 3.Personal training</br>
 ![](Readme/trening.JPG)</br>
-4.History of trainings</br></br>
+4.History of trainings</br>
 ![](Readme/history.JPG)</br>
-5.List of Friends</br>
-![](Readme/friend.JPG</br>
-6.Choice route</br>
+5.Choice route</br>
 ![](Readme/choiceroad.JPG)</br>
+6.List of Friends</br>
+![](Readme/friend.JPG)</br>
 7.Scoreboard</br>
 ![](Readme/tablescore.JPG)</br>
 8.View of route</br>
