@@ -45,7 +45,7 @@ Chat
 A few photos from app
 
 1. Poll
-![](Readme/ank.JPG)
+![](Readme/ank.JPG) </br>
 2.Drawer Layout
 ![](Readme/ank2.JPG)
 3.Personal training
