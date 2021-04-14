@@ -1,7 +1,7 @@
 # Challenge
 
 ## Description
-Application allows users to create and read blogs. Its possibility give like, because created reputation system and an option to comment specyfic post.It also has social media aspect that might help to communicate with each other users thanks to chat beetween users.
+Mobile application that offers users an opportinity of rivaling on routes with others.Application includes possibility of carrying out training tasks, likewise in other similar apps.Applications includes social media option, which means comparing gained scores with others' progress.
 ## Functionalities
 
 <ul>
@@ -13,21 +13,32 @@ Authentication
   </ul>
 </li>
 <li>
-Blog
+  <li>
+Make Trainings
   <ul>
-    <li>Creating blogs by logged user</li>
-    <li>Give likes by logged user</li>
-    <li>Viewing detail of post with number of likes and comments </li>
-    <li>Creating comment of post by logged </li>
-    <li>Viewing other blog</li>
-    <li>Possibilty of delete,update created posts</li>
+    <li>Count distance,speed etc..</li>
+    <li>Draw route line behind user</li>
+    <li>Detailed history of trainings divide by weeks</li>
+  </ul>
+</li>
+<li>
+  
+Competition
+  <ul>
+    <li>Analyze route</li>
+    <li>Limits of route</li>
+    <li>Checkpoints on route with scoreboard on every checkpoint </li>
+    <li>Different types of scoreboard </li>
+    <li>Earn rating points</li>
   </ul> 
 </li>
 <li>  
-Chat
+Friends
   <ul>
-    <li>Chat for logged Users</li>
-    <li>Searching by name</li>
+    <li>Add Friends</li>
+    <li>Accept Request</li>
+    <li>Delete Friend from List</li>
+    <li>Show rate of friend </li>
   </ul> 
 </li>
 </ul>
