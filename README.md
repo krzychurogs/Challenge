@@ -47,17 +47,17 @@ A few photos from app
 
 1. Poll</br>
 ![](Readme/ank.JPG) </br>
-2.Drawer Layout
-![](Readme/ank2.JPG)
-3.Personal training
-![](Readme/trening.JPG)
-4.History of trainings
-![](Readme/histry.JPG)
-5.List of Friends
-![](Readme/friend.JPG
-6.Choice route
-![](Readme/choiceroad.JPG)
-7.Scoreboard
-![](Readme/tablescore.JPG)
-8.View of route
-![](Readme/show.JPG)
+2.Drawer Layout</br>
+![](Readme/ank2.JPG)</br>
+3.Personal training</br>
+![](Readme/trening.JPG)</br>
+4.History of trainings</br></br>
+![](Readme/histry.JPG)</br>
+5.List of Friends</br>
+![](Readme/friend.JPG</br>
+6.Choice route</br>
+![](Readme/choiceroad.JPG)</br>
+7.Scoreboard</br>
+![](Readme/tablescore.JPG)</br>
+8.View of route</br>
+![](Readme/show.JPG)</br>
