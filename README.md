@@ -44,7 +44,7 @@ Chat
 ## Screens From App
 A few photos from app
 
-1. Poll
+1. Poll</br>
 ![](Readme/ank.JPG) </br>
 2.Drawer Layout
 ![](Readme/ank2.JPG)
