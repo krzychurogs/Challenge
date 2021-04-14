@@ -49,7 +49,7 @@ Friends
   <li>Java(Android Studio)</li>
   <li>Firebase</li>
   <li>Glide</li>
-  <li>ButterKnifel</li>
+  <li>ButterKnife</li>
   
 </ul>  
 
